@@ -1,0 +1,11 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --primary-color: #1d4e3a;
+  --second-color: #f98417;
+
+  --size-lg: 24px;
+  --size-md: 16px;
+}

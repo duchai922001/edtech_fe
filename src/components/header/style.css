@@ -1,0 +1,10 @@
+.header-wrapper {
+  background-color: var(--primary-color);
+  width: 100%;
+  padding: 24px;
+  color: white;
+}
+.icon {
+  font-size: 24px;
+  cursor: pointer;
+}
