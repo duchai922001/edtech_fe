@@ -6,7 +6,7 @@ const MainLayout = () => {
   return (
     <div className="layout-wrapper">
       <Header />
-      <div style={{ margin: "50px 0" }}>
+      <div>
         <Outlet />
       </div>
       <Footer />

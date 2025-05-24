@@ -9,3 +9,41 @@ body {
   --size-lg: 24px;
   --size-md: 16px;
 }
+.body-md-white {
+  font-size: 40px;
+  color: white;
+}
+
+.body-lg-grey {
+  font-size: 26px;
+  color: gray;
+  font-weight: bold;
+}
+
+.body-sm-black {
+  font-size: 18px;
+  color: black;
+}
+
+.body-des-white {
+  font-size: 20px;
+  color: white;
+}
+.title-xl-white {
+  font-size: 64px;
+  font-weight: bold;
+  color: white;
+}
+
+.title-lg-black {
+  font-size: 32px;
+  font-weight: bold;
+  color: black;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
