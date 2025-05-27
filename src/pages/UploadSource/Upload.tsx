@@ -135,7 +135,7 @@ const UploadCustom: React.FC = () => {
         <Button
           type="primary"
           block
-          style={{ marginTop: 16, backgroundColor: "#134f36" }}
+          style={{ marginTop: 16, height: 40, backgroundColor: "#134f36" }}
           onClick={handleConfirm}
         >
           CONFIRM

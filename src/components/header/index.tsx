@@ -4,8 +4,9 @@ import "./style.css";
 import LOGO from "../../assets/LOGO.png";
 import { MenuTabItem, type IMenuTab } from "../base/config/configMenu";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Header = () => {
+  const navigate = useNavigate()
   return (
     <div className="header-wrapper">
       <Container>
@@ -13,6 +14,7 @@ const Header = () => {
           <Col span={4}>
             <img
               src={LOGO}
+              onClick={() => navigate("/")}
               style={{ width: "50px", height: "auto", marginLeft: "-24px" }}
             />
           </Col>

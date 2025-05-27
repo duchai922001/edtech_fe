@@ -1,3 +1,5 @@
+import { Menu } from "../../../common/configMenu";
+
 export interface IMenuTab {
   label: string;
   to: string;
@@ -9,7 +11,7 @@ export const MenuTabItem: IMenuTab[] = [
   },
   {
     label: "Resources",
-    to: "/resources",
+    to: Menu.URL_UPLOAD_SOURCE_PAGE,
   },
   {
     label: "Scholarship",
@@ -17,6 +19,6 @@ export const MenuTabItem: IMenuTab[] = [
   },
   {
     label: "Class",
-    to: "/class",
+    to: Menu.URL_CLASSES_PAGE,
   },
 ];
