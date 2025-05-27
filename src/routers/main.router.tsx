@@ -5,6 +5,7 @@ import Lecture from "../pages/Lecturer";
 import Student from "../pages/Student";
 import MockTest from "../pages/Mocktest";
 import Flashcard from "../pages/Flashcard";
+import Classes from "../pages/Classes";
 const MainRouter = () => {
   return (
     <>
@@ -14,6 +15,8 @@ const MainRouter = () => {
           <Route path={Menu.URL_STUDENT_PAGE} element={<Student />} />
           <Route path={Menu.URL_MOCK_TEST_PAGE} element={<MockTest />} />
           <Route path={Menu.URL_FLASH_CARD_PAGE} element={<Flashcard />} />
+          <Route path={Menu.URL_CLASSES_PAGE} element={<Classes />} />
+
         </Route>
       </Routes>
     </>
