@@ -1,11 +1,14 @@
-import { Col, Row, Select, Typography } from "antd";
+import { Col, Input, Row, Select, Typography } from "antd";
 import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardClass from "../../components/base/CardClass";
 import Search from "antd/es/input/Search";
+import { useState } from "react";
+import ModalCustom from "../../components/base/Modal";
 
 const Classes = () => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8];
+  const [openModal, setOpenMdal] = useState(false);
   return (
     <div>
       <Background style={{ height: 150 }}>
@@ -32,11 +35,11 @@ const Classes = () => {
           style={{ marginTop: "24px", width: "100%" }}
         >
           <Col span={6}>
-              <Select
-                allowClear
-                style={{ width: "100%" }}
-                placeholder="Please select season"
-              />
+            <Select
+              allowClear
+              style={{ width: "100%" }}
+              placeholder="Please select season"
+            />
           </Col>
           <Col span={6} style={{ display: "flex", justifyContent: "flex-end" }}>
             <Search placeholder="input search text" style={{ width: 200 }} />
@@ -44,12 +47,28 @@ const Classes = () => {
         </Row>
         <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
           {data.map((item) => (
-            <Col span={6}>
+            <Col span={6} onClick={() => setOpenMdal(true)}>
               <CardClass />
             </Col>
           ))}
         </Row>
       </Container>
+      <ModalCustom
+        isOpen={openModal}
+        onClose={() => setOpenMdal(false)}
+        onOk={() => setOpenMdal(false)}
+        title="Enroll"
+      >
+        <div style={{textAlign: "center"}}>
+        <Typography className="title-lg-black">
+          JPD102 - GD1901 - Wed/Sat
+        </Typography>
+        <Typography className="body-sm-black">
+          Lecturer: Tran Van Hung
+        </Typography>
+        </div>
+        <Input placeholder="Enter class code" style={{ height: 40, marginTop: 24, textAlign: "center" }} />
+      </ModalCustom>
     </div>
   );
 };
