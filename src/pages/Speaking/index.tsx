@@ -2,6 +2,8 @@ import { Avatar, Col, Row, Select, Typography } from "antd";
 import BackgroundSpeaking from "../../components/base/BackgroundSpeaking";
 import Container from "../../components/base/Container";
 import AvatarChatBox from "../../assets/avatarchat.png";
+import { useNavigate } from "react-router-dom";
+import { Menu } from "../../common/configMenu";
 const Speaking = () => {
   const speakingData = [
     {
@@ -17,6 +19,7 @@ const Speaking = () => {
       img: "https://snacknation.com/wp-content/uploads/2022/09/5-minute-team-building-activities-e1662484078287.png",
     },
   ];
+  const navigate = useNavigate()
   return (
     <BackgroundSpeaking>
       <Container>
@@ -69,6 +72,7 @@ const Speaking = () => {
           <Row style={{marginBottom: 400}}>
             {speakingData.map((item) => (
               <Col
+              onClick={() => navigate(Menu.URL_SPEAKING_TEST_PAGE)}
                 span={6}
                 style={{
                   background: "white",

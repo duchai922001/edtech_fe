@@ -7,7 +7,7 @@ export interface IMenuTab {
 export const MenuTabItem: IMenuTab[] = [
   {
     label: "Tools",
-    to: "/tools",
+    to: Menu.URL_SPEAKING_PAGE,
   },
   {
     label: "Resources",
@@ -15,7 +15,7 @@ export const MenuTabItem: IMenuTab[] = [
   },
   {
     label: "Scholarship",
-    to: "/scholarship",
+    to: Menu.URL_LECTURE_PAGE,
   },
   {
     label: "Class",

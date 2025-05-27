@@ -5,6 +5,7 @@ import LOGO from "../../assets/LOGO.png";
 import { MenuTabItem, type IMenuTab } from "../base/config/configMenu";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
+import { Menu } from "../../common/configMenu";
 const Header = () => {
   const navigate = useNavigate()
   return (
@@ -43,7 +44,7 @@ const Header = () => {
             }}
           >
             <SearchOutlined className="icon" />
-            <UserOutlined className="icon" />
+            <UserOutlined className="icon" onClick={() => navigate(Menu.URL_LOGIN_PAGE)}/>
           </Col>
         </Row>
       </Container>
