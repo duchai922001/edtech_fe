@@ -1,0 +1,43 @@
+.course-card {
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+    box-shadow:0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .course-image-placeholder {
+    background: #e0e0e0;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .course-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .recommended-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    border-radius: 16px;
+    padding: 0 10px;
+    font-weight: 500;
+  }
+  
+  .course-content {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .course-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
