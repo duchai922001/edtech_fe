@@ -35,7 +35,7 @@ const Courses = () => {
       </Row>
       <Row gutter={[24,24]} style={{marginTop: 24}}>
         {data.map((item) => (
-          <Col span={8}>
+          <Col span={6}>
             <CardCourse />
           </Col>
         ))}
