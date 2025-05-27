@@ -8,6 +8,7 @@ import Flashcard from "../pages/Flashcard";
 import Classes from "../pages/Classes";
 import Enroll from "../pages/Enroll";
 import UploadSource from "../pages/UploadSource";
+import Speaking from "../pages/Speaking";
 const MainRouter = () => {
   return (
     <>
@@ -20,6 +21,7 @@ const MainRouter = () => {
           <Route path={Menu.URL_CLASSES_PAGE} element={<Classes />} />
           <Route path={Menu.URL_ENROLL_PAGE} element={<Enroll />} />
           <Route path={Menu.URL_UPLOAD_SOURCE_PAGE} element={<UploadSource />} />
+          <Route path={Menu.URL_SPEAKING_PAGE} element={<Speaking />} />
 
         </Route>
       </Routes>

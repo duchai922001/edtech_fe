@@ -35,6 +35,12 @@ body {
   color: white;
 }
 
+.title-sm-black {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
 .title-lg-black {
   font-size: 32px;
   font-weight: bold;

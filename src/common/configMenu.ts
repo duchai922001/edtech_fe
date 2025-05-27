@@ -6,5 +6,6 @@ export const Menu = {
   URL_CLASSES_PAGE: "/classes",
   URL_ENROLL_PAGE: "/enroll",
   URL_UPLOAD_SOURCE_PAGE: "/upload-source",
+  URL_SPEAKING_PAGE: "/speaking",
 
 };
