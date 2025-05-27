@@ -6,11 +6,11 @@ import Search from "antd/es/input/Search";
 import { useState } from "react";
 import ModalCustom from "../../components/base/Modal";
 import { useNavigate } from "react-router-dom";
-
+import { PlusCircleOutlined } from "@ant-design/icons";
 const Classes = () => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8];
   const [openModal, setOpenMdal] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div>
       <Background style={{ height: 150 }}>
@@ -48,6 +48,23 @@ const Classes = () => {
           </Col>
         </Row>
         <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+          <Col
+            span={6}
+            style={{
+              width: "100%",
+              height: "auto",
+              border: "1px dashed gray",
+              borderRadius: 12,
+              fontSize: 18,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4
+            }}
+          >
+            <PlusCircleOutlined />
+            <span>Add a class...</span>
+          </Col>
           {data.map((item) => (
             <Col span={6} onClick={() => setOpenMdal(true)}>
               <CardClass />
@@ -61,15 +78,18 @@ const Classes = () => {
         onOk={() => navigate("/enroll")}
         title="Enroll"
       >
-        <div style={{textAlign: "center"}}>
-        <Typography className="title-lg-black">
-          JPD102 - GD1901 - Wed/Sat
-        </Typography>
-        <Typography className="body-sm-black">
-          Lecturer: Tran Van Hung
-        </Typography>
+        <div style={{ textAlign: "center" }}>
+          <Typography className="title-lg-black">
+            JPD102 - GD1901 - Wed/Sat
+          </Typography>
+          <Typography className="body-sm-black">
+            Lecturer: Tran Van Hung
+          </Typography>
         </div>
-        <Input placeholder="Enter class code" style={{ height: 40, marginTop: 24, textAlign: "center" }} />
+        <Input
+          placeholder="Enter class code"
+          style={{ height: 40, marginTop: 24, textAlign: "center" }}
+        />
       </ModalCustom>
     </div>
   );
