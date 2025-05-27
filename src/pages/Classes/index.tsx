@@ -5,10 +5,12 @@ import CardClass from "../../components/base/CardClass";
 import Search from "antd/es/input/Search";
 import { useState } from "react";
 import ModalCustom from "../../components/base/Modal";
+import { useNavigate } from "react-router-dom";
 
 const Classes = () => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8];
   const [openModal, setOpenMdal] = useState(false);
+  const navigate = useNavigate()
   return (
     <div>
       <Background style={{ height: 150 }}>
@@ -56,7 +58,7 @@ const Classes = () => {
       <ModalCustom
         isOpen={openModal}
         onClose={() => setOpenMdal(false)}
-        onOk={() => setOpenMdal(false)}
+        onOk={() => navigate("/enroll")}
         title="Enroll"
       >
         <div style={{textAlign: "center"}}>
