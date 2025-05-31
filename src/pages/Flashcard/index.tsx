@@ -3,10 +3,11 @@ import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardCourse from "../../components/base/CardCourse";
 import Search from "antd/es/input/Search";
+import { useNavigate } from "react-router-dom";
 
 const Flashcard = () => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
+  const navigate = useNavigate();
   return (
     <div>
       <Background style={{ height: 300 }}>
@@ -66,7 +67,7 @@ const Flashcard = () => {
         <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
           {data.map((item) => (
             <Col span={6}>
-              <CardCourse />
+              <CardCourse onClick={() => navigate(`/flashcard/1`)} />
             </Col>
           ))}
         </Row>

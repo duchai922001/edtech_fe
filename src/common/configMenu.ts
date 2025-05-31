@@ -8,5 +8,7 @@ export const Menu = {
   URL_UPLOAD_SOURCE_PAGE: "/upload-source",
   URL_SPEAKING_PAGE: "/speaking",
   URL_SPEAKING_TEST_PAGE: "/speaking-test",
-  URL_LOGIN_PAGE: "/login"
+  URL_LOGIN_PAGE: "/login",
+  URL_WORD_GAME_PAGE: "/word-game",
+  URL_CROSS_GAME_PAGE: "/word-cross-game",
 };

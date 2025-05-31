@@ -1,13 +1,17 @@
 // CardCourse.tsx
-import React from 'react';
-import { Card, Tag, Rate, Typography } from 'antd';
-import './style.css'; // CSS riêng nếu cần thêm style tùy chỉnh
+import React from "react";
+import { Card, Tag, Rate, Typography } from "antd";
+import "./style.css"; // CSS riêng nếu cần thêm style tùy chỉnh
 
 const { Title, Text } = Typography;
 
-const CardCourse: React.FC = () => {
+interface CardCourseProps {
+  onClick?: () => void;
+}
+const CardCourse = ({ onClick }: CardCourseProps) => {
   return (
     <Card
+      onClick={onClick}
       className="course-card"
       cover={
         <div className="course-image-placeholder">
@@ -25,11 +29,15 @@ const CardCourse: React.FC = () => {
       </Tag>
 
       <div className="course-content">
-        <Text type="secondary" style={{ marginBottom: 4 }}>Difficulty</Text>
+        <Text type="secondary" style={{ marginBottom: 4 }}>
+          Difficulty
+        </Text>
         <Rate disabled defaultValue={3} style={{ fontSize: 16 }} />
 
         <div className="course-title-row">
-          <Title level={5} style={{ margin: '8px 0 0' }}>ENTRANCE TEST</Title>
+          <Title level={5} style={{ margin: "8px 0 0" }}>
+            ENTRANCE TEST
+          </Title>
           <img
             src="https://flagcdn.com/gb.svg"
             alt="English"
@@ -39,7 +47,9 @@ const CardCourse: React.FC = () => {
           />
         </div>
 
-        <Text type="secondary">A quick test to determine your current language level</Text>
+        <Text type="secondary">
+          A quick test to determine your current language level
+        </Text>
       </div>
     </Card>
   );
