@@ -1,25 +1,36 @@
-import React, { useState } from "react";
-import { Radio, Button, Space, Row, Col } from "antd";
+import React, { useEffect, useState } from "react";
+import { Radio, Button, Space, Row, Col, Typography } from "antd";
 
 interface QuizProps {
   question: string;
-  optionB: string;
+  optionAnswer: string; // user's selected answer
   options: string[];
   numberQuestion: number;
   totalQuestion: number;
+  onSelectOption?: (value: string) => void;
+  disabled?: boolean;
+  correctAnswer?: string;
 }
 
 const Quiz: React.FC<QuizProps> = ({
   question,
-  optionB,
+  optionAnswer,
   options,
   numberQuestion,
   totalQuestion,
+  onSelectOption,
+  disabled = false,
+  correctAnswer,
 }) => {
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = useState<string | null>(optionAnswer || null);
+
+  useEffect(() => {
+    setValue(optionAnswer || null);
+  }, [optionAnswer]);
 
   const handleRadioChange = (e: any) => {
     setValue(e.target.value);
+    if (onSelectOption) onSelectOption(e.target.value);
   };
 
   return (
@@ -54,45 +65,65 @@ const Quiz: React.FC<QuizProps> = ({
       >
         Chọn định nghĩa đúng
       </p>
+
       <Radio.Group
         onChange={handleRadioChange}
         value={value}
         style={{ width: "100%" }}
+        disabled={disabled}
       >
         <Row style={{ width: "100%" }} gutter={[12, 12]}>
-          {options?.map((item) => (
-            <Col span={12}>
-              <Radio
-                value={item}
-                style={{
-                  color: "white",
-                  marginBottom: "10px",
-                  backgroundColor: "#2a3b5a",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #444",
-                  width: "100%",
-                }}
-              >
-                {item}
-              </Radio>
-            </Col>
-          ))}
+          {options?.map((item) => {
+            const isCorrect = disabled && correctAnswer === item;
+            const isWrong =
+              disabled && value === item && item !== correctAnswer;
+
+            return (
+              <Col span={12} key={item}>
+                <Radio
+                  value={item}
+                  style={{
+                    color: "white",
+                    marginBottom: "10px",
+                    backgroundColor: isCorrect
+                      ? "#4caf50"
+                      : isWrong
+                      ? "#f44336"
+                      : "#2a3b5a",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    border: "1px solid #444",
+                    width: "100%",
+                    opacity: disabled ? 0.9 : 1,
+                  }}
+                >
+                  {item}
+                </Radio>
+              </Col>
+            );
+          })}
         </Row>
       </Radio.Group>
 
-      <Button
-        style={{
-          width: "100%",
-          backgroundColor: "#3b5998",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          padding: "10px",
-        }}
-      >
-        Bạn không biết?
-      </Button>
+      {!disabled && (
+        <Button
+          style={{
+            width: "100%",
+            backgroundColor: "#3b5998",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            padding: "10px",
+            marginTop: 12,
+          }}
+          onClick={() => {
+            if (onSelectOption) onSelectOption(correctAnswer || "");
+            setValue(correctAnswer || "");
+          }}
+        >
+          Bạn không biết?
+        </Button>
+      )}
     </div>
   );
 };

@@ -1,13 +1,12 @@
-import { Card, Tag, Rate, Typography } from "antd";
-import "./style.css"; // CSS riêng nếu cần thêm style tùy chỉnh
+import { Card, Typography } from "antd";
 
 const { Title, Text } = Typography;
 
-interface CardCourseProps {
+interface CardMocktestProps {
   onClick?: () => void;
   item: any;
 }
-const CardCourse = ({ onClick, item }: CardCourseProps) => {
+const CardMocktest = ({ onClick, item }: CardMocktestProps) => {
   return (
     <Card
       onClick={onClick}
@@ -25,35 +24,22 @@ const CardCourse = ({ onClick, item }: CardCourseProps) => {
           />
         </div>
       }
-      bordered={false}
     >
-      <Tag color="orange" className="recommended-tag">
-        Recommended
-      </Tag>
-
       <div className="course-content">
         <Text type="secondary" style={{ marginBottom: 4 }}>
           {item?.language?.name}
         </Text>
-        <Rate disabled defaultValue={4} style={{ fontSize: 16 }} />
 
         <div className="course-title-row">
           <Title level={5} style={{ margin: "8px 0 0" }}>
             {item?.title}
           </Title>
-          <img
-            src="https://flagcdn.com/gb.svg"
-            alt="English"
-            width={24}
-            height={16}
-            style={{ marginLeft: 8, borderRadius: 2 }}
-          />
         </div>
 
-        <Text type="secondary">{item?.flashcards.length} card</Text>
+        <Text type="secondary">{item?.mocktests.length} quiz</Text>
       </div>
     </Card>
   );
 };
 
-export default CardCourse;
+export default CardMocktest;

@@ -3,18 +3,25 @@ import { Upload, Button, Typography, message, Select, Row, Col } from "antd";
 import { InboxOutlined, FilePdfOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
 import "./style.css";
+import { UploadSourceService } from "../../services/uploadSource.service";
+import toast from "react-hot-toast";
+
 const { Dragger } = Upload;
 const { Title } = Typography;
+const { Option } = Select;
 
 const UploadCustom: React.FC = () => {
   const [fileList, setFileList] = useState<any[]>([]);
+  const [language, setLanguage] = useState<string>();
+  const [level, setLevel] = useState<string>();
+  const [uploadedBy] = useState("system");
 
   const props: UploadProps = {
     multiple: true,
     accept: ".pdf,.docx",
     beforeUpload: (file) => {
       setFileList((prev) => [...prev, file]);
-      return false; // prevent auto upload
+      return false;
     },
     onRemove: (file) => {
       setFileList((prev) => prev.filter((f) => f.uid !== file.uid));
@@ -22,13 +29,42 @@ const UploadCustom: React.FC = () => {
     fileList,
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (fileList.length === 0) {
-      message.warning("Please upload at least one file.");
+      toast.error("Please upload at least one file.");
       return;
     }
-    message.success("Files confirmed!");
-    // handle submit logic here
+
+    // if (!language) {
+    //   toast.error("Please select a language.");
+    //   return;
+    // }
+
+    const formData = new FormData();
+    fileList.forEach((file) => {
+      formData.append("files", file); // đúng định dạng MultipartFile[]
+    });
+    formData.append("uploadedBy", uploadedBy);
+    formData.append("language", "English");
+
+    try {
+      const response = await UploadSourceService.uploadSource(formData);
+      console.log({ response });
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   message.success("Upload success!");
+      //   console.log("Response:", data);
+      //   setFileList([]);
+      //   setLanguage(undefined);
+      //   setLevel(undefined);
+      // } else {
+      //   const error = await response.text();
+      //   message.error("Upload failed: " + error);
+      // }
+    } catch (error) {
+      console.error("Upload error:", error);
+      message.error("An error occurred while uploading.");
+    }
   };
 
   return (
@@ -60,20 +96,32 @@ const UploadCustom: React.FC = () => {
 
         <div style={{ marginTop: 16 }}>
           <div style={{ marginBottom: 8 }}>
-            <Row gutter={[12,12]}>
+            <Row gutter={[12, 12]}>
               <Col span={12}>
                 <Select
                   allowClear
                   style={{ width: "100%" }}
                   placeholder="Please select language"
-                />
+                  onChange={(value) => setLanguage(value)}
+                  value={language}
+                >
+                  <Option value="en">English</Option>
+                  <Option value="jp">Japanese</Option>
+                  <Option value="vi">Vietnamese</Option>
+                </Select>
               </Col>
               <Col span={12}>
                 <Select
                   allowClear
                   style={{ width: "100%" }}
                   placeholder="Please select level"
-                />
+                  onChange={(value) => setLevel(value)}
+                  value={level}
+                >
+                  <Option value="beginner">Beginner</Option>
+                  <Option value="intermediate">Intermediate</Option>
+                  <Option value="advanced">Advanced</Option>
+                </Select>
               </Col>
             </Row>
           </div>
@@ -135,7 +183,11 @@ const UploadCustom: React.FC = () => {
         <Button
           type="primary"
           block
-          style={{ marginTop: 16, height: 40, backgroundColor: "#134f36" }}
+          style={{
+            marginTop: 16,
+            height: 40,
+            backgroundColor: "#134f36",
+          }}
           onClick={handleConfirm}
         >
           CONFIRM

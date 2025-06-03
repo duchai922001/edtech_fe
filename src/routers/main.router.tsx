@@ -37,11 +37,11 @@ const MainRouter = () => {
           />
           <Route path={Menu.URL_LOGIN_PAGE} element={<LoginPage />} />
           <Route
-            path={`${Menu.URL_FLASH_CARD_PAGE}/:id`}
+            path={`${Menu.URL_FLASH_CARD_PAGE}/:title`}
             element={<FlashCardDetail />}
           />
           <Route
-            path={`${Menu.URL_MOCK_TEST_PAGE}/:id`}
+            path={`${Menu.URL_MOCK_TEST_PAGE}/:title`}
             element={<QuizTest />}
           />
           <Route path={`${Menu.URL_WORD_GAME_PAGE}`} element={<WordGames />} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Space, message } from "antd";
+import { Input, Button, Space } from "antd";
 import Container from "../Container";
+import toast from "react-hot-toast";
 
 interface WordScrambleGameProps {
   words: string[];
@@ -38,14 +39,14 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
     const cleanedInput = userInput.replace(/\s/g, "").toUpperCase();
     const correctWord = words[currentIndex].toUpperCase();
     if (cleanedInput === correctWord) {
-      message.success("Đúng!");
+      toast.success("Đúng!");
       if (currentIndex < words.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
         setCompleted(true);
       }
     } else {
-      message.error("Sai!");
+      toast.error("Sai!");
     }
   };
 
@@ -107,7 +108,7 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
             boxShadow: "0 4px 15px rgba(0, 0, 0, 0.5)",
             color: "white",
             fontFamily: "Arial, sans-serif",
-            maxWidth: "400px",
+            maxWidth: "800px",
             margin: "50px auto",
             textAlign: "center",
             position: "relative",

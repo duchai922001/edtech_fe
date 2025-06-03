@@ -4,10 +4,13 @@ import Container from "../../components/base/Container";
 import CardCourse from "../../components/base/CardCourse";
 import Search from "antd/es/input/Search";
 import { useNavigate } from "react-router-dom";
+import { useGetFlashCards } from "../../hooks/useFlashCard";
 
 const Flashcard = () => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const navigate = useNavigate();
+  const { data: flashcards } = useGetFlashCards();
+  console.log({ flashcards });
   return (
     <div>
       <Background style={{ height: 300 }}>
@@ -65,9 +68,12 @@ const Flashcard = () => {
           </Col>
         </Row>
         <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-          {data.map((item) => (
+          {flashcards?.map((item) => (
             <Col span={6}>
-              <CardCourse onClick={() => navigate(`/flashcard/1`)} />
+              <CardCourse
+                item={item}
+                onClick={() => navigate(`/flashcard/${item.title}`)}
+              />
             </Col>
           ))}
         </Row>

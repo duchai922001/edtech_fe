@@ -7,17 +7,20 @@ import { Pagination, A11y } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import { useParams } from "react-router-dom";
+import { useGetFlashCardsSubject } from "../../hooks/useFlashCard";
 
 const FlashCardDetail = () => {
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
-
-  const data = [
-    { question: "Thủ đô của Việt Nam là gì?", answer: "Hà Nội" },
-    { question: "2 + 2 bằng bao nhiêu?", answer: "4" },
-    { question: "Ngôn ngữ chính của trình duyệt là gì?", answer: "JavaScript" },
-    { question: "React là thư viện của ai?", answer: "Facebook" },
-  ];
-
+  const { title } = useParams();
+  const { data } = useGetFlashCardsSubject(title ?? "");
+  // const data = [
+  //   { question: "Thủ đô của Việt Nam là gì?", answer: "Hà Nội" },
+  //   { question: "2 + 2 bằng bao nhiêu?", answer: "4" },
+  //   { question: "Ngôn ngữ chính của trình duyệt là gì?", answer: "JavaScript" },
+  //   { question: "React là thư viện của ai?", answer: "Facebook" },
+  // ];
+  console.log({ data });
   return (
     <Container>
       <div
@@ -68,7 +71,7 @@ const FlashCardDetail = () => {
           onSwiper={(swiper) => setSwiperInstance(swiper)}
           style={{ padding: "0 20px" }}
         >
-          {data.map((item, index) => (
+          {data?.map((item, index) => (
             <SwiperSlide key={index}>
               <FlashCard question={item.question} answer={item.answer} />
             </SwiperSlide>

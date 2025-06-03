@@ -1,9 +1,12 @@
 import { Col, Row, Select } from "antd";
 import Search from "antd/es/input/Search";
-import CardCourse from "../../components/base/CardCourse";
+import { useGetMocktests } from "../../hooks/useMocktest";
+import CardMocktest from "../../components/base/CardMocktest";
+import { useNavigate } from "react-router-dom";
 
 const Courses = () => {
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const { data } = useGetMocktests();
+  const navigate = useNavigate();
   return (
     <div style={{ margin: "24px 0" }}>
       <Row justify={"space-between"}>
@@ -33,10 +36,13 @@ const Courses = () => {
           <Search placeholder="input search text" style={{ width: 200 }} />
         </Col>
       </Row>
-      <Row gutter={[24,24]} style={{marginTop: 24}}>
-        {data.map((item) => (
+      <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+        {data.map((item: any) => (
           <Col span={6}>
-            <CardCourse />
+            <CardMocktest
+              item={item}
+              onClick={() => navigate(`/mocktest/${item.title}`)}
+            />
           </Col>
         ))}
       </Row>

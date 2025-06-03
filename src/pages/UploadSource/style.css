@@ -1,23 +1,22 @@
 .resource-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-.upload-container{
-    margin-top: 48px;
-    margin-bottom: 120px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.upload-container {
+  margin-top: 48px;
+  margin-bottom: 300px;
 }
 
-.btn{
-    background: #F2F0F0;
-    color: gray;
-    font-size: 18px;
-    font-weight: bold;
-    height: 120px;
-    box-shadow: 2px 2px 2px 2px rgb(199, 199, 199);
+.btn {
+  background: #f2f0f0;
+  color: gray;
+  font-size: 18px;
+  font-weight: bold;
+  height: 120px;
+  box-shadow: 2px 2px 2px 2px rgb(199, 199, 199);
 }
 
 .active {
-    background: var(--primary-color);
-
+  background: var(--primary-color);
 }
