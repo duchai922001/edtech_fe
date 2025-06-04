@@ -10,3 +10,12 @@ export const useRegister = () => {
     },
   });
 };
+
+export const useLogin = () => {
+  return useMutation({
+    mutationFn: (payload: any) => UserService.register(payload),
+    onSuccess: () => {
+      toast.success("Login Success");
+    },
+  });
+};

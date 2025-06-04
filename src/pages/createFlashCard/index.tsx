@@ -54,7 +54,7 @@ const CreateFlashCardPage: React.FC = () => {
       question: fc.question,
       answer: fc.answer,
       image: fc.image || "",
-      createBy: 3,
+      createBy: 1,
       language: { id: languageId },
     }));
 
