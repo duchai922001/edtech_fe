@@ -42,28 +42,22 @@ const UploadCustom: React.FC = () => {
 
     const formData = new FormData();
     fileList.forEach((file) => {
-      formData.append("files", file); // đúng định dạng MultipartFile[]
+      formData.append("file", file);
     });
-    formData.append("uploadedBy", uploadedBy);
-    formData.append("language", "English");
 
     try {
       const response = await UploadSourceService.uploadSource(formData);
-      console.log({ response });
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   message.success("Upload success!");
-      //   console.log("Response:", data);
-      //   setFileList([]);
-      //   setLanguage(undefined);
-      //   setLevel(undefined);
-      // } else {
-      //   const error = await response.text();
-      //   message.error("Upload failed: " + error);
-      // }
+      if (response.status === 200) {
+        toast.success("Upload success!");
+
+        setFileList([]);
+      } else {
+        const error = await response.text();
+        toast.error("Upload failed: " + error);
+      }
     } catch (error) {
       console.error("Upload error:", error);
-      message.error("An error occurred while uploading.");
+      toast.error("An error occurred while uploading.");
     }
   };
 
@@ -150,6 +144,9 @@ const UploadCustom: React.FC = () => {
             border: "none",
             boxShadow: "2px 2px 2px 2px gray",
           }}
+          type="link"
+          href="https://res.cloudinary.com/didb3lzdt/raw/upload/v1748964832/zfljulzjk0skkonmjs3e.pdf"
+          target="_blank"
         >
           DOWNLOAD EXAMPLE FORMAT FILES
         </Button>

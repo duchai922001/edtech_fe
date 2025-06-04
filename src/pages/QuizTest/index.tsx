@@ -48,7 +48,7 @@ const QuizTest: React.FC = () => {
           textAlign: "center",
         }}
       >
-        {data.mocktests?.map((quiz, index) => (
+        {data?.mocktests?.map((quiz, index) => (
           <Quiz
             key={index}
             question={quiz.question}

@@ -36,7 +36,7 @@ const CardMocktest = ({ onClick, item }: CardMocktestProps) => {
           </Title>
         </div>
 
-        <Text type="secondary">{item?.mocktests.length} quiz</Text>
+        <Text type="secondary">{item?.mocktests?.length} quiz</Text>
       </div>
     </Card>
   );

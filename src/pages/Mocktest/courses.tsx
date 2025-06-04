@@ -37,7 +37,7 @@ const Courses = () => {
         </Col>
       </Row>
       <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-        {data.map((item: any) => (
+        {data?.map((item: any) => (
           <Col span={6}>
             <CardMocktest
               item={item}
