@@ -11,4 +11,6 @@ export const Menu = {
   URL_LOGIN_PAGE: "/login",
   URL_WORD_GAME_PAGE: "/word-game",
   URL_CROSS_GAME_PAGE: "/word-cross-game",
+  URL_BOARD_GAME_PAGE: "/games",
+  URL_CREATE_FLASHCARD_PAGE: "/create-flashcards",
 };

@@ -10,8 +10,8 @@ export const MenuTabItem: IMenuTab[] = [
     to: Menu.URL_SPEAKING_PAGE,
   },
   {
-    label: "Resources",
-    to: Menu.URL_UPLOAD_SOURCE_PAGE,
+    label: "Set FlashCard",
+    to: Menu.URL_CREATE_FLASHCARD_PAGE,
   },
   {
     label: "Scholarship",

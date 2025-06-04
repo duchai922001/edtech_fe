@@ -3,7 +3,7 @@ import Container from "../../components/base/Container";
 import Quiz from "../../components/base/Quizlet";
 import { useGetMocktestByTitle } from "../../hooks/useMocktest";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const QuizTest: React.FC = () => {
   const { title } = useParams();
@@ -12,6 +12,27 @@ const QuizTest: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+
+  // State cho đếm giờ
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    if (submitted) return;
+
+    const interval = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [submitted]);
+
+  const formatTime = (sec: number) => {
+    const minutes = Math.floor(sec / 60);
+    const seconds = sec % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   const handleOptionSelect = (index: number, answer: string) => {
     setUserAnswers((prev) => ({
@@ -38,6 +59,18 @@ const QuizTest: React.FC = () => {
 
   return (
     <Container>
+      <header style={{ textAlign: "center", marginBottom: 16 }}>
+        <h2>Làm bài thi của bạn</h2>
+        <div
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            color: submitted ? "gray" : "var(--primary-color)",
+          }}
+        >
+          {formatTime(seconds)}
+        </div>
+      </header>
       <div
         style={{
           margin: "32px 0",

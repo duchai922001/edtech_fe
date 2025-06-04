@@ -47,7 +47,7 @@ const Classes = () => {
             <Search placeholder="input search text" style={{ width: 200 }} />
           </Col>
         </Row>
-        <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+        <Row gutter={[24, 24]} style={{ marginTop: 24, marginBottom: 50 }}>
           <Col
             span={6}
             style={{
@@ -59,7 +59,7 @@ const Classes = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 4
+              gap: 4,
             }}
           >
             <PlusCircleOutlined />

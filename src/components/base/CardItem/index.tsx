@@ -22,7 +22,9 @@ const CardItem = ({ icon, label, type }: CardItemProps) => {
     >
       <div>{icon}</div>
       <div>
-        <Typography className="body-lg-grey">{label}</Typography>
+        <Typography style={{ fontSize: 24, color: "#254D70" }}>
+          {label}
+        </Typography>
       </div>
     </div>
   );

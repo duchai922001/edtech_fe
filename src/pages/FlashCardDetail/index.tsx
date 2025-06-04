@@ -3,24 +3,22 @@ import Container from "../../components/base/Container";
 import FlashCard from "../../components/base/FlashCard";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, A11y } from "swiper/modules";
+import { A11y } from "swiper/modules";
 
 import "swiper/css";
-import "swiper/css/pagination";
 import { useParams } from "react-router-dom";
 import { useGetFlashCardsSubject } from "../../hooks/useFlashCard";
 
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+
 const FlashCardDetail = () => {
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [currentIndex, setCurrentIndex] = useState(1);
   const { title } = useParams();
   const { data } = useGetFlashCardsSubject(title ?? "");
-  // const data = [
-  //   { question: "Thủ đô của Việt Nam là gì?", answer: "Hà Nội" },
-  //   { question: "2 + 2 bằng bao nhiêu?", answer: "4" },
-  //   { question: "Ngôn ngữ chính của trình duyệt là gì?", answer: "JavaScript" },
-  //   { question: "React là thư viện của ai?", answer: "Facebook" },
-  // ];
-  console.log({ data });
+
+  const total = data?.length ?? 0;
+
   return (
     <Container>
       <div
@@ -33,42 +31,104 @@ const FlashCardDetail = () => {
           textAlign: "center",
         }}
       >
-        <div style={{ marginBottom: 16 }}>
+        <div
+          style={{
+            marginBottom: 12,
+            color: "#666",
+            fontStyle: "italic",
+            fontSize: 14,
+          }}
+        >
+          Dùng nút hoặc phím ← → để chuyển giữa các flashcard
+        </div>
+
+        <div
+          style={{
+            marginBottom: 12,
+            fontWeight: "600",
+            fontSize: 16,
+            color: "var(--primary-color)",
+          }}
+          aria-live="polite"
+        >
+          Flashcard {currentIndex} / {total}
+        </div>
+
+        <div
+          style={{
+            marginBottom: 24,
+            display: "flex",
+            justifyContent: "center",
+            gap: 16,
+          }}
+        >
           <button
             onClick={() => swiperInstance?.slidePrev()}
             style={{
-              marginRight: 8,
-              padding: "8px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              padding: "8px 20px",
               cursor: "pointer",
               border: "none",
               background: "var(--primary-color)",
               color: "white",
               borderRadius: 8,
+              fontWeight: "600",
+              fontSize: 16,
+              boxShadow: "0 2px 6px rgb(0 0 0 / 0.15)",
+              transition: "background-color 0.3s ease",
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#096dd9")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "var(--primary-color)")
+            }
+            aria-label="Previous Slide"
           >
-            ← Prev
+            <LeftOutlined style={{ fontSize: 18 }} />
+            Prev
           </button>
+
           <button
             onClick={() => swiperInstance?.slideNext()}
             style={{
-              padding: "8px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              padding: "8px 20px",
               cursor: "pointer",
               border: "none",
               background: "var(--primary-color)",
               color: "white",
               borderRadius: 8,
+              fontWeight: "600",
+              fontSize: 16,
+              boxShadow: "0 2px 6px rgb(0 0 0 / 0.15)",
+              transition: "background-color 0.3s ease",
             }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#096dd9")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "var(--primary-color)")
+            }
+            aria-label="Next Slide"
           >
-            Next →
+            Next
+            <RightOutlined style={{ fontSize: 18 }} />
           </button>
         </div>
 
         <Swiper
-          modules={[Pagination, A11y]}
-          pagination={{ clickable: true }}
+          modules={[A11y]}
           spaceBetween={24}
           slidesPerView={1}
           onSwiper={(swiper) => setSwiperInstance(swiper)}
+          onSlideChange={(swiper) => setCurrentIndex(swiper.activeIndex + 1)}
           style={{ padding: "0 20px" }}
         >
           {data?.map((item, index) => (

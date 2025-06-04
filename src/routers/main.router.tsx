@@ -15,6 +15,8 @@ import FlashCardDetail from "../pages/FlashCardDetail";
 import QuizTest from "../pages/QuizTest";
 import WordGames from "../pages/Games/WordGames";
 import CrossGame from "../pages/Games/CrossGame";
+import BoardGame from "../pages/Games";
+import CreateFlashCardPage from "../pages/createFlashCard";
 const MainRouter = () => {
   return (
     <>
@@ -46,6 +48,11 @@ const MainRouter = () => {
           />
           <Route path={`${Menu.URL_WORD_GAME_PAGE}`} element={<WordGames />} />
           <Route path={`${Menu.URL_CROSS_GAME_PAGE}`} element={<CrossGame />} />
+          <Route path={`${Menu.URL_BOARD_GAME_PAGE}`} element={<BoardGame />} />
+          <Route
+            path={`${Menu.URL_CREATE_FLASHCARD_PAGE}`}
+            element={<CreateFlashCardPage />}
+          />
         </Route>
       </Routes>
     </>

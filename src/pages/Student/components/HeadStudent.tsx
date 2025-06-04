@@ -3,31 +3,41 @@ import Background from "../../../components/base/Background";
 import Container from "../../../components/base/Container";
 import { Col, Row, Typography } from "antd";
 import CardItem from "../../../components/base/CardItem";
+import { FaGamepad } from "react-icons/fa";
+import { GrResources } from "react-icons/gr";
+import { SiQuizlet } from "react-icons/si";
+import { useNavigate } from "react-router-dom";
 const HeadStudent = () => {
   const styleIcon = {
     fontSize: 35,
     color: "var(--primary-color)",
   };
+  const navigate = useNavigate();
   const data = [
     {
       icon: <FormOutlined style={styleIcon} />,
       label: "Mock Test",
+      url: "/mocktest",
     },
     {
       icon: <CopyOutlined style={styleIcon} />,
       label: "Speaking Practice",
+      url: "/speaking-practice",
     },
     {
-      icon: <CopyOutlined style={styleIcon} />,
+      icon: <SiQuizlet style={styleIcon} />,
       label: "Flashcard",
+      url: "/flashcard",
     },
     {
-      icon: <CopyOutlined style={styleIcon} />,
+      icon: <FaGamepad style={styleIcon} />,
       label: "Language Games",
+      url: "/games",
     },
     {
-      icon: <CopyOutlined style={styleIcon} />,
+      icon: <GrResources style={styleIcon} />,
       label: "Resources",
+      url: "/classes",
     },
   ];
   return (
@@ -70,7 +80,7 @@ const HeadStudent = () => {
           <Col span={24} style={{ width: "100%", marginTop: 48 }}>
             <Row gutter={[24, 0]} justify={"center"}>
               {data.map((item) => (
-                <Col span={4}>
+                <Col span={4} onClick={() => navigate(item.url)}>
                   <CardItem icon={item.icon} label={item.label} type="column" />
                 </Col>
               ))}
