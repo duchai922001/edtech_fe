@@ -11,6 +11,9 @@ body {
   --size-lg: 24px;
   --size-md: 16px;
 }
+html {
+  scroll-behavior: smooth;
+}
 .body-md-white {
   font-size: 40px;
   color: white;

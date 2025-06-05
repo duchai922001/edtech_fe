@@ -1,20 +1,21 @@
-import { Button, message } from "antd";
+import { Button, message, Result } from "antd";
 import Container from "../../components/base/Container";
 import Quiz from "../../components/base/Quizlet";
 import { useGetMocktestByTitle } from "../../hooks/useMocktest";
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 
 const QuizTest: React.FC = () => {
   const { title } = useParams();
   const { data } = useGetMocktestByTitle(title ?? "");
+  const navigate = useNavigate();
 
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
-
-  // State cho đếm giờ
   const [seconds, setSeconds] = useState(0);
+
+  const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (submitted) return;
@@ -57,8 +58,24 @@ const QuizTest: React.FC = () => {
     );
   };
 
+  const handleTryAgain = () => {
+    setUserAnswers({});
+    setSubmitted(false);
+    setScore(0);
+    setSeconds(0);
+  };
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  const total = data?.mocktests?.length || 0;
+  const percentage = (score / total) * 100;
+  const isPassed = percentage >= 50;
+
   return (
     <Container>
+      {/* Header */}
       <header style={{ textAlign: "center", marginBottom: 16 }}>
         <h2>Làm bài thi của bạn</h2>
         <div
@@ -71,30 +88,78 @@ const QuizTest: React.FC = () => {
           {formatTime(seconds)}
         </div>
       </header>
-      <div
-        style={{
-          margin: "32px 0",
-          width: "100%",
-          maxWidth: 800,
-          marginInline: "auto",
-          position: "relative",
-          textAlign: "center",
-        }}
-      >
-        {data?.mocktests?.map((quiz, index) => (
-          <Quiz
-            key={index}
-            question={quiz.question}
-            optionAnswer={userAnswers[index] || ""}
-            onSelectOption={(answer) => handleOptionSelect(index, answer)}
-            options={quiz.answers}
-            numberQuestion={index + 1}
-            totalQuestion={data?.mocktests?.length}
-            disabled={submitted}
-            correctAnswer={quiz.answerQuestion}
-          />
-        ))}
-      </div>
+
+      {!submitted && (
+        <div
+          style={{
+            position: "fixed",
+            top: "230px",
+            right: "200px",
+            width: "250px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
+            zIndex: 1000,
+          }}
+        >
+          {data?.mocktests?.map((_, index) => {
+            const isAnswered = !!userAnswers[index];
+            return (
+              <Button
+                key={index}
+                onClick={() =>
+                  questionRefs.current[index]?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  })
+                }
+                style={{
+                  width: 50,
+                  height: 50,
+                  background: isAnswered ? "var(--primary-color)" : "#f0f0f0",
+                  color: isAnswered ? "#fff" : "#000",
+                  border: "1px solid #ccc",
+                  fontWeight: "bold",
+                }}
+              >
+                {index + 1}
+              </Button>
+            );
+          })}
+        </div>
+      )}
+
+      {!submitted && (
+        <div
+          style={{
+            margin: "32px 0",
+            width: "100%",
+            maxWidth: 900,
+            marginInline: "auto",
+            position: "relative",
+            textAlign: "center",
+          }}
+        >
+          {data?.mocktests?.map((quiz, index) => (
+            <div
+              key={index}
+              ref={(el) => (questionRefs.current[index] = el)}
+              style={{ marginBottom: 32 }}
+            >
+              <Quiz
+                question={quiz.question}
+                optionAnswer={userAnswers[index] || ""}
+                onSelectOption={(answer) => handleOptionSelect(index, answer)}
+                options={quiz.answers}
+                numberQuestion={index + 1}
+                totalQuestion={data?.mocktests?.length}
+                disabled={submitted}
+                correctAnswer={quiz.answerQuestion}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {!submitted && (
         <Button
@@ -115,9 +180,30 @@ const QuizTest: React.FC = () => {
       )}
 
       {submitted && (
-        <div style={{ textAlign: "center", fontSize: 18, marginBottom: 32 }}>
-          ✅ Bạn đã làm đúng {score}/{data?.mocktests?.length} câu hỏi!
-        </div>
+        <Result
+          status={isPassed ? "success" : "error"}
+          title={isPassed ? "🎉 Chúc mừng!" : "😢 Thử lại lần sau!"}
+          subTitle={`Bạn đã trả lời đúng ${score} trên tổng ${total} câu hỏi.`}
+          icon={
+            <img
+              src={
+                isPassed
+                  ? "https://i.pinimg.com/originals/5b/11/db/5b11dbec2fc43fb686bb30e49163c1cc.gif"
+                  : "https://i.pinimg.com/originals/2e/b8/dd/2eb8dda12be99f0385e10f048ac81aae.gif"
+              }
+              alt={isPassed ? "Success" : "Fail"}
+              style={{ width: "20%", height: "20%" }}
+            />
+          }
+          extra={[
+            <Button type="primary" key="back" onClick={handleBack}>
+              Quay lại
+            </Button>,
+            <Button key="retry" onClick={handleTryAgain}>
+              Làm lại
+            </Button>,
+          ]}
+        />
       )}
     </Container>
   );
