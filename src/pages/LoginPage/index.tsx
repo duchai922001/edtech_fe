@@ -1,50 +1,29 @@
 import Title from "antd/es/typography/Title";
 import BackgroundSpeaking from "../../components/base/BackgroundSpeaking";
-import { Card, Form, Input, Button, Tabs, Typography } from "antd";
+import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useState } from "react";
-import { useLogin, useRegister } from "../../hooks/useUser";
-
-const { TabPane } = Tabs;
 
 const LoginPage = () => {
-  const [form] = Form.useForm();
-  const [tabKey, setTabKey] = useState("login");
+  const navigate = useNavigate();
+  const handleSuccess = async (credentialResponse: any) => {
+    const token = credentialResponse.credential;
 
-  const loginMutation = useLogin();
-  const registerMutation = useRegister();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/users/google",
+        { token }
+      );
+      const jwt = response.data.jwtToken;
 
-  const handleSubmit = (values: any) => {
-    const { username, password } = values;
-    if (tabKey === "login") {
-      loginMutation.mutate(
-        { username, password },
-        {
-          onSuccess: (data: any) => {
-            toast.success("Đăng nhập thành công");
-            localStorage.setItem("token", data.token);
-          },
-          onError: (err: any) => {
-            toast.error(err?.response?.data?.message || "Đăng nhập thất bại");
-          },
-        }
-      );
-    } else {
-      registerMutation.mutate(
-        { username, password },
-        {
-          onSuccess: (data: any) => {
-            form.resetFields();
-            localStorage.setItem("token", data.token);
-          },
-          onError: (err: any) => {
-            toast.error(err?.response?.data?.message || "Đăng ký thất bại");
-          },
-        }
-      );
+      localStorage.setItem("jwt", jwt);
+      toast.success("Đăng nhập thành công!");
+      navigate("/");
+    } catch (error) {
+      console.error("Đăng nhập thất bại", error);
     }
   };
-
   return (
     <BackgroundSpeaking>
       <div
@@ -94,57 +73,12 @@ const LoginPage = () => {
 
           {/* Right - Form */}
           <div style={{ flex: 1, padding: 32 }}>
-            <Title level={3} style={{ textAlign: "center", marginBottom: 24 }}>
-              {tabKey === "login" ? "Đăng nhập" : "Đăng ký"}
-            </Title>
-
-            <Tabs
-              defaultActiveKey="login"
-              centered
-              onChange={(key) => {
-                setTabKey(key);
-                form.resetFields();
-              }}
-            >
-              <TabPane tab="Đăng nhập" key="login" />
-              <TabPane tab="Đăng ký" key="register" />
-            </Tabs>
-
-            <Form
-              layout="vertical"
-              form={form}
-              onFinish={handleSubmit}
-              style={{ marginTop: 16 }}
-            >
-              <Form.Item
-                label="Tên đăng nhập"
-                name="username"
-                rules={[{ required: true, message: "Vui lòng nhập username" }]}
-              >
-                <Input placeholder="username" />
-              </Form.Item>
-
-              <Form.Item
-                label="Mật khẩu"
-                name="password"
-                rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
-              >
-                <Input.Password placeholder="username123" />
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  loading={
-                    loginMutation.isLoading || registerMutation.isLoading
-                  }
-                >
-                  {tabKey === "login" ? "Đăng nhập" : "Đăng ký"}
-                </Button>
-              </Form.Item>
-            </Form>
+            <div style={{ marginTop: 50, textAlign: "center" }}>
+              <GoogleLogin
+                onSuccess={handleSuccess}
+                onError={() => console.log("Login Failed")}
+              />
+            </div>
           </div>
         </div>
       </div>

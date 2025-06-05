@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Avatar, Col, Dropdown, Row, type MenuProps } from "antd";
 import Container from "../base/Container";
 import "./style.css";
 import LOGO from "../../assets/LOGO.png";
@@ -6,8 +6,25 @@ import { MenuTabItem, type IMenuTab } from "../base/config/configMenu";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu } from "../../common/configMenu";
+import toast from "react-hot-toast";
 const Header = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const isAuth = localStorage.getItem("jwt");
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    toast.success("Đăng xuất");
+    navigate("/login");
+  };
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <p>Thông tin cá nhân</p>,
+    },
+    {
+      key: "2",
+      label: <p onClick={handleLogout}>Đăng xuất</p>,
+    },
+  ];
   return (
     <div className="header-wrapper">
       <Container>
@@ -44,7 +61,16 @@ const Header = () => {
             }}
           >
             <SearchOutlined className="icon" />
-            <UserOutlined className="icon" onClick={() => navigate(Menu.URL_LOGIN_PAGE)}/>
+            {isAuth ? (
+              <Dropdown menu={{ items }} placement="bottomRight">
+                <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18iwsdCCbBfpa50-5BmNa_m_BX087_x1oWQ&s" />
+              </Dropdown>
+            ) : (
+              <UserOutlined
+                className="icon"
+                onClick={() => navigate(Menu.URL_LOGIN_PAGE)}
+              />
+            )}
           </Col>
         </Row>
       </Container>
