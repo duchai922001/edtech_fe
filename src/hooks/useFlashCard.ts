@@ -2,10 +2,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { FlashCardService } from "../services/flashCard.service";
 import toast from "react-hot-toast";
 
-export const useGetFlashCards = () => {
+export const useGetFlashCards = (params: {
+  languageId?: string;
+  purpose?: string;
+  page?: number;
+  size?: number;
+  search?: string;
+}) => {
   return useQuery({
-    queryKey: ["get-flashcard"],
-    queryFn: () => FlashCardService.getFlashCards(),
+    queryKey: ["get-flashcard", params],
+    queryFn: () => FlashCardService.getFlashCards(params),
     select: (res) => res.data,
     staleTime: 5000,
   });

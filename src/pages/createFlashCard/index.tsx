@@ -42,7 +42,7 @@ const CreateFlashCardPage: React.FC = () => {
   );
 
   const onFinish = (values: any) => {
-    const { title, languageId, flashcards } = values;
+    const { title, languageId, purpose, flashcards } = values;
 
     if (!flashcards || flashcards.length === 0) {
       message.error("Vui lòng thêm ít nhất 1 flashcard");
@@ -51,6 +51,7 @@ const CreateFlashCardPage: React.FC = () => {
 
     const payload: FlashCard[] = flashcards.map((fc: any) => ({
       title,
+      purpose,
       question: fc.question,
       answer: fc.answer,
       image: fc.image || "",
@@ -87,7 +88,7 @@ const CreateFlashCardPage: React.FC = () => {
         autoComplete="off"
       >
         <Row>
-          <Col span={12}>
+          <Col span={8}>
             {" "}
             <Form.Item
               label="Tiêu đề học phần"
@@ -98,7 +99,7 @@ const CreateFlashCardPage: React.FC = () => {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={8}>
             {" "}
             <Form.Item
               label="Ngôn ngữ"
@@ -118,6 +119,18 @@ const CreateFlashCardPage: React.FC = () => {
                     {lang.name}
                   </Option>
                 ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label="Mục đích"
+              name="purpose"
+              rules={[{ required: true, message: "Vui lòng chọn mục đích" }]}
+            >
+              <Select style={{ height: 60 }}>
+                <Option value="Learn">Học từ vựng</Option>
+                <Option value="Review">Ôn tập</Option>
               </Select>
             </Form.Item>
           </Col>

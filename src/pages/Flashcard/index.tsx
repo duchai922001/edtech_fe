@@ -1,16 +1,67 @@
-import { Col, Row, Select, Typography } from "antd";
+import { useState, useCallback } from "react";
+import { Col, Row, Select, Typography, Pagination, Input } from "antd";
 import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardCourse from "../../components/base/CardCourse";
-import Search from "antd/es/input/Search";
 import { useNavigate } from "react-router-dom";
 import { useGetFlashCards } from "../../hooks/useFlashCard";
+import { useGetLanguages } from "../../hooks/useLanguage";
+
+const { Search } = Input;
+const { Option } = Select;
+
+const purposeOptions = [
+  { label: "Học từ vựng", value: "Learn" },
+  { label: "Ôn tập", value: "Review" },
+  // Thêm option tương ứng backend
+];
+
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
 
 const Flashcard = () => {
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const navigate = useNavigate();
-  const { data: flashcards } = useGetFlashCards();
-  console.log({ flashcards });
+  const { data: languages } = useGetLanguages();
+  const [params, setParams] = useState({
+    language: [],
+    purpose: [],
+    search: "",
+    currentPage: 1,
+    size: 10,
+  });
+
+  const { data: flashcards, isLoading } = useGetFlashCards({
+    languageId: params.language.join(","),
+    purpose: params.purpose.join(","),
+    page: params.currentPage,
+    size: params.size,
+    search: params.search,
+  });
+
+  const handleSearchChange = useCallback(
+    debounce((value) => {
+      setParams((prev) => ({ ...prev, search: value, currentPage: 1 }));
+    }, 500),
+    []
+  );
+
+  const handleLanguageChange = (values) => {
+    setParams((prev) => ({ ...prev, language: values, currentPage: 1 }));
+  };
+
+  const handlePurposeChange = (values) => {
+    setParams((prev) => ({ ...prev, purpose: values, currentPage: 1 }));
+  };
+
+  const onPageChange = (page) => {
+    setParams((prev) => ({ ...prev, currentPage: page }));
+  };
+
   return (
     <div>
       <Background style={{ height: 300 }}>
@@ -36,11 +87,9 @@ const Flashcard = () => {
           </Row>
         </Container>
       </Background>
+
       <Container>
-        <Row
-          justify={"space-between"}
-          style={{ marginTop: "24px", width: "100%" }}
-        >
+        <Row justify="space-between" style={{ marginTop: 24, width: "100%" }}>
           <Col span={12}>
             <Row gutter={[12, 12]}>
               <Col span={12}>
@@ -49,7 +98,12 @@ const Flashcard = () => {
                   allowClear
                   style={{ width: "100%" }}
                   placeholder="Please select language"
-                  defaultValue={["language"]}
+                  onChange={handleLanguageChange}
+                  value={params.language}
+                  options={languages?.map((item) => ({
+                    label: item.name,
+                    value: String(item.id),
+                  }))}
                 />
               </Col>
               <Col span={12}>
@@ -57,25 +111,49 @@ const Flashcard = () => {
                   mode="multiple"
                   allowClear
                   style={{ width: "100%" }}
-                  placeholder="Please select difficult"
-                  defaultValue={["difficult"]}
+                  placeholder="Please select purpose"
+                  onChange={handlePurposeChange}
+                  value={params.purpose}
+                  options={purposeOptions}
                 />
               </Col>
             </Row>
           </Col>
           <Col span={6} style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Search placeholder="input search text" style={{ width: 200 }} />
+            <Search
+              placeholder="Input search text"
+              style={{ width: 200 }}
+              allowClear
+              onChange={(e) => handleSearchChange(e.target.value)}
+            />
           </Col>
         </Row>
+
         <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-          {flashcards?.map((item) => (
-            <Col span={6}>
-              <CardCourse
-                item={item}
-                onClick={() => navigate(`/flashcard/${item.title}`)}
-              />
-            </Col>
-          ))}
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : flashcards?.data?.length ? (
+            flashcards.data.map((item) => (
+              <Col key={item.title} span={6}>
+                <CardCourse
+                  item={item}
+                  onClick={() => navigate(`/flashcard/${item.title}`)}
+                />
+              </Col>
+            ))
+          ) : (
+            <div>No data</div>
+          )}
+        </Row>
+
+        <Row justify="center" style={{ marginTop: 24, marginBottom: 60 }}>
+          <Pagination
+            current={params.currentPage}
+            pageSize={params.size}
+            total={flashcards?.attribute?.totalPage * params.size || 0}
+            onChange={onPageChange}
+            showSizeChanger={false}
+          />
         </Row>
       </Container>
     </div>

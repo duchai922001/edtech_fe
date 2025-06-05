@@ -1,8 +1,22 @@
 import axiosInstance from "./main.service";
 
 export const FlashCardService = {
-  getFlashCards: async () => {
-    const response = await axiosInstance.get("/flashcards/group");
+  getFlashCards: async (params: {
+    languageId?: string;
+    purpose?: string;
+    page?: number;
+    size?: number;
+    search?: string;
+  }) => {
+    const response = await axiosInstance.get("/flashcards/group", {
+      params: {
+        languageId: params.languageId,
+        purpose: params.purpose,
+        page: params.page,
+        size: params.size ?? 10,
+        search: params.search,
+      },
+    });
     return response;
   },
   getFlashCardByTitle: async (title: string) => {
