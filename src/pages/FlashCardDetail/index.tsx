@@ -11,6 +11,7 @@ import { useGetFlashCardsSubject } from "../../hooks/useFlashCard";
 
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import { IoCaretBack } from "react-icons/io5";
 
 const FlashCardDetail = () => {
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
@@ -104,7 +105,10 @@ const FlashCardDetail = () => {
           }}
         >
           <div style={{ display: "flex", gap: 350 }}>
-            <Button onClick={() => navigate(-1)}>Trở về</Button>
+            <Button onClick={() => navigate(-1)}>
+              <IoCaretBack />
+              Trở về
+            </Button>
             <div
               style={{
                 marginBottom: 12,
