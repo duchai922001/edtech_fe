@@ -22,9 +22,9 @@ const FlashCardDetail = () => {
   const total = data?.length ?? 0;
   const menuItems = [
     { label: "Thẻ ghi nhớ", path: "/flashcard" },
-    { label: "Kiểm tra", path: "/test" },
-    { label: "Chơi game", path: "/game" },
-    { label: "Practice", path: "/practice" },
+    { label: "Kiểm tra", path: "/mocktest" },
+    { label: "Chơi game", path: "/games" },
+    { label: "Practice", path: "/speaking-test" },
   ];
   return (
     <Container>
