@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Radio, Button, Space, Row, Col, Typography } from "antd";
+import { Radio, Button, Row, Col } from "antd";
 
 interface QuizProps {
   question: string;
@@ -11,6 +11,9 @@ interface QuizProps {
   disabled?: boolean;
   correctAnswer?: string;
   isAnswered?: boolean;
+
+  imageQuestion?: string; // link ảnh (nếu có)
+  listenUrl?: string; // link file nghe (nếu có)
 }
 
 const Quiz: React.FC<QuizProps> = ({
@@ -23,6 +26,8 @@ const Quiz: React.FC<QuizProps> = ({
   disabled = false,
   correctAnswer,
   isAnswered,
+  imageQuestion,
+  listenUrl,
 }) => {
   const [value, setValue] = useState<string | null>(optionAnswer || null);
 
@@ -36,99 +41,119 @@ const Quiz: React.FC<QuizProps> = ({
   };
 
   return (
-    <>
-      <div
+    <div
+      style={{
+        backgroundColor: isAnswered ? "#00809D" : "#1d4e3a",
+        padding: "24px",
+        borderRadius: "10px",
+        color: "white",
+        fontFamily: "Arial, sans-serif",
+        maxWidth: "100%",
+        margin: "0 auto",
+        marginBottom: 12,
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ fontSize: "14px", color: "white" }}>Thuật ngữ</span>
+        <span style={{ fontSize: "14px", color: "white" }}>
+          {numberQuestion}/{totalQuestion}
+        </span>
+      </div>
+
+      <h3 style={{ margin: "10px 0", fontSize: "18px" }}>{question}</h3>
+
+      {/* Hiển thị ảnh nếu có */}
+      {imageQuestion && (
+        <div style={{ margin: "10px 0" }}>
+          <img
+            src={imageQuestion}
+            alt="Question Illustration"
+            style={{ maxWidth: "100%", borderRadius: "8px" }}
+          />
+        </div>
+      )}
+
+      {/* Hiển thị audio nếu có */}
+      {listenUrl && (
+        <div style={{ margin: "10px 0" }}>
+          <audio controls style={{ width: "100%" }}>
+            <source src={listenUrl} type="audio/mpeg" />
+            Trình duyệt không hỗ trợ phần tử audio.
+          </audio>
+        </div>
+      )}
+
+      <p
         style={{
-          backgroundColor: isAnswered ? "#00809D" : "#1d4e3a",
-          padding: "24px",
-          borderRadius: "10px",
-          color: "white",
-          fontFamily: "Arial, sans-serif",
-          maxWidth: "100%",
-          margin: "0 auto",
-          marginBottom: 12,
+          display: "flex",
+          justifyContent: "flex-start",
+          fontSize: "14px",
+          color: "#888",
+          margin: "24px 0",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span style={{ fontSize: "14px", color: "white" }}>Thuật ngữ</span>
-          <span style={{ fontSize: "14px", color: "white" }}>
-            {numberQuestion}/{totalQuestion}
-          </span>
-        </div>
+        Chọn định nghĩa đúng
+      </p>
 
-        <h3 style={{ margin: "10px 0", fontSize: "18px" }}>{question}</h3>
-        <p
+      <Radio.Group
+        onChange={handleRadioChange}
+        value={value}
+        style={{ width: "100%" }}
+        disabled={disabled}
+      >
+        <Row style={{ width: "100%" }} gutter={[12, 12]}>
+          {options?.map((item) => {
+            const isCorrect = disabled && correctAnswer === item;
+            const isWrong =
+              disabled && value === item && item !== correctAnswer;
+
+            return (
+              <Col span={12} key={item}>
+                <Radio
+                  value={item}
+                  style={{
+                    color: "black",
+                    marginBottom: "10px",
+                    backgroundColor: isCorrect
+                      ? "#4caf50"
+                      : isWrong
+                      ? "#f44336"
+                      : "white",
+                    padding: "10px",
+                    borderRadius: "5px",
+                    border: "1px solid #444",
+                    width: "100%",
+                    opacity: disabled ? 0.9 : 1,
+                  }}
+                >
+                  {item}
+                </Radio>
+              </Col>
+            );
+          })}
+        </Row>
+      </Radio.Group>
+
+      {!disabled && (
+        <Button
           style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            fontSize: "14px",
-            color: "#888",
-            margin: "24px 0",
+            width: "100%",
+            backgroundColor: "#3b5998",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            padding: "10px",
+            marginTop: 12,
+          }}
+          onClick={() => {
+            if (onSelectOption) onSelectOption(correctAnswer || "");
+            setValue(correctAnswer || "");
           }}
         >
-          Chọn định nghĩa đúng
-        </p>
-
-        <Radio.Group
-          onChange={handleRadioChange}
-          value={value}
-          style={{ width: "100%" }}
-          disabled={disabled}
-        >
-          <Row style={{ width: "100%" }} gutter={[12, 12]}>
-            {options?.map((item) => {
-              const isCorrect = disabled && correctAnswer === item;
-              const isWrong =
-                disabled && value === item && item !== correctAnswer;
-
-              return (
-                <Col span={12} key={item}>
-                  <Radio
-                    value={item}
-                    style={{
-                      color: "black",
-                      marginBottom: "10px",
-                      backgroundColor: isCorrect
-                        ? "#4caf50"
-                        : isWrong
-                        ? "#f44336"
-                        : "white",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      border: "1px solid #444",
-                      width: "100%",
-                      opacity: disabled ? 0.9 : 1,
-                    }}
-                  >
-                    {item}
-                  </Radio>
-                </Col>
-              );
-            })}
-          </Row>
-        </Radio.Group>
-
-        {!disabled && (
-          <Button
-            style={{
-              width: "100%",
-              backgroundColor: "#3b5998",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              padding: "10px",
-              marginTop: 12,
-            }}
-            onClick={() => {
-              if (onSelectOption) onSelectOption(correctAnswer || "");
-              setValue(correctAnswer || "");
-            }}
-          >
-            Bạn không biết?
-          </Button>
-        )}
-      </div>
-    </>
+          Bạn không biết?
+        </Button>
+      )}
+    </div>
   );
 };
 

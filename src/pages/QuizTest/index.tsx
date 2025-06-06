@@ -157,6 +157,8 @@ const QuizTest: React.FC = () => {
                 disabled={submitted}
                 correctAnswer={quiz.answerQuestion}
                 isAnswered={!!userAnswers[index]}
+                imageQuestion={quiz.imageQuestion}
+                listenUrl={quiz.listenUrl}
               />
             </div>
           ))}
