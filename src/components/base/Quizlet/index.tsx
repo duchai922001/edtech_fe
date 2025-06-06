@@ -10,6 +10,7 @@ interface QuizProps {
   onSelectOption?: (value: string) => void;
   disabled?: boolean;
   correctAnswer?: string;
+  isAnswered?: boolean;
 }
 
 const Quiz: React.FC<QuizProps> = ({
@@ -21,6 +22,7 @@ const Quiz: React.FC<QuizProps> = ({
   onSelectOption,
   disabled = false,
   correctAnswer,
+  isAnswered,
 }) => {
   const [value, setValue] = useState<string | null>(optionAnswer || null);
 
@@ -37,7 +39,7 @@ const Quiz: React.FC<QuizProps> = ({
     <>
       <div
         style={{
-          backgroundColor: "#1d4e3a",
+          backgroundColor: isAnswered ? "#00809D" : "#1d4e3a",
           padding: "24px",
           borderRadius: "10px",
           color: "white",

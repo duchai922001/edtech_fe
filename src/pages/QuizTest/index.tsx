@@ -4,6 +4,7 @@ import Quiz from "../../components/base/Quizlet";
 import { useGetMocktestByTitle } from "../../hooks/useMocktest";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useDeviceType } from "../../hooks/useDevice";
 
 const QuizTest: React.FC = () => {
   const { title } = useParams();
@@ -16,7 +17,7 @@ const QuizTest: React.FC = () => {
   const [seconds, setSeconds] = useState(0);
 
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
-
+  const { isMonitor } = useDeviceType();
   useEffect(() => {
     if (submitted) return;
 
@@ -94,7 +95,7 @@ const QuizTest: React.FC = () => {
           style={{
             position: "fixed",
             top: "230px",
-            right: "200px",
+            right: isMonitor ? "200px" : 50,
             width: "250px",
             display: "flex",
             flexWrap: "wrap",
@@ -155,6 +156,7 @@ const QuizTest: React.FC = () => {
                 totalQuestion={data?.mocktests?.length}
                 disabled={submitted}
                 correctAnswer={quiz.answerQuestion}
+                isAnswered={!!userAnswers[index]}
               />
             </div>
           ))}
