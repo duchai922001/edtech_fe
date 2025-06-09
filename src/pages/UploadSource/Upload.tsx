@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Upload, Button, Typography, message, Select, Row, Col } from "antd";
-import { InboxOutlined, FilePdfOutlined } from "@ant-design/icons";
+import { Upload, Button, Typography, Select, Input } from "antd";
+import { InboxOutlined, FileAddOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
-import "./style.css";
 import { UploadSourceService } from "../../services/uploadSource.service";
 import toast from "react-hot-toast";
+import { useCreateResouce } from "../../hooks/useResource";
+import { useGetLanguages } from "../../hooks/useLanguage";
 
 const { Dragger } = Upload;
 const { Title } = Typography;
@@ -13,182 +14,145 @@ const { Option } = Select;
 const UploadCustom: React.FC = () => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [language, setLanguage] = useState<string>();
-  const [level, setLevel] = useState<string>();
-  const [uploadedBy] = useState("system");
+  const [name, setName] = useState<string>("");
+
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+
+  const { mutate: createResource } = useCreateResouce();
+  const { data: languages = [] } = useGetLanguages();
 
   const props: UploadProps = {
-    multiple: true,
+    multiple: false,
     accept: ".pdf,.docx",
     beforeUpload: (file) => {
-      setFileList((prev) => [...prev, file]);
+      setFileList([file]);
       return false;
     },
     onRemove: (file) => {
-      setFileList((prev) => prev.filter((f) => f.uid !== file.uid));
+      console.log({ file });
+      setFileList([]);
+      setUploadedFileUrl(null);
     },
     fileList,
   };
 
-  const handleConfirm = async () => {
+  const handleUpload = async () => {
     if (fileList.length === 0) {
-      toast.error("Please upload at least one file.");
+      toast.error("Please upload a file.");
       return;
     }
 
-    // if (!language) {
-    //   toast.error("Please select a language.");
-    //   return;
-    // }
-
     const formData = new FormData();
-    fileList.forEach((file) => {
-      formData.append("file", file);
-    });
+    formData.append("file", fileList[0]);
 
     try {
       const response = await UploadSourceService.uploadSource(formData);
-      if (response.status === 200) {
-        toast.success("Upload success!");
-
-        setFileList([]);
+      if (response.data) {
+        toast.success("File uploaded successfully!");
+        setUploadedFileUrl(response.data);
       } else {
-        const error = await response.text();
-        toast.error("Upload failed: " + error);
+        toast.error("Upload failed");
       }
     } catch (error) {
-      console.error("Upload error:", error);
-      toast.error("An error occurred while uploading.");
+      toast.error("Upload error.");
     }
   };
 
-  return (
-    <div className="upload-container" style={{ display: "flex", gap: 32 }}>
-      <div style={{ flex: 1 }}>
-        <Title level={5}>Type of resource</Title>
-        <div className="resource-buttons">
-          <Button
-            className="btn active"
-            type="primary"
-            icon={<InboxOutlined />}
-            block
-          >
-            Mock Test
-          </Button>
-          <Button className="btn" disabled block>
-            Speaking Practice
-          </Button>
-          <Button className="btn" disabled block>
-            Flashcard
-          </Button>
-          <Button className="btn" disabled block>
-            Language Games
-          </Button>
-          <Button className="btn" disabled block>
-            Resources
-          </Button>
-        </div>
+  const handleCreateResource = () => {
+    console.log({ name, language, uploadedFileUrl });
+    if (!name || !language || !uploadedFileUrl) {
+      toast.error("Please fill in all required fields and upload a file.");
+      return;
+    }
 
-        <div style={{ marginTop: 16 }}>
-          <div style={{ marginBottom: 8 }}>
-            <Row gutter={[12, 12]}>
-              <Col span={12}>
-                <Select
-                  allowClear
-                  style={{ width: "100%" }}
-                  placeholder="Please select language"
-                  onChange={(value) => setLanguage(value)}
-                  value={language}
-                >
-                  <Option value="en">English</Option>
-                  <Option value="jp">Japanese</Option>
-                  <Option value="vi">Vietnamese</Option>
-                </Select>
-              </Col>
-              <Col span={12}>
-                <Select
-                  allowClear
-                  style={{ width: "100%" }}
-                  placeholder="Please select level"
-                  onChange={(value) => setLevel(value)}
-                  value={level}
-                >
-                  <Option value="beginner">Beginner</Option>
-                  <Option value="intermediate">Intermediate</Option>
-                  <Option value="advanced">Advanced</Option>
-                </Select>
-              </Col>
-            </Row>
-          </div>
-          <div style={{ fontSize: 12, color: "green" }}>
-            ● Private resource (only available for students of your class)
-          </div>
-          <div
-            style={{
-              marginTop: 8,
-              padding: 8,
-              background: "#eee",
-              borderRadius: 4,
-            }}
-          >
-            <b>Class code:</b> JPD102
-          </div>
-        </div>
+    const payload = {
+      name,
+      language: {
+        id: language,
+      },
+      pdfFile: uploadedFileUrl,
+    };
+
+    createResource(payload, {
+      onSuccess: () => {
+        toast.success("Resource created successfully!");
+        setFileList([]);
+        setUploadedFileUrl(null);
+        setName("");
+        setLanguage(undefined);
+      },
+      onError: () => {
+        toast.error("Failed to create resource.");
+      },
+    });
+  };
+
+  return (
+    <div
+      className="upload-container"
+      style={{ display: "flex", gap: 32, margin: "100px 0" }}
+    >
+      <div style={{ flex: 1 }}>
+        <Title level={5}>Resource Info</Title>
+
+        <Input
+          placeholder="Enter resource name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{ marginBottom: 12 }}
+        />
+
+        <Select
+          allowClear
+          placeholder="Select language"
+          style={{ width: "100%", marginBottom: 12 }}
+          value={language}
+          onChange={(val) => setLanguage(val)}
+        >
+          {languages.map((lang: any) => (
+            <Option key={lang.code} value={lang.id}>
+              {lang.name}
+            </Option>
+          ))}
+        </Select>
+
+        <Button
+          icon={<FileAddOutlined />}
+          block
+          type="primary"
+          onClick={handleCreateResource}
+          disabled={!uploadedFileUrl}
+        >
+          Create Resource
+        </Button>
       </div>
 
       <div style={{ flex: 2 }}>
-        <Button
-          block
-          style={{
-            marginBottom: 12,
-            background: "#F5F5F5",
-            border: "none",
-            boxShadow: "2px 2px 2px 2px gray",
-          }}
-          type="link"
-          href="https://res.cloudinary.com/didb3lzdt/raw/upload/v1748964832/zfljulzjk0skkonmjs3e.pdf"
-          target="_blank"
-        >
-          DOWNLOAD EXAMPLE FORMAT FILES
-        </Button>
-
         <Dragger {...props} style={{ padding: 12 }}>
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>
-          <p className="ant-upload-text">Upload Resources (.docx, .pdf,...)</p>
+          <p className="ant-upload-text">Upload PDF or DOCX</p>
         </Dragger>
 
         {fileList.length > 0 && (
-          <ul style={{ listStyle: "none", marginTop: 16, padding: 0 }}>
-            {fileList.map((file) => (
-              <li
-                key={file.uid}
-                style={{
-                  marginBottom: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <FilePdfOutlined style={{ color: "red" }} />
-                <span>{file.name}</span>
-              </li>
-            ))}
-          </ul>
+          <Button
+            type="primary"
+            style={{ marginTop: 12 }}
+            onClick={handleUpload}
+          >
+            Upload File
+          </Button>
         )}
 
-        <Button
-          type="primary"
-          block
-          style={{
-            marginTop: 16,
-            height: 40,
-            backgroundColor: "#134f36",
-          }}
-          onClick={handleConfirm}
-        >
-          CONFIRM
-        </Button>
+        {uploadedFileUrl && (
+          <p style={{ marginTop: 10, color: "green" }}>
+            ✅ File uploaded:{" "}
+            <a href={uploadedFileUrl} target="_blank" rel="noreferrer">
+              View File
+            </a>
+          </p>
+        )}
       </div>
     </div>
   );

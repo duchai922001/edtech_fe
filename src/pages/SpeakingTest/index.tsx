@@ -4,14 +4,16 @@ import Container from "../../components/base/Container";
 import AvatarChatBox from "../../assets/avatarchat.png";
 import { AudioOutlined } from "@ant-design/icons";
 
-const ChatBubble = ({ from, children }) => {
+const ChatBubble = ({ from, children }: { from: any; children: any }) => {
   const isBot = from === "bot";
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: isBot ? "flex-start" : "flex-end",
-      marginBottom: 12
-    }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: isBot ? "flex-start" : "flex-end",
+        marginBottom: 12,
+      }}
+    >
       {isBot && <Avatar src={AvatarChatBox} style={{ marginRight: 12 }} />}
       <div
         style={{
@@ -20,7 +22,7 @@ const ChatBubble = ({ from, children }) => {
           padding: 16,
           borderRadius: 12,
           maxWidth: 500,
-          boxShadow: "0px 2px 8px rgba(0,0,0,0.15)"
+          boxShadow: "0px 2px 8px rgba(0,0,0,0.15)",
         }}
       >
         {children}
@@ -39,9 +41,17 @@ const SpeakingTest = () => {
             Practice speaking with our AI Chatbot
           </Typography>
 
-          <div style={{ marginTop: 40, display: "flex", flexDirection: "column", gap: 16 }}>
+          <div
+            style={{
+              marginTop: 40,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
             <ChatBubble from="bot">
-              Hello, I’m FLP’s AI Chatbot, what would you like to practice today?
+              Hello, I’m FLP’s AI Chatbot, what would you like to practice
+              today?
             </ChatBubble>
 
             <ChatBubble from="user">
@@ -51,7 +61,7 @@ const SpeakingTest = () => {
                 placeholder="Please select language"
                 options={[
                   { label: "Japanese", value: "jp" },
-                  { label: "Vietnamese", value: "vi" }
+                  { label: "Vietnamese", value: "vi" },
                 ]}
               />
             </ChatBubble>
@@ -67,25 +77,28 @@ const SpeakingTest = () => {
             </ChatBubble>
 
             <ChatBubble from="bot">
-              <Typography.Text strong>Here is an example introduction speech from TANAKA:</Typography.Text>
+              <Typography.Text strong>
+                Here is an example introduction speech from TANAKA:
+              </Typography.Text>
               <div style={{ marginTop: 8, marginBottom: 8 }}>
-                <AudioOutlined style={{ fontSize: 24 }} /> [Waveform audio + reload]
+                <AudioOutlined style={{ fontSize: 24 }} /> [Waveform audio +
+                reload]
               </div>
               <p style={{ marginBottom: 4 }}>
                 はじめまして。私の名前は田中、さくら大学の学生です。私の趣味はスポーツをすることです。よろしくお願いします。
               </p>
               <p style={{ fontStyle: "italic", color: "#555" }}>
-                Xin chào, tôi tên Tanaka, là học sinh của trường đại học Sakura. Sở thích của tôi là chơi thể thao. Mong được bạn giúp đỡ.
+                Xin chào, tôi tên Tanaka, là học sinh của trường đại học Sakura.
+                Sở thích của tôi là chơi thể thao. Mong được bạn giúp đỡ.
               </p>
             </ChatBubble>
 
-            <ChatBubble from="bot">
-              Now, you will practice speaking:
-            </ChatBubble>
+            <ChatBubble from="bot">Now, you will practice speaking:</ChatBubble>
 
             <ChatBubble from="user">
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <AudioOutlined style={{ fontSize: 24 }} /> [Your speech waveform here]
+                <AudioOutlined style={{ fontSize: 24 }} /> [Your speech waveform
+                here]
               </div>
             </ChatBubble>
           </div>

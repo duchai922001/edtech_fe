@@ -18,3 +18,12 @@ export const useGetMocktestByTitle = (title: string) => {
     staleTime: 5000,
   });
 };
+
+export const useGetMocktestLanguage = (languageId: string) => {
+  return useQuery({
+    queryKey: ["get-mocktest-by-language", languageId],
+    queryFn: () => MocktestService.getMocktestLanguage(languageId),
+    select: (res) => res.data,
+    staleTime: 5000,
+  });
+};

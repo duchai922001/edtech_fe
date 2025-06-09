@@ -5,7 +5,6 @@ import FlashCard from "../../components/base/FlashCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";
 
-import "swiper/css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetFlashCardsSubject } from "../../hooks/useFlashCard";
 
@@ -210,7 +209,7 @@ const FlashCardDetail = () => {
             onSlideChange={(swiper) => setCurrentIndex(swiper.activeIndex + 1)}
             style={{ padding: "0 20px" }}
           >
-            {data?.map((item, index) => (
+            {data?.map((item: any, index: number) => (
               <SwiperSlide key={index}>
                 <FlashCard question={item.question} answer={item.answer} />
               </SwiperSlide>

@@ -26,6 +26,16 @@ export const useGetFlashCardsSubject = (title: string) => {
   });
 };
 
+export const useGetMyFlashcards = (userId: string) => {
+  return useQuery({
+    enabled: !!userId,
+    queryKey: ["get-my-flashcard", userId],
+    queryFn: () => FlashCardService.getMyFlashcard(userId),
+    select: (res) => res.data,
+    staleTime: 5000,
+  });
+};
+
 export const useCreateFlashCards = () => {
   return useMutation({
     mutationFn: (payload: any) => FlashCardService.createFlashCards(payload),

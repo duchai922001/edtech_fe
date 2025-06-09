@@ -2,12 +2,15 @@ import { Col, Row, Select } from "antd";
 import Search from "antd/es/input/Search";
 import CardMocktest from "../../components/base/CardMocktest";
 import { useNavigate } from "react-router-dom";
+import Container from "../../components/base/Container";
+import { useGetMocktestsChinese } from "../../hooks/useMocktestChinese";
 
-const Courses = ({ data }: { data: any[] }) => {
+const MocktestChinese = () => {
+  const { data } = useGetMocktestsChinese();
   const navigate = useNavigate();
   return (
-    <div style={{ margin: "24px 0" }}>
-      <Row justify={"space-between"}>
+    <Container>
+      <Row justify={"space-between"} style={{ margin: "50px 0" }}>
         <Col span={12}>
           <Row gutter={[12, 12]}>
             <Col span={12}>
@@ -34,18 +37,18 @@ const Courses = ({ data }: { data: any[] }) => {
           <Search placeholder="input search text" style={{ width: 200 }} />
         </Col>
       </Row>
-      <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
+      <Row gutter={[24, 24]} style={{ marginTop: 24, marginBottom: 60 }}>
         {data?.map((item: any) => (
           <Col span={6}>
             <CardMocktest
               item={item}
-              onClick={() => navigate(`/mocktest/${item.title}`)}
+              onClick={() => navigate(`/mocktest/chinese/${item.title}`)}
             />
           </Col>
         ))}
       </Row>
-    </div>
+    </Container>
   );
 };
 
-export default Courses;
+export default MocktestChinese;

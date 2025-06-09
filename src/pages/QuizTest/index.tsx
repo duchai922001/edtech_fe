@@ -1,14 +1,14 @@
 import { Button, message, Result } from "antd";
 import Container from "../../components/base/Container";
 import Quiz from "../../components/base/Quizlet";
-import { useGetMocktestByTitle } from "../../hooks/useMocktest";
+import { useGetMocktestLanguage } from "../../hooks/useMocktest";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDeviceType } from "../../hooks/useDevice";
 
 const QuizTest: React.FC = () => {
   const { title } = useParams();
-  const { data } = useGetMocktestByTitle(title ?? "");
+  const { data } = useGetMocktestLanguage(title ?? "");
   const navigate = useNavigate();
 
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
@@ -46,7 +46,7 @@ const QuizTest: React.FC = () => {
   const handleSubmit = () => {
     let correct = 0;
 
-    data?.mocktests?.forEach((quiz, index) => {
+    data?.mocktests?.forEach((quiz: any, index: number) => {
       if (userAnswers[index] === quiz.answerQuestion) {
         correct++;
       }
@@ -103,7 +103,7 @@ const QuizTest: React.FC = () => {
             zIndex: 1000,
           }}
         >
-          {data?.mocktests?.map((_, index) => {
+          {data?.mocktests?.map((_: any, index: number) => {
             const isAnswered = !!userAnswers[index];
             return (
               <Button
@@ -141,10 +141,12 @@ const QuizTest: React.FC = () => {
             textAlign: "center",
           }}
         >
-          {data?.mocktests?.map((quiz, index) => (
+          {data?.mocktests?.map((quiz: any, index: number) => (
             <div
               key={index}
-              ref={(el) => (questionRefs.current[index] = el)}
+              ref={(el) => {
+                questionRefs.current[index] = el;
+              }}
               style={{ marginBottom: 32 }}
             >
               <Quiz

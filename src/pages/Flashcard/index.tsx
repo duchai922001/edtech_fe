@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Col, Row, Select, Typography, Pagination, Input } from "antd";
+import { Col, Row, Select, Typography, Pagination, Input, Button } from "antd";
 import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardCourse from "../../components/base/CardCourse";
@@ -8,17 +8,15 @@ import { useGetFlashCards } from "../../hooks/useFlashCard";
 import { useGetLanguages } from "../../hooks/useLanguage";
 
 const { Search } = Input;
-const { Option } = Select;
 
 const purposeOptions = [
   { label: "Học từ vựng", value: "Learn" },
   { label: "Ôn tập", value: "Review" },
   // Thêm option tương ứng backend
 ];
-
-function debounce(fn, delay) {
-  let timer;
-  return (...args) => {
+function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>): void => {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => fn(...args), delay);
   };
@@ -50,15 +48,15 @@ const Flashcard = () => {
     []
   );
 
-  const handleLanguageChange = (values) => {
+  const handleLanguageChange = (values: any) => {
     setParams((prev) => ({ ...prev, language: values, currentPage: 1 }));
   };
 
-  const handlePurposeChange = (values) => {
+  const handlePurposeChange = (values: any) => {
     setParams((prev) => ({ ...prev, purpose: values, currentPage: 1 }));
   };
 
-  const onPageChange = (page) => {
+  const onPageChange = (page: any) => {
     setParams((prev) => ({ ...prev, currentPage: page }));
   };
 
@@ -89,6 +87,19 @@ const Flashcard = () => {
       </Background>
 
       <Container>
+        <Row justify="space-between" align="middle" style={{ marginTop: 24 }}>
+          <Col>
+            <Typography.Title level={4} style={{ color: "white" }}>
+              FLASHCARD
+            </Typography.Title>
+          </Col>
+          <Col>
+            {/* Nút chuyển sang flashcard của tôi */}
+            <Button type="primary" onClick={() => navigate("/my-flashcards")}>
+              Flashcard của tôi
+            </Button>
+          </Col>
+        </Row>
         <Row justify="space-between" style={{ marginTop: 24, width: "100%" }}>
           <Col span={12}>
             <Row gutter={[12, 12]}>
@@ -100,7 +111,7 @@ const Flashcard = () => {
                   placeholder="Please select language"
                   onChange={handleLanguageChange}
                   value={params.language}
-                  options={languages?.map((item) => ({
+                  options={languages?.map((item: any) => ({
                     label: item.name,
                     value: String(item.id),
                   }))}
@@ -133,7 +144,7 @@ const Flashcard = () => {
           {isLoading ? (
             <div>Loading...</div>
           ) : flashcards?.data?.length ? (
-            flashcards.data.map((item) => (
+            flashcards.data.map((item: any) => (
               <Col key={item.title} span={6}>
                 <CardCourse
                   item={item}

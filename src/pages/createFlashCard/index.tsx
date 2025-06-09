@@ -17,11 +17,6 @@ import { useCreateFlashCards } from "../../hooks/useFlashCard";
 
 const { Option } = Select;
 
-interface Language {
-  id: number;
-  name: string;
-}
-
 interface FlashCard {
   title: string;
   question: string;
@@ -33,9 +28,10 @@ interface FlashCard {
 
 const CreateFlashCardPage: React.FC = () => {
   const { data: languages, isLoading: loadingLanguages } = useGetLanguages();
-  const { mutate: createFlashCards, isLoading: submitting } =
+  const userIdString = localStorage.getItem("userID");
+  const userId = userIdString ? JSON.parse(userIdString) : null;
+  const { mutate: createFlashCards, isPending: submitting } =
     useCreateFlashCards();
-
   const [form] = Form.useForm();
   const [flashcardsCreated, setFlashcardsCreated] = React.useState<FlashCard[]>(
     []
@@ -55,12 +51,14 @@ const CreateFlashCardPage: React.FC = () => {
       question: fc.question,
       answer: fc.answer,
       image: fc.image || "",
-      createBy: 1,
+      createBy: userId?.ID,
       language: { id: languageId },
     }));
 
     createFlashCards(payload, {
-      onSuccess: (newFlashCards: FlashCard[]) => {
+      onSuccess: (response, variables) => {
+        console.log({ variables });
+        const newFlashCards = response.data as FlashCard[];
         setFlashcardsCreated(newFlashCards);
         message.success("Tạo flashcards thành công");
         form.resetFields();
@@ -114,7 +112,7 @@ const CreateFlashCardPage: React.FC = () => {
                   color: "white",
                 }}
               >
-                {languages?.map((lang) => (
+                {languages?.map((lang: any) => (
                   <Option key={lang.id} value={lang.id}>
                     {lang.name}
                   </Option>

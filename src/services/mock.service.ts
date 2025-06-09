@@ -10,4 +10,11 @@ export const MocktestService = {
     const response = await axiosInstance.get(`/mocktests/title/${title}`);
     return response;
   },
+
+  getMocktestLanguage: async (languageId: string) => {
+    const response = await axiosInstance.get(
+      `/mocktests/language/${languageId}`
+    );
+    return response;
+  },
 };

@@ -25,7 +25,6 @@ const Quiz: React.FC<QuizProps> = ({
   onSelectOption,
   disabled = false,
   correctAnswer,
-  isAnswered,
   imageQuestion,
   listenUrl,
 }) => {
@@ -43,7 +42,7 @@ const Quiz: React.FC<QuizProps> = ({
   return (
     <div
       style={{
-        backgroundColor: isAnswered ? "#00809D" : "#1d4e3a",
+        backgroundColor: "#1d4e3a",
         padding: "24px",
         borderRadius: "10px",
         color: "white",

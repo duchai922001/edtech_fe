@@ -12,7 +12,7 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/google",
+        "https://edtech-be.onrender.com/api/users/google",
         { token }
       );
       const jwt = response.data.jwtToken;
@@ -63,7 +63,7 @@ const LoginPage = () => {
             }}
           >
             <Title style={{ color: "white", fontSize: 32 }}>
-              Chào mừng đến với FlashcardApp
+              Chào mừng đến với Edtech
             </Title>
             <p style={{ fontSize: 16, maxWidth: 300 }}>
               Học nhanh hơn, ghi nhớ tốt hơn – quản lý flashcard của bạn dễ

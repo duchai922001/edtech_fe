@@ -2,7 +2,12 @@ import { Col, Row, Typography } from "antd";
 import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import Courses from "./courses";
+import { useParams } from "react-router-dom";
+import { useGetMocktestLanguage } from "../../hooks/useMocktest";
 const MockTest = () => {
+  const { id } = useParams();
+  const { data } = useGetMocktestLanguage(id ?? "");
+  console.log({ data });
   return (
     <>
       <Background>
@@ -29,7 +34,7 @@ const MockTest = () => {
         </Container>
       </Background>
       <Container>
-        <Courses />
+        <Courses data={data} />
       </Container>
     </>
   );

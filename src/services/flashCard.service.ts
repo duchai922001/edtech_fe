@@ -31,4 +31,13 @@ export const FlashCardService = {
     const response = await axiosInstance.post(`/flashcards/bulk`, payload);
     return response;
   },
+
+  getMyFlashcard: async (userId: string) => {
+    const response = await axiosInstance.get(`/flashcards/my`, {
+      params: {
+        userId,
+      },
+    });
+    return response;
+  },
 };
