@@ -48,10 +48,13 @@ const QuizTestChinese = () => {
           />
         )}
 
-        {data?.questionGroups?.questionListen?.forms?.form4 &&
-          data?.questionGroups?.questionListen?.forms?.form4?.questionsAll.map(
-            (item: any, index: any) => <Form4 item={item} index={index} />
-          )}
+        {data?.questionGroups?.questionListen?.forms?.form4 && (
+          <Form4
+            questions={
+              data?.questionGroups?.questionListen?.forms?.form4?.questionsAll
+            }
+          />
+        )}
       </div>
       <div>
         {data?.questionGroups?.questionRead?.forms?.form1 &&
