@@ -8,7 +8,7 @@ import { useDeviceType } from "../../hooks/useDevice";
 
 const QuizTest: React.FC = () => {
   const { title } = useParams();
-  const { data } = useGetMocktestByTitle(title ?? "");
+  const { data, isLoading } = useGetMocktestByTitle(title ?? "");
   const navigate = useNavigate();
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -41,7 +41,9 @@ const QuizTest: React.FC = () => {
       [index]: answer,
     }));
   };
-
+  if (isLoading) {
+    return <>Loading...</>;
+  }
   const handleSubmit = () => {
     let correct = 0;
 
