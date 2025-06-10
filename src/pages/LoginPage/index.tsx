@@ -16,7 +16,6 @@ const LoginPage = () => {
         { token }
       );
       const jwt = response.data.jwtToken;
-      console.log({ login });
       localStorage.setItem("jwt", jwt);
       toast.success("Đăng nhập thành công!");
       navigate("/");
