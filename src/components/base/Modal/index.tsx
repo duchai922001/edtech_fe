@@ -6,7 +6,13 @@ interface ModalCustomProps {
   onOk: () => void;
   children: React.ReactNode;
 }
-const ModalCustom = ({ isOpen, onClose, onOk, title, children }: ModalCustomProps) => {
+const ModalCustom = ({
+  isOpen,
+  onClose,
+  onOk,
+  title,
+  children,
+}: ModalCustomProps) => {
   return (
     <Modal title={title} onCancel={onClose} onOk={onOk} open={isOpen}>
       {children}
