@@ -5,6 +5,7 @@ import { useGetMocktestByTitle } from "../../hooks/useMocktest";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDeviceType } from "../../hooks/useDevice";
+import Loading from "../../components/base/Loading";
 
 const QuizTest: React.FC = () => {
   const { title } = useParams();
@@ -42,7 +43,7 @@ const QuizTest: React.FC = () => {
     }));
   };
   if (isLoading) {
-    return <>Loading...</>;
+    return <Loading />;
   }
   const handleSubmit = () => {
     let correct = 0;

@@ -87,17 +87,32 @@ const Flashcard = () => {
       </Background>
 
       <Container>
-        <Row justify="space-between" align="middle" style={{ marginTop: 24 }}>
-          <Col>
-            <Typography.Title level={4} style={{ color: "white" }}>
-              FLASHCARD
-            </Typography.Title>
-          </Col>
-          <Col>
+        <Row align="middle" style={{ marginTop: 24 }}>
+          <Col
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+            }}
+          >
             {/* Nút chuyển sang flashcard của tôi */}
-            <Button type="primary" onClick={() => navigate("/my-flashcards")}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                background: "#2e3856",
+                height: 100,
+                color: "white",
+                width: 300,
+                borderRadius: 12,
+                cursor: "pointer",
+                fontSize: 16,
+              }}
+              onClick={() => navigate("/my-flashcards")}
+            >
               Flashcard của tôi
-            </Button>
+            </div>
           </Col>
         </Row>
         <Row justify="space-between" style={{ marginTop: 24, width: "100%" }}>

@@ -4,9 +4,13 @@ import Container from "../../components/base/Container";
 import Courses from "./courses";
 import { useParams } from "react-router-dom";
 import { useGetMocktestLanguage } from "../../hooks/useMocktest";
+import Loading from "../../components/base/Loading";
 const MockTest = () => {
   const { id } = useParams();
-  const { data } = useGetMocktestLanguage(id ?? "");
+  const { data, isLoading } = useGetMocktestLanguage(id ?? "");
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <>
       <Background>
