@@ -13,7 +13,7 @@ export const Menu = {
   URL_CROSS_GAME_PAGE: "/word-cross-game",
   URL_BOARD_GAME_PAGE: "/games",
   URL_CREATE_FLASHCARD_PAGE: "/create-flashcards",
-  URL_MOCKTEST_CHINESE_PAGE: "/mocktest/chinese",
+  URL_MOCKTEST_CHINESE_PAGE: "/mocktest/chinese-test",
   URL_MOCKTEST_CHINESE_PRACTICE_PAGE: "/practice/chinese",
 
   URL_MY_FLASHCARD_PAGE: "/my-flashcards",

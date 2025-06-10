@@ -6,9 +6,13 @@ import Form2 from "./components/Form2";
 import Form4 from "./components/Form4";
 import FormRead1 from "./components/FormRead1";
 import FormRead4 from "./components/FormRead4";
+import Loading from "../../components/base/Loading";
 const QuizTestChinese = () => {
   const { title } = useParams();
-  const { data } = useGetMocktestsChineseDetail(title ?? "");
+  const { data, isLoading } = useGetMocktestsChineseDetail(title ?? "");
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="app">
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -34,20 +38,22 @@ const QuizTestChinese = () => {
         )}
         {data?.questionGroups?.questionListen?.forms?.form1 &&
           data?.questionGroups?.questionListen?.forms?.form1?.questionsAll.map(
-            (item: any, index: any) => <Form1 item={item} index={index} />
+            (item: any) => <Form1 item={item} />
           )}
-        {data?.questionGroups?.questionListen?.forms?.form2 &&
-          data?.questionGroups?.questionListen?.forms?.form2?.questionsAll.map(
-            (item: any, index: any) => <Form2 item={item} index={index} />
-          )}
+        {data?.questionGroups?.questionListen?.forms?.form2 && (
+          <Form2
+            questions={
+              data?.questionGroups?.questionListen?.forms?.form2?.questionsAll
+            }
+          />
+        )}
+
         {data?.questionGroups?.questionListen?.forms?.form4 &&
           data?.questionGroups?.questionListen?.forms?.form4?.questionsAll.map(
             (item: any, index: any) => <Form4 item={item} index={index} />
           )}
       </div>
       <div>
-        <h3>Phần thi đọc</h3>
-
         {data?.questionGroups?.questionRead?.forms?.form1 &&
           data?.questionGroups?.questionRead?.forms?.form1?.questionsAll.map(
             (item: any, index: any) => <FormRead1 item={item} index={index} />
@@ -58,7 +64,6 @@ const QuizTestChinese = () => {
             questions={
               data?.questionGroups?.questionRead?.forms?.form4?.questionsAll
             }
-            index={1}
           />
         )}
       </div>

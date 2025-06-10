@@ -29,7 +29,6 @@ const FormRead1 = ({ item, index }: FormRead1Props) => {
 
   const isCorrect = selected === correct?.value;
   const isWrong = selected && !isCorrect;
-  console.log({ item });
   return (
     <Card
       style={{ margin: 10, background: "#fff" }}

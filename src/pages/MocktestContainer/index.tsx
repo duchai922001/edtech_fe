@@ -8,7 +8,11 @@ const MocktestContainer = () => {
   const { data, isLoading } = useGetLanguages();
 
   const handleNavigate = (code: string, id: string) => {
-    navigate(`/mocktest/${code}/${id}`);
+    if (id == "3") {
+      navigate(`/mocktest/chinese-test`);
+    } else {
+      navigate(`/mocktest/${code}/${id}`);
+    }
   };
   if (isLoading) {
     return <Loading />;

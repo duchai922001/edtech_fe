@@ -33,7 +33,7 @@ const MainRouter = () => {
             element={<MocktestContainer />}
           />
           <Route
-               path={`${Menu.URL_MOCKTEST_CHINESE_PAGE}/:title/:id`}
+            path={`${Menu.URL_MOCKTEST_CHINESE_PAGE}`}
             element={<MocktestChinese />}
           />
           <Route path={Menu.URL_FLASH_CARD_PAGE} element={<Flashcard />} />

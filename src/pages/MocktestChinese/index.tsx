@@ -4,10 +4,14 @@ import CardMocktest from "../../components/base/CardMocktest";
 import { useNavigate } from "react-router-dom";
 import Container from "../../components/base/Container";
 import { useGetMocktestsChinese } from "../../hooks/useMocktestChinese";
+import Loading from "../../components/base/Loading";
 
 const MocktestChinese = () => {
-  const { data } = useGetMocktestsChinese();
+  const { data, isLoading } = useGetMocktestsChinese();
   const navigate = useNavigate();
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <Container>
       <Row justify={"space-between"} style={{ margin: "50px 0" }}>
