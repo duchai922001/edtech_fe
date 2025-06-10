@@ -10,15 +10,15 @@ export const MenuTabItem: IMenuTab[] = [
     to: Menu.URL_SPEAKING_PAGE,
   },
   {
-    label: "Upload Resource",
-    to: Menu.URL_UPLOAD_SOURCE_PAGE,
+    label: "Resources",
+    to: Menu.URL_CLASSES_PAGE,
   },
   {
     label: "Scholarship",
-    to: Menu.URL_LECTURE_PAGE,
+    to: Menu.URL_CLASSES_PAGE,
   },
   {
-    label: "Class",
+    label: "Membership",
     to: Menu.URL_CLASSES_PAGE,
   },
 ];
