@@ -42,7 +42,7 @@ const MocktestChinese = () => {
           <Col span={6}>
             <CardMocktest
               item={item}
-              onClick={() => navigate(`/mocktest/chinese/${item.title}`)}
+              onClick={() => navigate(`/practice/chinese/${item.title}`)}
             />
           </Col>
         ))}

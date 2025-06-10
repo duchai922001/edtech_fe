@@ -33,7 +33,7 @@ const MainRouter = () => {
             element={<MocktestContainer />}
           />
           <Route
-            path={Menu.URL_MOCKTEST_CHINESE_PAGE}
+               path={`${Menu.URL_MOCKTEST_CHINESE_PAGE}/:title/:id`}
             element={<MocktestChinese />}
           />
           <Route path={Menu.URL_FLASH_CARD_PAGE} element={<Flashcard />} />
@@ -62,7 +62,7 @@ const MainRouter = () => {
             element={<MockTest />}
           />
           <Route
-            path={`${Menu.URL_MOCKTEST_CHINESE_PAGE}/:title`}
+            path={`${Menu.URL_MOCKTEST_CHINESE_PRACTICE_PAGE}/:title`}
             element={<QuizTestChinese />}
           />
           <Route path={`${Menu.URL_WORD_GAME_PAGE}`} element={<WordGames />} />
