@@ -1,16 +1,15 @@
 import { Button, message, Result } from "antd";
 import Container from "../../components/base/Container";
 import Quiz from "../../components/base/Quizlet";
-import { useGetMocktestLanguage } from "../../hooks/useMocktest";
+import { useGetMocktestByTitle } from "../../hooks/useMocktest";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDeviceType } from "../../hooks/useDevice";
 
 const QuizTest: React.FC = () => {
   const { title } = useParams();
-  const { data } = useGetMocktestLanguage(title ?? "");
+  const { data } = useGetMocktestByTitle(title ?? "");
   const navigate = useNavigate();
-
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);

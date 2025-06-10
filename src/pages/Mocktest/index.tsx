@@ -7,7 +7,6 @@ import { useGetMocktestLanguage } from "../../hooks/useMocktest";
 const MockTest = () => {
   const { id } = useParams();
   const { data } = useGetMocktestLanguage(id ?? "");
-  console.log({ data });
   return (
     <>
       <Background>
