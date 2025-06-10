@@ -4,7 +4,6 @@ import FlashCard from "../../components/base/FlashCard";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";
-
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetFlashCardsSubject } from "../../hooks/useFlashCard";
 

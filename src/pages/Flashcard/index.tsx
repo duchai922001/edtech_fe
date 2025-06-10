@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Col, Row, Select, Typography, Pagination, Input, Button } from "antd";
+import { Col, Row, Select, Typography, Pagination, Input } from "antd";
 import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardCourse from "../../components/base/CardCourse";
@@ -12,7 +12,6 @@ const { Search } = Input;
 const purposeOptions = [
   { label: "Học từ vựng", value: "Learn" },
   { label: "Ôn tập", value: "Review" },
-  // Thêm option tương ứng backend
 ];
 function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
   let timer: ReturnType<typeof setTimeout>;

@@ -22,14 +22,13 @@ interface FlashCard {
   question: string;
   answer: string;
   image?: string;
-  createBy: number;
+  createdBy: number;
   language: { id: number };
 }
 
 const CreateFlashCardPage: React.FC = () => {
   const { data: languages, isLoading: loadingLanguages } = useGetLanguages();
-  const userIdString = localStorage.getItem("userID");
-  const userId = userIdString ? JSON.parse(userIdString) : null;
+  const userId = localStorage.getItem("userId");
   const { mutate: createFlashCards, isPending: submitting } =
     useCreateFlashCards();
   const [form] = Form.useForm();
@@ -51,7 +50,7 @@ const CreateFlashCardPage: React.FC = () => {
       question: fc.question,
       answer: fc.answer,
       image: fc.image || "",
-      createBy: userId?.ID,
+      createdBy: { id: Number(userId) },
       language: { id: languageId },
     }));
 

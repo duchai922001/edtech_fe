@@ -6,10 +6,9 @@ import { useGetMyFlashcards } from "../../hooks/useFlashCard";
 const MyFlashcards = () => {
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  const userIdString = localStorage.getItem("userID");
-  const userId = userIdString ? JSON.parse(userIdString) : null;
-  const { data } = useGetMyFlashcards(userId?.ID);
+  const token = localStorage.getItem("jwt");
+  const userId = localStorage.getItem("userId");
+  const { data } = useGetMyFlashcards(userId ?? "");
   const handleCreate = () => {
     navigate("/create-flashcards");
   };

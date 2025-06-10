@@ -16,7 +16,9 @@ const LoginPage = () => {
         { token }
       );
       const jwt = response.data.jwtToken;
+      const userId = response.data?.id;
       localStorage.setItem("jwt", jwt);
+      localStorage.setItem("userId", userId);
       toast.success("Đăng nhập thành công!");
       navigate("/");
     } catch (error) {
