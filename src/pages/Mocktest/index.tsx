@@ -55,9 +55,6 @@ const MockTest = () => {
               total={data?.totalPages || 0}
               onChange={handlePageChange}
               showSizeChanger={false}
-              showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} mock tests`
-              }
             />
           </Col>
         </Row>
