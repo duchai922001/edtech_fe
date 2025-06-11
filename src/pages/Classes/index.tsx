@@ -10,20 +10,45 @@ import Loading from "../../components/base/Loading";
 const Classes = () => {
   const { data: resources, isLoading } = useGetResources();
   const [choosePdf, setChoosePdf] = useState<string | null>(null);
-  const [openModal, setOpenMdal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   if (isLoading) {
     return <Loading />;
   }
 
-  const handleDownload = () => {
-    if (choosePdf) {
+  const handleDownload = async () => {
+    if (!choosePdf) return;
+
+    try {
+      const response = await fetch(choosePdf, {
+        method: "GET",
+        headers: {
+          Accept: "application/pdf",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch the PDF: ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get("Content-Type");
+      if (!contentType?.includes("application/pdf")) {
+        console.warn("Unexpected Content-Type:", contentType);
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = choosePdf.endsWith(".pdf") ? choosePdf : `${choosePdf}.pdf`;
-      link.download = "tai_lieu.pdf"; // bạn có thể đặt tên khác nếu muốn
+      link.href = url;
+      link.download = "tai_lieu.pdf"; // Force download with .pdf extension
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Clean up
+      setOpenModal(false); // Close modal
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Không thể tải tài liệu. Vui lòng thử lại hoặc kiểm tra URL.");
     }
   };
 
@@ -55,12 +80,11 @@ const Classes = () => {
               key={index}
               span={6}
               onClick={() => {
-                setOpenMdal(true);
+                setOpenModal(true);
+                // Ensure the URL is treated as a PDF
                 const pdfUrl = item.pdfFile;
-                const validPdfUrl = pdfUrl.endsWith(".pdf")
-                  ? pdfUrl
-                  : `${pdfUrl}.pdf`;
-                setChoosePdf(validPdfUrl);
+                // Cloudinary raw URLs typically don't need .pdf appended
+                setChoosePdf(pdfUrl); // Use raw URL directly
               }}
             >
               <CardClass item={item} />
@@ -71,7 +95,7 @@ const Classes = () => {
 
       <ModalCustom
         isOpen={openModal}
-        onClose={() => setOpenMdal(false)}
+        onClose={() => setOpenModal(false)}
         onOk={handleDownload}
         title="Tải tài liệu PDF"
       >
