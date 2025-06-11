@@ -11,9 +11,15 @@ export const MocktestService = {
     return response;
   },
 
-  getMocktestLanguage: async (languageId: string) => {
+  getMocktestLanguage: async (languageId: string, page: number = 0) => {
     const response = await axiosInstance.get(
-      `/mocktests/language/${languageId}`
+      `/mocktests/language/${languageId}`,
+      {
+        params: {
+          page,
+          limit: 5,
+        },
+      }
     );
     return response;
   },

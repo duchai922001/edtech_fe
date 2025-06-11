@@ -19,10 +19,10 @@ export const useGetMocktestByTitle = (title: string) => {
   });
 };
 
-export const useGetMocktestLanguage = (languageId: string) => {
+export const useGetMocktestLanguage = (languageId: string, page: number) => {
   return useQuery({
-    queryKey: ["get-mocktest-by-language", languageId],
-    queryFn: () => MocktestService.getMocktestLanguage(languageId),
+    queryKey: ["get-mocktest-by-language", languageId, page],
+    queryFn: () => MocktestService.getMocktestLanguage(languageId, page),
     select: (res) => res.data,
     staleTime: 5000,
   });
