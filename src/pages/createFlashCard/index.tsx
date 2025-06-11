@@ -92,7 +92,7 @@ const CreateFlashCardPage: React.FC = () => {
               name="title"
               rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}
             >
-              <Input style={styleInput} />
+              <Input style={styleInput} maxLength={50} />
             </Form.Item>
           </Col>
 

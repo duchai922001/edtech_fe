@@ -10,12 +10,13 @@ import { useGetFlashCardsSubject } from "../../hooks/useFlashCard";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { IoCaretBack } from "react-icons/io5";
+import Loading from "../../components/base/Loading";
 
 const FlashCardDetail = () => {
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
   const [currentIndex, setCurrentIndex] = useState(1);
   const { title } = useParams();
-  const { data } = useGetFlashCardsSubject(title ?? "");
+  const { data, isLoading } = useGetFlashCardsSubject(title ?? "");
   const navigate = useNavigate();
   const total = data?.length ?? 0;
   const menuItems = [
@@ -24,6 +25,9 @@ const FlashCardDetail = () => {
     { label: "Chơi game", path: "/games" },
     { label: "Practice", path: "/speaking-test" },
   ];
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <Container>
       <div>

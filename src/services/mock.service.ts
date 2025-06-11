@@ -17,7 +17,7 @@ export const MocktestService = {
       {
         params: {
           page,
-          limit: 5,
+          limit: Number(languageId) === 1 ? 5 : 50,
         },
       }
     );
