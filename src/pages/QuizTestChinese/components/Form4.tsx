@@ -64,7 +64,7 @@ const Form4 = ({ questions }: Form4Props) => {
             key={`question-${questionIndex}`}
             style={{
               margin: "20px auto",
-              maxWidth: 900,
+              maxWidth: "100%",
               background: "#ffffff",
               borderRadius: 12,
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",

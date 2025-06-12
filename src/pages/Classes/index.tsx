@@ -1,4 +1,4 @@
-import { Col, Row, Typography } from "antd";
+import { Col, Row, Select, Typography } from "antd";
 import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardClass from "../../components/base/CardClass";
@@ -6,16 +6,17 @@ import { useState } from "react";
 import ModalCustom from "../../components/base/Modal";
 import { useGetResources } from "../../hooks/useResource";
 import Loading from "../../components/base/Loading";
+import { useGetLanguages } from "../../hooks/useLanguage";
 
 const Classes = () => {
-  const { data: resources, isLoading } = useGetResources();
   const [choosePdf, setChoosePdf] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState(false);
-
+  const [selectLanguage, setSelectLanguage] = useState(null);
+  const { data: resources, isLoading } = useGetResources(selectLanguage ?? "");
+  const { data: languages } = useGetLanguages();
   if (isLoading) {
     return <Loading />;
   }
-
   const handleDownload = async () => {
     if (!choosePdf) return;
 
@@ -74,6 +75,25 @@ const Classes = () => {
       </Background>
 
       <Container>
+        <Row justify="space-between" style={{ marginTop: 24, width: "100%" }}>
+          <Col span={12}>
+            <Row gutter={[12, 12]}>
+              <Col span={12}>
+                <Select
+                  allowClear
+                  style={{ width: "100%" }}
+                  placeholder="Please select language"
+                  onChange={(value) => setSelectLanguage(value)}
+                  value={selectLanguage}
+                  options={languages?.map((item: any) => ({
+                    label: item.name,
+                    value: String(item.id),
+                  }))}
+                />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
         <Row gutter={[24, 24]} style={{ marginTop: 24, marginBottom: 50 }}>
           {resources?.map((item: any, index: number) => (
             <Col
@@ -81,10 +101,8 @@ const Classes = () => {
               span={6}
               onClick={() => {
                 setOpenModal(true);
-                // Ensure the URL is treated as a PDF
                 const pdfUrl = item.pdfFile;
-                // Cloudinary raw URLs typically don't need .pdf appended
-                setChoosePdf(pdfUrl); // Use raw URL directly
+                setChoosePdf(pdfUrl);
               }}
             >
               <CardClass item={item} />

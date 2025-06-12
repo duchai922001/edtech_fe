@@ -18,7 +18,7 @@ const Header = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <p>Thông tin cá nhân</p>,
+      label: <p onClick={() => navigate("/profile-user")}>Thông tin cá nhân</p>,
     },
     {
       key: "2",

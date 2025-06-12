@@ -21,6 +21,7 @@ import MocktestContainer from "../pages/MocktestContainer";
 import MocktestChinese from "../pages/MocktestChinese";
 import QuizTestChinese from "../pages/QuizTestChinese";
 import MyFlashcards from "../pages/MyFlashCard";
+import UserProfile from "../pages/UserProfile";
 const MainRouter = () => {
   return (
     <>
@@ -72,6 +73,7 @@ const MainRouter = () => {
             path={`${Menu.URL_MY_FLASHCARD_PAGE}`}
             element={<MyFlashcards />}
           />
+          <Route path={`${Menu.URL_PROFILE_USER}`} element={<UserProfile />} />
           <Route
             path={`${Menu.URL_CREATE_FLASHCARD_PAGE}`}
             element={<CreateFlashCardPage />}

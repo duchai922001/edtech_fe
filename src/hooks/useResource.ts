@@ -11,10 +11,10 @@ export const useCreateResouce = () => {
   });
 };
 
-export const useGetResources = () => {
+export const useGetResources = (languageId?: string) => {
   return useQuery({
-    queryKey: ["get-resources"],
-    queryFn: () => ResourceService.getResources(),
+    queryKey: ["get-resources", languageId],
+    queryFn: () => ResourceService.getResources(languageId),
     select: (res) => res.data,
     staleTime: 5000,
   });

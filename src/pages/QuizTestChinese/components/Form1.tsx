@@ -74,7 +74,6 @@ const Form1 = ({ item }: Form1Props) => {
             style={{
               position: "relative",
               textAlign: "center",
-              border: "1px solid #e8e8e8",
               borderRadius: 8,
               padding: 8,
               background: "white",
@@ -84,8 +83,8 @@ const Form1 = ({ item }: Form1Props) => {
               src={item?.questions?.[0]?.image}
               alt="question"
               style={{
-                width: "100%",
-                height: 200,
+                width: "100px",
+                height: "auto",
                 objectFit: "cover",
                 borderRadius: 6,
                 display: "block",

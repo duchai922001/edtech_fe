@@ -47,14 +47,6 @@ const QuizTestChinese = () => {
             }
           />
         )}
-
-        {data?.questionGroups?.questionListen?.forms?.form4 && (
-          <Form4
-            questions={
-              data?.questionGroups?.questionListen?.forms?.form4?.questionsAll
-            }
-          />
-        )}
       </div>
       <div>
         {data?.questionGroups?.questionRead?.forms?.form1 &&
@@ -70,6 +62,13 @@ const QuizTestChinese = () => {
           />
         )}
       </div>
+      {data?.questionGroups?.questionListen?.forms?.form4 && (
+        <Form4
+          questions={
+            data?.questionGroups?.questionListen?.forms?.form4?.questionsAll
+          }
+        />
+      )}
     </div>
   );
 };

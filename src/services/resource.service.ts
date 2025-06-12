@@ -5,8 +5,12 @@ export const ResourceService = {
     const response = await axiosInstance.post("/resources", data);
     return response;
   },
-  getResources: async () => {
-    const response = await axiosInstance.get("/resources");
+  getResources: async (languageId?: string) => {
+    const response = await axiosInstance.get("/resources", {
+      params: {
+        languageId,
+      },
+    });
     return response;
   },
 };

@@ -60,8 +60,6 @@ const Form2 = ({ questions }: Form2Props) => {
   }, [questions]);
 
   // Debug data
-  console.log("Questions input:", questions);
-  console.log("Grouped Questions:", groupedQuestions);
 
   return (
     <div style={{ padding: "20px", background: "#f5f5f5" }}>
@@ -78,7 +76,7 @@ const Form2 = ({ questions }: Form2Props) => {
             key={`question-${questionIndex}`}
             style={{
               margin: "20px auto",
-              maxWidth: 900,
+              maxWidth: "100%",
               background: "#ffffff",
               borderRadius: 12,
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
@@ -156,11 +154,14 @@ const Form2 = ({ questions }: Form2Props) => {
                         src={q.image}
                         alt={`option-${q.value}`}
                         style={{
-                          width: "100%",
-                          height: 140,
+                          width: 100,
+                          height: 100,
                           objectFit: "cover",
                           borderRadius: 6,
-                          display: "block",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          margin: "0 auto",
                         }}
                         onError={(e) => {
                           e.currentTarget.src = "/fallback-image.png";

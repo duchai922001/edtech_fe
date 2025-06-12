@@ -103,11 +103,14 @@ const FormRead4 = ({ questions }: FormRead4Props) => {
                   src={item.image}
                   alt={`option-${item.value}`}
                   style={{
-                    width: "100%",
+                    width: 100,
                     height: 100,
                     objectFit: "cover",
                     borderRadius: 6,
-                    display: "block",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: "0 auto",
                   }}
                   onError={(e) => {
                     e.currentTarget.src = "/fallback-image.png";

@@ -7,7 +7,9 @@ const { Text } = Typography;
 interface CardClassProps {
   item: {
     name: string;
-    // thêm các field khác nếu có
+    language: {
+      name: string;
+    };
   };
 }
 
@@ -22,8 +24,17 @@ const CardClass: React.FC<CardClassProps> = ({ item }) => {
       </div>
 
       <div className="card-footer">
-        <div className="title-with-flag">
+        <div
+          className="title-with-flag"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
           <Text strong>{item?.name}</Text>
+          <Text strong>Language: {item?.language?.name}</Text>
         </div>
       </div>
     </Card>
