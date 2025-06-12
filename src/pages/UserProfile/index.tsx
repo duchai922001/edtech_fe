@@ -5,7 +5,7 @@ import { decodeToken } from "../../utils/decode";
 
 const UserProfile: React.FC = () => {
   const token = localStorage.getItem("jwt");
-  const user = decodeToken(token);
+  const user = decodeToken(token ?? "");
   return (
     <Container>
       <div className="card-container">
