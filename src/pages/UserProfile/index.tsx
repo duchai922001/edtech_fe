@@ -1,22 +1,21 @@
 import React from "react";
 import "./style.css";
 import Container from "../../components/base/Container";
+import { decodeToken } from "../../utils/decode";
 
 const UserProfile: React.FC = () => {
+  const token = localStorage.getItem("jwt");
+  const user = decodeToken(token);
   return (
     <Container>
       <div className="card-container">
         <div className="card-left">
           <img
-            src="https://i.pravatar.cc/100?img=32"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18iwsdCCbBfpa50-5BmNa_m_BX087_x1oWQ&s"
             alt="avatar"
             className="avatar"
           />
-          <h2 className="name">Hembo Tingor</h2>
-          <p className="role">Web Designer</p>
-          <a href="#" className="icon-link">
-            ✎
-          </a>
+          <h2 className="name">{user?.sub.split("@")?.[0]}</h2>
         </div>
         <div className="card-right">
           <div className="section">
@@ -24,24 +23,15 @@ const UserProfile: React.FC = () => {
             <div className="row">
               <div>
                 <p className="label">Email</p>
-                <p className="value">rntng@gmail.com</p>
-              </div>
-              <div>
-                <p className="label">Phone</p>
-                <p className="value">98979989898</p>
+                <p className="value">{user?.sub}</p>
               </div>
             </div>
           </div>
           <div className="section">
-            <h3>Projects</h3>
+            <h3>Address</h3>
             <div className="row">
               <div>
-                <p className="label">Recent</p>
-                <p className="value">Sam Disuja</p>
-              </div>
-              <div>
-                <p className="label">Most Viewed</p>
-                <p className="value">Dinoter husainm</p>
+                <p className="value">Empty</p>
               </div>
             </div>
           </div>
