@@ -35,6 +35,10 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
     setUserInput(e.target.value);
   };
 
+  const handleLetterClick = (letter: string) => {
+    setUserInput(userInput + letter); // Thêm chữ cái vào cuối input hiện tại
+  };
+
   const handleSubmit = () => {
     const cleanedInput = userInput.replace(/\s/g, "").toUpperCase();
     const correctWord = words[currentIndex].toUpperCase();
@@ -69,10 +73,10 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
       }}
     >
       <h1 style={{ fontSize: "32px", marginBottom: "20px" }}>
-        Chúc mừng bạn hoàn thành thử thách!
+        Congratulation!
       </h1>
       <p style={{ fontSize: "18px" }}>
-        Bạn đã hoàn thành vào lúc{" "}
+        You finish the challenge at{" "}
         {new Date().toLocaleTimeString("vi-VN", {
           timeZone: "Asia/Ho_Chi_Minh",
         })}{" "}
@@ -89,7 +93,7 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
           fontSize: "16px",
         }}
       >
-        Chơi lại
+        Replay
       </Button>
     </div>
   );
@@ -99,8 +103,7 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
       {!completed ? (
         <div
           style={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80)",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
             backgroundSize: "cover",
             backgroundPosition: "center",
             padding: "30px",
@@ -125,7 +128,7 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
               display: "inline-block",
             }}
           >
-            Đoán từ: {words[currentIndex].length} chữ cái
+            Guess the order: {words[currentIndex].length} words
           </h2>
 
           <div
@@ -152,7 +155,9 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
                   fontWeight: "bold",
                   borderRadius: "5px",
                   boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+                  cursor: "pointer", // Thêm hiệu ứng chuột vào các chữ cái
                 }}
+                onClick={() => handleLetterClick(letter)} // Gọi hàm khi click
               >
                 {letter}
               </div>
@@ -187,7 +192,7 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
                 marginTop: "10px",
               }}
             >
-              Kiểm tra
+              Check
             </Button>
 
             <Button
@@ -202,7 +207,7 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
                 marginTop: "10px",
               }}
             >
-              Gợi ý
+              Hint
             </Button>
 
             {showHint && (
@@ -216,7 +221,7 @@ const WordScrambleGame: React.FC<WordScrambleGameProps> = ({ words }) => {
                   borderRadius: "8px",
                 }}
               >
-                Từ đúng: <strong>{words[currentIndex].toUpperCase()}</strong>
+                True order: <strong>{words[currentIndex].toUpperCase()}</strong>
               </div>
             )}
           </Space>
