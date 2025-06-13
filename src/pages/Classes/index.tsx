@@ -3,14 +3,11 @@ import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardClass from "../../components/base/CardClass";
 import { useState } from "react";
-//import ModalCustom from "../../components/base/Modal";
 import { useGetResources } from "../../hooks/useResource";
 import Loading from "../../components/base/Loading";
 import { useGetLanguages } from "../../hooks/useLanguage";
-import { useNavigate } from "react-router-dom";
 
 const Classes = () => {
-  const navigate = useNavigate();
   // const [choosePdf, setChoosePdf] = useState<string | null>(null);
   // const [openModal, setOpenModal] = useState(false);
   const [selectLanguage, setSelectLanguage] = useState(null);
