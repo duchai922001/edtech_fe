@@ -19,11 +19,11 @@ const HeadStudent = () => {
       label: "Mock Test",
       url: "/mocktest",
     },
-    {
-      icon: <CopyOutlined style={styleIcon} />,
-      label: "Speaking Practice",
-      url: "/speaking-practice",
-    },
+    // {
+    //   icon: <CopyOutlined style={styleIcon} />,
+    //   label: "Speaking Practice",
+    //   url: "/speaking-practice",
+    // },
     {
       icon: <SiQuizlet style={styleIcon} />,
       label: "Flashcard",
@@ -74,7 +74,7 @@ const HeadStudent = () => {
                 fontWeight: "bold",
               }}
             >
-              Enroll Class
+              STARTED NOW
             </button>
           </Col>
           <Col span={24} style={{ width: "100%", marginTop: 48 }}>
