@@ -68,14 +68,14 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
       }}
     >
       <h1 style={{ fontSize: "32px", marginBottom: "20px" }}>
-        Chúc mừng bạn hoàn thành thử thách!
+        Congratulation you finish the challenge!
       </h1>
       <p style={{ fontSize: "18px" }}>
-        Bạn đã hoàn thành vào lúc{" "}
+        Finshed at{" "}
         {new Date().toLocaleTimeString("vi-VN", {
           timeZone: "Asia/Ho_Chi_Minh",
         })}{" "}
-        ngày {new Date().toLocaleDateString("vi-VN")}.
+        day {new Date().toLocaleDateString("vi-VN")}.
       </p>
       <Button
         onClick={() => window.location.reload()}
@@ -88,7 +88,7 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
           fontSize: "16px",
         }}
       >
-        Chơi lại
+        Replay
       </Button>
     </div>
   );
@@ -108,9 +108,9 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
       }}
     >
       <h1 style={{ fontSize: "32px", marginBottom: "20px" }}>
-        Bạn chưa hoàn thành thử thách!
+        You fail!
       </h1>
-      <p style={{ fontSize: "18px" }}>Hãy thử lại nhé!</p>
+      <p style={{ fontSize: "18px" }}>Try again!</p>
       <Button
         onClick={() => window.location.reload()}
         style={{
@@ -122,7 +122,7 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
           fontSize: "16px",
         }}
       >
-        Thử lại
+        Replay
       </Button>
     </div>
   );
@@ -159,7 +159,7 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
               display: "inline-block",
             }}
           >
-            Trò chơi ô chữ
+            Cross Word Game
           </h2>
           <div
             style={{
@@ -169,11 +169,9 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
             }}
           >
             <ul>
-              <li>Bạn bấm vào ô số để xuất hiện câu hỏi gợi ý</li>
-              <li>
-                Bạn biết câu trả lời từ khóa thì nhập sau đó trả lời từ khóa
-              </li>
-              <li>Từ khóa gồm {mainWord.length} chữ cái</li>
+              <li>Click on the number box to reveal the hint question</li>
+              <li>If you know the answer to the keyword, type it and submit the answer</li>
+              <li>The keyword consists of {mainWord.length} letters</li>
             </ul>
           </div>
           <div
@@ -243,7 +241,7 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
           {selectedRow !== null && (
             <div style={{ marginBottom: "20px", color: "#87ceeb" }}>
               <div>
-                Hàng {Number(selectedRow) - 1}: {clues[selectedRow].question}
+                Row {Number(selectedRow) - 1}: {clues[selectedRow].question}
               </div>
               <Space style={{ marginTop: "10px" }}>
                 <Input
@@ -274,7 +272,7 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
                     fontSize: "16px",
                   }}
                 >
-                  Xác nhận
+                  Confirm
                 </Button>
               </Space>
             </div>
@@ -307,7 +305,7 @@ const CrosswordGame: React.FC<CrosswordGameProps> = ({ mainWord, clues }) => {
                   fontSize: "16px",
                 }}
               >
-                Trả lời từ khóa
+                Submit Key Word
               </Button>
             </div>
           </Space>
