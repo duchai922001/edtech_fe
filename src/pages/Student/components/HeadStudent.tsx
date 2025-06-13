@@ -1,4 +1,4 @@
-import { CopyOutlined, FormOutlined } from "@ant-design/icons";
+import { FormOutlined } from "@ant-design/icons";
 import Background from "../../../components/base/Background";
 import Container from "../../../components/base/Container";
 import { Col, Row, Typography } from "antd";
