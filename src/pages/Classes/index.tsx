@@ -3,55 +3,57 @@ import Background from "../../components/base/Background";
 import Container from "../../components/base/Container";
 import CardClass from "../../components/base/CardClass";
 import { useState } from "react";
-import ModalCustom from "../../components/base/Modal";
+//import ModalCustom from "../../components/base/Modal";
 import { useGetResources } from "../../hooks/useResource";
 import Loading from "../../components/base/Loading";
 import { useGetLanguages } from "../../hooks/useLanguage";
+import { useNavigate } from "react-router-dom";
 
 const Classes = () => {
-  const [choosePdf, setChoosePdf] = useState<string | null>(null);
-  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
+  // const [choosePdf, setChoosePdf] = useState<string | null>(null);
+  // const [openModal, setOpenModal] = useState(false);
   const [selectLanguage, setSelectLanguage] = useState(null);
   const { data: resources, isLoading } = useGetResources(selectLanguage ?? "");
   const { data: languages } = useGetLanguages();
   if (isLoading) {
     return <Loading />;
   }
-  const handleDownload = async () => {
-    if (!choosePdf) return;
+  // const handleDownload = async () => {
+  //   if (!choosePdf) return;
 
-    try {
-      const response = await fetch(choosePdf, {
-        method: "GET",
-        headers: {
-          Accept: "application/pdf",
-        },
-      });
+  //   try {
+  //     const response = await fetch(choosePdf, {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/pdf",
+  //       },
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch the PDF: ${response.statusText}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Failed to fetch the PDF: ${response.statusText}`);
+  //     }
 
-      const contentType = response.headers.get("Content-Type");
-      if (!contentType?.includes("application/pdf")) {
-        console.warn("Unexpected Content-Type:", contentType);
-      }
+  //     const contentType = response.headers.get("Content-Type");
+  //     if (!contentType?.includes("application/pdf")) {
+  //       console.warn("Unexpected Content-Type:", contentType);
+  //     }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "tai_lieu.pdf"; // Force download with .pdf extension
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url); // Clean up
-      setOpenModal(false); // Close modal
-    } catch (error) {
-      console.error("Download failed:", error);
-      alert("Không thể tải tài liệu. Vui lòng thử lại hoặc kiểm tra URL.");
-    }
-  };
+  //     const blob = await response.blob();
+  //     const url = window.URL.createObjectURL(blob);
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.download = "tai_lieu.pdf"; // Force download with .pdf extension
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     window.URL.revokeObjectURL(url); // Clean up
+  //     setOpenModal(false); // Close modal
+  //   } catch (error) {
+  //     console.error("Download failed:", error);
+  //     alert("Không thể tải tài liệu. Vui lòng thử lại hoặc kiểm tra URL.");
+  //   }
+  // };
 
   return (
     <div>
@@ -100,9 +102,11 @@ const Classes = () => {
               key={index}
               span={6}
               onClick={() => {
-                setOpenModal(true);
-                const pdfUrl = item.pdfFile;
-                setChoosePdf(pdfUrl);
+                // setOpenModal(true);
+                // const pdfUrl = item.pdfFile;
+                // setChoosePdf(pdfUrl);
+                window.location.href = item.pdfFile;  // Sử dụng navigate để chuyển hướng đến đường link của item
+                console.log(item);
               }}
             >
               <CardClass item={item} />
@@ -111,7 +115,7 @@ const Classes = () => {
         </Row>
       </Container>
 
-      <ModalCustom
+      {/* <ModalCustom
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
         onOk={handleDownload}
@@ -122,7 +126,7 @@ const Classes = () => {
             Bạn có muốn tải tài liệu này về máy không?
           </Typography>
         </div>
-      </ModalCustom>
+      </ModalCustom> */}
     </div>
   );
 };
