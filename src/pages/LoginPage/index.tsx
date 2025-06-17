@@ -1,90 +1,67 @@
-import Title from "antd/es/typography/Title";
-import BackgroundSpeaking from "../../components/base/BackgroundSpeaking";
-import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import * as React from 'react';
+import CssBaseline from '@mui/material/CssBaseline';
+import Stack from '@mui/material/Stack';
+import AppTheme from '../../components/shared-theme/AppTheme';
+// import ColorModeSelect from '../../components/shared-theme/ColorModeSelect';
+import SignInCard from './components/SignInCard';
+import Content from './components/Content';
 
-const LoginPage = () => {
-  const navigate = useNavigate();
-  const handleSuccess = async (credentialResponse: any) => {
-    const token = credentialResponse.credential;
-
-    try {
-      const response = await axios.post(
-        "https://edtech-be.onrender.com/api/users/google",
-        { token }
-      );
-      const jwt = response.data.jwtToken;
-      const userId = response.data?.id;
-      localStorage.setItem("jwt", jwt);
-      localStorage.setItem("userId", userId);
-      toast.success("Đăng nhập thành công!");
-      navigate("/");
-    } catch (error) {
-      console.error("Đăng nhập thất bại", error);
-    }
-  };
+export default function LoginPage(props: { disableCustomTheme?: boolean }) {
   return (
-    <BackgroundSpeaking>
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          background: "#f8f9fa",
-        }}
+    <AppTheme {...props}>
+      <CssBaseline enableColorScheme />
+      {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
+      <Stack
+        direction="column"
+        component="main"
+        sx={[
+          {
+            justifyContent: 'center',
+            height: 'calc((1 - var(--template-frame-height, 0)) * 100%)',
+            marginTop: 'max(40px - var(--template-frame-height, 0px), 0px)',
+            minHeight: '100%',
+          },
+          (theme) => ({
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              zIndex: -1,
+              inset: 0,
+              backgroundImage:
+                'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
+              backgroundRepeat: 'no-repeat',
+              ...theme.applyStyles('dark', {
+                backgroundImage:
+                  'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+              }),
+            },
+          }),
+        ]}
       >
-        <div
-          style={{
-            display: "flex",
-            width: "90%",
-            maxWidth: 1000,
-            background: "#fff",
-            borderRadius: 16,
-            overflow: "hidden",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+        <Stack
+          direction={{ xs: 'column-reverse', md: 'row' }}
+          sx={{
+            justifyContent: 'center',
+            gap: { xs: 6, sm: 12 },
+            p: 2,
+            mx: 'auto',
           }}
         >
-          <div
-            style={{
-              flex: 1,
-              backgroundImage:
-                "url(https://images.unsplash.com/photo-1607746882042-944635dfe10e)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              padding: 24,
-              flexDirection: "column",
-              textAlign: "center",
+          <Stack
+            direction={{ xs: 'column-reverse', md: 'row' }}
+            sx={{
+              justifyContent: 'center',
+              gap: { xs: 6, sm: 12 },
+              p: { xs: 2, sm: 4 },
+              m: 'auto',
             }}
           >
-            <Title style={{ color: "white", fontSize: 32 }}>
-              Chào mừng đến với Edtech
-            </Title>
-            <p style={{ fontSize: 16, maxWidth: 300 }}>
-              Học nhanh hơn, ghi nhớ tốt hơn – quản lý flashcard của bạn dễ
-              dàng.
-            </p>
-          </div>
-
-          {/* Right - Form */}
-          <div style={{ flex: 1, padding: 32 }}>
-            <div style={{ marginTop: 50, textAlign: "center" }}>
-              <GoogleLogin
-                onSuccess={handleSuccess}
-                onError={() => console.log("Login Failed")}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </BackgroundSpeaking>
+            <Content />
+            <SignInCard />
+          </Stack>
+        </Stack>
+      </Stack>
+    </AppTheme>
   );
-};
-
-export default LoginPage;
+}
