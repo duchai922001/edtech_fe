@@ -354,3 +354,40 @@ body {
   white-space: nowrap !important;
   border: 0 !important;
 }
+
+.fc-exp-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.fc-exp-card-bg {
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+}
+
+.fc-exp-card-body {
+  padding: 1rem;
+}
+
+.fc-exp-card-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.fc-exp-card-meta {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.fc-exp-flashcard-list {
+  padding-left: 1rem;
+  font-size: 0.9rem;
+  color: #333;
+}

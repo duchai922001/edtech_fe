@@ -4,10 +4,8 @@ import toast from "react-hot-toast";
 
 export const useGetFlashCards = (params: {
   languageId?: string;
-  purpose?: string;
   page?: number;
-  size?: number;
-  search?: string;
+  limit?: number;
 }) => {
   return useQuery({
     queryKey: ["get-flashcard", params],
