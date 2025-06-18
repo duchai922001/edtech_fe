@@ -5,11 +5,13 @@ export const ResourceService = {
     const response = await axiosInstance.post("/resources", data);
     return response;
   },
-  getResources: async (languageId?: string) => {
+  getResources: async (params: {
+    page?: number;
+    limit?: number;
+    languageId?: string;
+  }) => {
     const response = await axiosInstance.get("/resources", {
-      params: {
-        languageId,
-      },
+      params,
     });
     return response;
   },

@@ -1,30 +1,74 @@
-import { Avatar, Col, Dropdown, Row, type MenuProps } from "antd";
+import { Col, Dropdown, Row, type MenuProps } from "antd";
 import Container from "../base/Container";
 import "./style.css";
 import LOGO from "../../assets/LOGO.png";
 import { MenuTabItem, type IMenuTab } from "../base/config/configMenu";
-import { SearchOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  UserOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu } from "../../common/configMenu";
 import toast from "react-hot-toast";
+import Avatar from "@mui/material/Avatar";
+
 const Header = () => {
   const navigate = useNavigate();
-  const isAuth = localStorage.getItem("jwt");
+  const isAuth = localStorage.getItem("token");
   const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    toast.success("Đăng xuất");
-    navigate("/login");
+    localStorage.removeItem("token");
+    toast.success("Logout success");
+    navigate("/");
   };
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <p onClick={() => navigate("/profile-user")}>Thông tin cá nhân</p>,
+      label: (
+        <div
+          onClick={() => navigate("/profile-user")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "10px 16px",
+            fontSize: "16px",
+          }}
+        >
+          <UserOutlined style={{ fontSize: "18px" }} />
+          <span>Profile</span>
+        </div>
+      ),
     },
     {
       key: "2",
-      label: <p onClick={handleLogout}>Đăng xuất</p>,
+      label: (
+        <div
+          onClick={handleLogout}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "10px 16px",
+            fontSize: "16px",
+          }}
+        >
+          <LogoutOutlined style={{ fontSize: "18px" }} />
+          <span>Log Out</span>
+        </div>
+      ),
     },
   ];
+
+  const name = localStorage.getItem("name");
+
+  function getFirstLetterOfLastName(fullName: string): string {
+    if (!fullName) return "?";
+    const parts = fullName.trim().split(" ");
+    const lastName = parts[parts.length - 1];
+    return lastName.charAt(0).toUpperCase();
+  }
+
   return (
     <div className="header-wrapper">
       <Container>
@@ -63,7 +107,7 @@ const Header = () => {
             <SearchOutlined className="icon" />
             {isAuth ? (
               <Dropdown menu={{ items }} placement="bottomRight">
-                <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18iwsdCCbBfpa50-5BmNa_m_BX087_x1oWQ&s" />
+                <Avatar>{getFirstLetterOfLastName(name || "")}</Avatar>
               </Dropdown>
             ) : (
               <UserOutlined

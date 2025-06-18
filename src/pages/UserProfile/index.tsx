@@ -1,54 +1,50 @@
 import React from "react";
-import "./style.css";
-import Container from "../../components/base/Container";
-import { decodeToken } from "../../utils/decode";
+import { useUserProfile } from "../../hooks/useUser"; // cập nhật path theo dự án của bạn
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  Avatar,
+  Stack,
+  Paper,
+} from "@mui/material";
+import Loading from "../../components/base/Loading";
 
-const UserProfile: React.FC = () => {
-  const token = localStorage.getItem("jwt");
-  const user = decodeToken(token ?? "");
+const UserProfile = () => {
+  const { data: user, isLoading, isError } = useUserProfile();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError || !user) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <Typography color="error">Failed to load user data.</Typography>
+      </Box>
+    );
+  }
+
+  const getFirstLetterOfLastName = (fullName: string): string => {
+    const parts = fullName.trim().split(" ");
+    return parts[parts.length - 1].charAt(0).toUpperCase();
+  };
+
   return (
-    <Container>
-      <div className="card-container">
-        <div className="card-left">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT18iwsdCCbBfpa50-5BmNa_m_BX087_x1oWQ&s"
-            alt="avatar"
-            className="avatar"
-          />
-          <h2 className="name">{user?.sub.split("@")?.[0]}</h2>
-        </div>
-        <div className="card-right">
-          <div className="section">
-            <h3>Information</h3>
-            <div className="row">
-              <div>
-                <p className="label">Email</p>
-                <p className="value">{user?.sub}</p>
-              </div>
-            </div>
-          </div>
-          <div className="section">
-            <h3>Address</h3>
-            <div className="row">
-              <div>
-                <p className="value">Empty</p>
-              </div>
-            </div>
-          </div>
-          <div className="social">
-            <a href="#">
-              <i className="fab fa-facebook"></i>
-            </a>
-            <a href="#">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="#">
-              <i className="fab fa-instagram"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </Container>
+    <Paper elevation={3} sx={{ maxWidth: 400, mx: "auto", p: 4, mt: 5 }}>
+      <Stack spacing={2} alignItems="center">
+        <Avatar sx={{ width: 64, height: 64 }}>
+          {getFirstLetterOfLastName(user.fullName || "")}
+        </Avatar>
+        <Typography variant="h6">{user.fullName}</Typography>
+        <Typography variant="body2" color="text.secondary">
+          Username: {user.username}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Email: {user.email}
+        </Typography>
+      </Stack>
+    </Paper>
   );
 };
 

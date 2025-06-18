@@ -3,6 +3,7 @@ import MainRouter from "./routers/main.router";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
+  localStorage.setItem("mui-mode", "light");
   return (
     <>
       <Toaster position="top-center" />

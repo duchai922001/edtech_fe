@@ -9,6 +9,7 @@ export const Menu = {
   URL_SPEAKING_PAGE: "/speaking",
   URL_SPEAKING_TEST_PAGE: "/speaking-test",
   URL_LOGIN_PAGE: "/login",
+  URL_SIGNUP_PAGE: "/signup",
   URL_WORD_GAME_PAGE: "/word-game",
   URL_CROSS_GAME_PAGE: "/word-cross-game",
   URL_BOARD_GAME_PAGE: "/games",

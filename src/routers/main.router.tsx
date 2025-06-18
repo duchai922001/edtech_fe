@@ -11,6 +11,7 @@ import UploadSource from "../pages/UploadSource";
 import Speaking from "../pages/Speaking";
 import SpeakingTest from "../pages/SpeakingTest";
 import LoginPage from "../pages/LoginPage";
+import SignUpPage from "../pages/SignUpPage";
 import FlashCardDetail from "../pages/FlashCardDetail";
 import QuizTest from "../pages/QuizTest";
 import WordGames from "../pages/Games/WordGames";
@@ -50,6 +51,7 @@ const MainRouter = () => {
             element={<SpeakingTest />}
           />
           <Route path={Menu.URL_LOGIN_PAGE} element={<LoginPage />} />
+          <Route path={Menu.URL_SIGNUP_PAGE} element={<SignUpPage />} />
           <Route
             path={`${Menu.URL_FLASH_CARD_PAGE}/:title`}
             element={<FlashCardDetail />}
