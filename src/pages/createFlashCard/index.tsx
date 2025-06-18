@@ -1,251 +1,238 @@
-import React from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  message,
-  List,
-  Card,
-  Space,
-  Row,
-  Col,
-} from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useGetLanguages } from "../../hooks/useLanguage";
-import { useCreateFlashCards } from "../../hooks/useFlashCard";
+import React, { useState } from "react";
+import "./style.css";
 
-const { Option } = Select;
-
-interface FlashCard {
-  title: string;
+interface Flashcard {
   question: string;
   answer: string;
-  image?: string;
-  createdBy: number;
-  language: { id: number };
+  imageUrl?: string;
 }
 
-const CreateFlashCardPage: React.FC = () => {
-  const { data: languages, isLoading: loadingLanguages } = useGetLanguages();
-  const userId = localStorage.getItem("userId");
-  const { mutate: createFlashCards, isPending: submitting } =
-    useCreateFlashCards();
-  const [form] = Form.useForm();
-  const [flashcardsCreated, setFlashcardsCreated] = React.useState<FlashCard[]>(
-    []
-  );
+const languages = ["English", "Japanese", "Chinese"];
+const purposes = ["Learn", "Review"];
 
-  const onFinish = (values: any) => {
-    const { title, languageId, purpose, flashcards } = values;
+const CreateFlashcardPage: React.FC = () => {
+  const [title, setTitle] = useState("");
+  const [language, setLanguage] = useState(languages[0]);
+  const [purpose, setPurpose] = useState(purposes[0]);
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([
+    { question: "", answer: "" },
+  ]);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [submitted, setSubmitted] = useState(false);
 
-    if (!flashcards || flashcards.length === 0) {
-      message.error("Vui lòng thêm ít nhất 1 flashcard");
-      return;
-    }
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!title.trim()) newErrors.title = "Please enter a title.";
+    flashcards.forEach((fc, idx) => {
+      if (!fc.question.trim())
+        newErrors[`question-${idx}`] = "Please enter a term.";
+      if (!fc.answer.trim())
+        newErrors[`answer-${idx}`] = "Please enter a definition.";
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    const payload: FlashCard[] = flashcards.map((fc: any) => ({
-      title,
-      purpose,
-      question: fc.question,
-      answer: fc.answer,
-      image: fc.image || "",
-      createdBy: { id: Number(userId) },
-      language: { id: languageId },
-    }));
-
-    createFlashCards(payload, {
-      onSuccess: (response, variables) => {
-        console.log({ variables });
-        const newFlashCards = response.data as FlashCard[];
-        setFlashcardsCreated(newFlashCards);
-        message.success("Tạo flashcards thành công");
-        form.resetFields();
-      },
-      onError: () => {
-        message.error("Tạo flashcards thất bại");
-      },
+  const handleFlashcardChange = (
+    index: number,
+    field: "question" | "answer" | "imageUrl",
+    value: string
+  ) => {
+    const newFlashcards = [...flashcards];
+    newFlashcards[index] = { ...newFlashcards[index], [field]: value };
+    setFlashcards(newFlashcards);
+    setErrors((prev) => {
+      const newErr = { ...prev };
+      delete newErr[`${field}-${index}`];
+      return newErr;
     });
   };
 
-  const styleInput = {
-    height: 60,
-    background: "#2E3856",
-    color: "white",
+  const addFlashcard = () => {
+    setFlashcards([...flashcards, { question: "", answer: "" }]);
   };
 
+  const removeFlashcard = (index: number) => {
+    if (flashcards.length === 1) return;
+    setFlashcards(flashcards.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="create-flashcard-page">
+        <h1>Flashcard Set Created</h1>
+        <p>
+          You have successfully created a flashcard set titled:{" "}
+          <strong>{title}</strong>
+        </p>
+        <p>Language: {language}</p>
+        <p>Purpose: {purpose}</p>
+        <h2>Flashcards</h2>
+        <ul className="flashcard-summary-list">
+          {flashcards.map((fc, i) => (
+            <li key={i}>
+              <strong>{fc.question}</strong> – {fc.answer}
+            </li>
+          ))}
+        </ul>
+        <button
+          onClick={() => {
+            setSubmitted(false);
+            setTitle("");
+            setFlashcards([{ question: "", answer: "" }]);
+            setLanguage(languages[0]);
+            setPurpose(purposes[0]);
+            setErrors({});
+          }}
+          className="btn-primary"
+        >
+          Create a New Flashcard Set
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ maxWidth: 1200, margin: "40px auto", padding: 16 }}>
-      <h1>Tạo một học phần mới</h1>
-
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Row>
-          <Col span={8}>
-            {" "}
-            <Form.Item
-              label="Tiêu đề học phần"
-              name="title"
-              rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}
-            >
-              <Input style={styleInput} maxLength={50} />
-            </Form.Item>
-          </Col>
-
-          <Col span={8}>
-            {" "}
-            <Form.Item
-              label="Ngôn ngữ"
-              name="languageId"
-              rules={[{ required: true, message: "Chọn ngôn ngữ" }]}
-            >
-              <Select
-                loading={loadingLanguages}
-                style={{ height: 60 }}
-                dropdownStyle={{
-                  backgroundColor: "#2E3856",
-                  color: "white",
-                }}
-              >
-                {languages?.map((lang: any) => (
-                  <Option key={lang.id} value={lang.id}>
-                    {lang.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item
-              label="Mục đích"
-              name="purpose"
-              rules={[{ required: true, message: "Vui lòng chọn mục đích" }]}
-            >
-              <Select style={{ height: 60 }}>
-                <Option value="Learn">Học từ vựng</Option>
-                <Option value="Review">Ôn tập</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.List name="flashcards" initialValue={[{}]}>
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Space
-                  key={key}
-                  style={{
-                    display: "flex",
-                    marginBottom: 8,
-                    alignItems: "baseline",
-                    flexWrap: "wrap",
-                  }}
-                  align="start"
-                >
-                  <Form.Item
-                    {...restField}
-                    name={[name, "question"]}
-                    label="Thuật ngữ"
-                    rules={[
-                      { required: true, message: "Vui lòng nhập thuật ngữ" },
-                    ]}
-                  >
-                    <Input style={styleInput} />
-                  </Form.Item>
-
-                  <Form.Item
-                    {...restField}
-                    name={[name, "answer"]}
-                    label="Định nghĩa"
-                    rules={[
-                      { required: true, message: "Vui lòng nhập định nghĩa" },
-                    ]}
-                  >
-                    <Input style={styleInput} />
-                  </Form.Item>
-
-                  <Form.Item
-                    {...restField}
-                    name={[name, "image"]}
-                    label="Hình ảnh (URL)"
-                  >
-                    <Input style={{ ...styleInput, width: 810 }} />
-                  </Form.Item>
-
-                  {fields.length > 1 && (
-                    <MinusCircleOutlined
-                      onClick={() => remove(name)}
-                      style={{ marginTop: 30, fontSize: 20, color: "red" }}
-                    />
-                  )}
-                </Space>
-              ))}
-
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  block
-                  icon={<PlusOutlined />}
-                >
-                  Thêm flashcard
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
-
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={submitting}
-            block
-            style={{ background: "#1D4E3A", height: 50 }}
-          >
-            Tạo tất cả flashcard
-          </Button>
-        </Form.Item>
-      </Form>
-
-      {flashcardsCreated.length > 0 && (
-        <>
-          <h2>Flashcards đã tạo</h2>
-          <List
-            grid={{ gutter: 16, column: 2 }}
-            dataSource={flashcardsCreated}
-            renderItem={(item) => (
-              <List.Item>
-                <Card
-                  title={item.title}
-                  size="small"
-                  extra={`Lang ID: ${item.language.id}`}
-                >
-                  <p>
-                    <b>Câu hỏi:</b> {item.question}
-                  </p>
-                  <p>
-                    <b>Trả lời:</b> {item.answer}
-                  </p>
-                  {item.image && (
-                    <img
-                      src={item.image}
-                      alt="Flashcard"
-                      style={{ maxWidth: "100%", borderRadius: 8 }}
-                    />
-                  )}
-                </Card>
-              </List.Item>
-            )}
+    <div className="create-flashcard-page">
+      <h1>Create a New Flashcard Set</h1>
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="form-group">
+          <label htmlFor="title">Set Title</label>
+          <input
+            id="title"
+            type="text"
+            value={title}
+            maxLength={50}
+            onChange={(e) => setTitle(e.target.value)}
+            className={errors.title ? "input-error" : ""}
+            placeholder="Enter the flashcard set title"
+            required
           />
-        </>
-      )}
+          {errors.title && (
+            <div role="alert" className="error-msg">
+              {errors.title}
+            </div>
+          )}
+        </div>
+
+        <div className="form-row">
+          <div className="form-group half-width">
+            <label htmlFor="language">Language</label>
+            <select
+              id="language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              {languages.map((lang) => (
+                <option value={lang} key={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group half-width">
+            <label htmlFor="purpose">Purpose</label>
+            <select
+              id="purpose"
+              value={purpose}
+              onChange={(e) => setPurpose(e.target.value)}
+            >
+              {purposes.map((p) => (
+                <option value={p} key={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>Flashcards</legend>
+          {flashcards.map((card, idx) => (
+            <div key={idx} className="flashcard-item">
+              <div className="form-group flex-grow">
+                <label htmlFor={`question-${idx}`}>Term</label>
+                <input
+                  id={`question-${idx}`}
+                  type="text"
+                  value={card.question}
+                  onChange={(e) =>
+                    handleFlashcardChange(idx, "question", e.target.value)
+                  }
+                  className={errors[`question-${idx}`] ? "input-error" : ""}
+                  placeholder="Enter a term"
+                  required
+                />
+                {errors[`question-${idx}`] && (
+                  <div role="alert" className="error-msg">
+                    {errors[`question-${idx}`]}
+                  </div>
+                )}
+              </div>
+              <div className="form-group flex-grow">
+                <label htmlFor={`answer-${idx}`}>Definition</label>
+                <input
+                  id={`answer-${idx}`}
+                  type="text"
+                  value={card.answer}
+                  onChange={(e) =>
+                    handleFlashcardChange(idx, "answer", e.target.value)
+                  }
+                  className={errors[`answer-${idx}`] ? "input-error" : ""}
+                  placeholder="Enter a definition"
+                  required
+                />
+                {errors[`answer-${idx}`] && (
+                  <div role="alert" className="error-msg">
+                    {errors[`answer-${idx}`]}
+                  </div>
+                )}
+              </div>
+              <div className="form-group flex-grow">
+                <label htmlFor={`imageUrl-${idx}`}>Image URL (optional)</label>
+                <input
+                  id={`imageUrl-${idx}`}
+                  type="url"
+                  value={card.imageUrl || ""}
+                  onChange={(e) =>
+                    handleFlashcardChange(idx, "imageUrl", e.target.value)
+                  }
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+              <button
+                type="button"
+                aria-label="Remove flashcard"
+                onClick={() => removeFlashcard(idx)}
+                className="btn-remove"
+                disabled={flashcards.length === 1}
+              >
+                &times;
+              </button>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={addFlashcard}
+            className="btn-secondary"
+          >
+            + Add Flashcard
+          </button>
+        </fieldset>
+
+        <button type="submit" className="btn-primary">
+          Create Flashcard Set
+        </button>
+      </form>
     </div>
   );
 };
 
-export default CreateFlashCardPage;
+export default CreateFlashcardPage;

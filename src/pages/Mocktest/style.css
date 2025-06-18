@@ -1,0 +1,226 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+:root {
+  --color-green: #1b4332;
+  --color-green-light: #d4f1d4;
+  --color-gray-light: #f5f5f5;
+  --color-white: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-gray-light);
+  font-family: "Inter", sans-serif, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
+  margin: 0;
+  color: var(--color-green);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mocktests-container {
+  max-width: 1080px;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+
+.mocktests-header {
+  user-select: none;
+  border-bottom: 1px solid var(--color-green-light);
+  padding-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  outline-offset: 2px;
+}
+.mocktests-header h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin: 0;
+  color: var(--color-green);
+}
+
+/* Filters section */
+.mocktests-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: var(--color-white);
+  box-shadow: 0 4px 14px var(--color-shadow);
+  user-select: none;
+}
+
+.mocktests-search {
+  flex-grow: 1;
+  min-width: 180px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  border-radius: 24px;
+  border: 1.8px solid var(--color-green);
+  color: var(--color-green);
+  font-weight: 600;
+  outline-offset: 2px;
+  transition: border-color 0.3s ease;
+  font-family: "Inter", sans-serif;
+}
+
+.mocktests-search::placeholder {
+  color: #77aa77;
+}
+
+.mocktests-search:focus,
+.mocktests-search:hover {
+  border-color: #1b4d1b;
+  outline: none;
+  background-color: #f2fcf2;
+}
+
+/* Language select */
+.mocktests-lang-label {
+  font-weight: 700;
+  color: var(--color-green);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.mocktests-language-select {
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 24px;
+  border: 1.8px solid var(--color-green);
+  background-color: var(--color-white);
+  color: var(--color-green);
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.mocktests-language-select:focus,
+.mocktests-language-select:hover {
+  border-color: #1b4332;
+  outline: none;
+}
+
+/* Main content */
+.mocktests-main {
+  flex: 1;
+  outline-offset: 2px;
+}
+
+/* Empty state */
+.mocktests-empty {
+  color: #1b4332;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem 0;
+  user-select: none;
+}
+
+/* Grid of mock tests */
+.mocktests-grid {
+  display: grid;
+  gap: 1.8rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  user-select: none;
+}
+
+/* Each mock test card */
+.mocktest-card {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-shadow: 0 8px 20px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  outline-offset: 4px;
+}
+
+.mocktest-card:focus-visible,
+.mocktest-card:hover {
+  box-shadow: 0 14px 40px rgba(42, 122, 42, 0.2);
+  outline: none;
+  transform: translateY(-6px);
+}
+
+.mocktest-title {
+  font-size: 1.5rem;
+  color: var(--color-green);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  user-select: text;
+}
+
+.mocktest-desc {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 1.25rem;
+  color: #1b4332;
+  user-select: text;
+  flex-grow: 1;
+}
+
+.mocktest-meta {
+  display: flex;
+  gap: 1.2rem;
+  font-size: 0.875rem;
+  color: #2f662f;
+  font-weight: 600;
+  user-select: none;
+}
+
+.mocktest-meta span {
+  white-space: nowrap;
+}
+
+/* Footer */
+.mocktests-footer {
+  text-align: center;
+  color: var(--color-green);
+  font-weight: 600;
+  margin-top: 3rem;
+  user-select: none;
+  font-size: 0.95rem;
+}
+
+/* Accessibility hidden text */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .mocktests-filters {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .mocktests-search,
+  .mocktests-language-select {
+    width: 100%;
+  }
+  .mocktests-grid {
+    grid-template-columns: 1fr;
+  }
+}

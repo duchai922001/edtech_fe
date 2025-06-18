@@ -22,7 +22,7 @@ export const useRegister = () => {
 export const useLogin = () => {
   return useMutation<AxiosResponse<any>, AxiosError, LoginPayload>({
     mutationFn: (payload) => UserService.login(payload),
-    onSuccess: (response) => {
+    onSuccess: () => {
       toast.success("Login Success");
       // const token = response.data.token;
       // localStorage.setItem("token", token);

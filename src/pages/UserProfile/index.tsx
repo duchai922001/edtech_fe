@@ -1,13 +1,5 @@
-import React from "react";
 import { useUserProfile } from "../../hooks/useUser"; // cập nhật path theo dự án của bạn
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  Avatar,
-  Stack,
-  Paper,
-} from "@mui/material";
+import { Box, Typography, Avatar, Stack, Paper } from "@mui/material";
 import Loading from "../../components/base/Loading";
 
 const UserProfile = () => {

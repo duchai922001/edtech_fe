@@ -3,6 +3,8 @@ import "./style.css";
 import { Col, Row } from "antd";
 import { useGetLanguages } from "../../hooks/useLanguage";
 import { useGetMyFlashcards, useGetFlashCards } from "../../hooks/useFlashCard";
+import { useNavigate } from "react-router-dom";
+import { Menu } from "../../common/configMenu";
 
 interface Flashcard {
   _id: string;
@@ -102,6 +104,8 @@ const FlashcardCollectionExperimental: React.FC = () => {
 
   const flashcardsToRender =
     view === "explore" ? exploreFlashcards : paginatedMyFlashcards;
+  const navigate = useNavigate();
+
   return (
     <div className="fc-experimental-app">
       <header className="fc-exp-header">
@@ -127,7 +131,12 @@ const FlashcardCollectionExperimental: React.FC = () => {
               ))}
             </nav>
             {view === "my" && (
-              <button className="fc-exp-create-btn">
+              <button
+                className="fc-exp-create-btn"
+                onClick={() => {
+                  navigate(Menu.URL_CREATE_FLASHCARD_PAGE);
+                }}
+              >
                 Create New Flashcard
               </button>
             )}
