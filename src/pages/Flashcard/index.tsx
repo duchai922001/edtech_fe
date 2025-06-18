@@ -1,188 +1,286 @@
-import { useState, useCallback } from "react";
-import { Col, Row, Select, Typography, Pagination, Input } from "antd";
-import Background from "../../components/base/Background";
-import Container from "../../components/base/Container";
-import CardCourse from "../../components/base/CardCourse";
-import { useNavigate } from "react-router-dom";
-import { useGetFlashCards } from "../../hooks/useFlashCard";
+import React, { useState, useEffect } from "react";
+import "./style.css";
+import { Col, Row } from "antd";
 import { useGetLanguages } from "../../hooks/useLanguage";
+import { useGetMyFlashcards } from "../../hooks/useFlashCard";
 
-const { Search } = Input;
-
-const purposeOptions = [
-  { label: "Học từ vựng", value: "Learn" },
-  { label: "Ôn tập", value: "Review" },
-];
-function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
-  let timer: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>): void => {
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), delay);
-  };
+interface Flashcard {
+  id: number;
+  title: string;
+  language: string;
+  isFavorite: boolean;
 }
 
-const Flashcard = () => {
-  const navigate = useNavigate();
-  const { data: languages } = useGetLanguages();
-  const [params, setParams] = useState({
-    language: [],
-    purpose: [],
-    search: "",
-    currentPage: 1,
-    size: 10,
-  });
+interface FlashcardItem {
+  _id: string;
+  title: string;
+}
 
-  const { data: flashcards, isLoading } = useGetFlashCards({
-    languageId: params.language.join(","),
-    purpose: params.purpose.join(","),
-    page: params.currentPage,
-    size: params.size,
-    search: params.search,
-  });
+interface FlashcardCollection {
+  _id: string;
+  title: string;
+  backgroundImage: string;
+  createdAt: string;
+  languageId: {
+    name: string;
+  };
+  flashcards: FlashcardItem[];
+}
 
-  const handleSearchChange = useCallback(
-    debounce((value) => {
-      setParams((prev) => ({ ...prev, search: value, currentPage: 1 }));
-    }, 500),
-    []
+interface Category {
+  name: string;
+  code: string;
+  id?: string;
+}
+
+const userId = localStorage.getItem("userId") ?? "";
+
+const FlashcardCollectionExperimental: React.FC = () => {
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+  const [view, setView] = useState<"my" | "explore" | "favourite">("my");
+  const [languageFilter, setLanguageFilter] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
+
+  const {
+    data: flashcards = [],
+    isLoading: isFlashcardLoading,
+    isError: isFlashcardError,
+  } = useGetMyFlashcards(userId);
+
+  // Lấy danh sách ngôn ngữ từ API
+  const {
+    data: languages,
+    isLoading: isLangLoading,
+    isError: isLangError,
+  } = useGetLanguages();
+
+  // Tạo categories từ API
+  const categoriesData: Category[] = languages
+    ? languages.map((lang: { name: string; code: string; _id?: string }) => ({
+        name: lang.name,
+        code: lang.code,
+        id: lang._id,
+      }))
+    : [];
+
+  const filteredFlashcards = flashcards.filter(
+    (card: any) => languageFilter === "All" || card.language === languageFilter
+  );
+  console.log(filteredFlashcards);
+
+  const totalPages = Math.ceil(filteredFlashcards.length / pageSize);
+
+  const paginatedFlashcards = filteredFlashcards.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
   );
 
-  const handleLanguageChange = (values: any) => {
-    setParams((prev) => ({ ...prev, language: values, currentPage: 1 }));
-  };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [languageFilter, view]);
 
-  const handlePurposeChange = (values: any) => {
-    setParams((prev) => ({ ...prev, purpose: values, currentPage: 1 }));
-  };
-
-  const onPageChange = (page: any) => {
-    setParams((prev) => ({ ...prev, currentPage: page }));
-  };
+  // const toggleFavorite = (id: number) => {
+  //   setFlashcards((cards) =>
+  //     cards.map((card) =>
+  //       card.id === id ? { ...card, isFavorite: !card.isFavorite } : card
+  //     )
+  //   );
+  // };
 
   return (
-    <div>
-      <Background style={{ height: 300 }}>
-        <Container>
-          <Row
-            style={{
-              padding: "48px 0",
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              position: "relative",
-            }}
-          >
-            <Col span={24}>
-              <Typography className="body-md-white">FLASHCARD</Typography>
-            </Col>
-            <Col span={24}>
-              <Typography className="body-des-white">
-                Flashcards to increase your vocabulary
-              </Typography>
-            </Col>
-          </Row>
-        </Container>
-      </Background>
+    <>
+      <div className="fc-experimental-app">
+        {/* Top Header with brand */}
+        <header className="fc-exp-header">
+          <div className="fc-exp-logo" tabIndex={0}>
+            Edtech Flashcards
+          </div>
+        </header>
 
-      <Container>
-        <Row align="middle" style={{ marginTop: 24 }}>
-          <Col
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-            }}
-          >
-            {/* Nút chuyển sang flashcard của tôi */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                background: "#2e3856",
-                height: 100,
-                color: "white",
-                width: 300,
-                borderRadius: 12,
-                cursor: "pointer",
-                fontSize: 16,
-              }}
-              onClick={() => navigate("/my-flashcards")}
-            >
-              Flashcard của tôi
-            </div>
-          </Col>
-        </Row>
-        <Row justify="space-between" style={{ marginTop: 24, width: "100%" }}>
-          <Col span={12}>
-            <Row gutter={[12, 12]}>
-              <Col span={12}>
-                <Select
-                  mode="multiple"
-                  allowClear
-                  style={{ width: "100%" }}
-                  placeholder="Please select language"
-                  onChange={handleLanguageChange}
-                  value={params.language}
-                  options={languages?.map((item: any) => ({
-                    label: item.name,
-                    value: String(item.id),
-                  }))}
-                />
-              </Col>
-              <Col span={12}>
-                <Select
-                  mode="multiple"
-                  allowClear
-                  style={{ width: "100%" }}
-                  placeholder="Please select purpose"
-                  onChange={handlePurposeChange}
-                  value={params.purpose}
-                  options={purposeOptions}
-                />
-              </Col>
+        {/* Sticky toolbar with filter & actions */}
+        <section
+          className="fc-exp-toolbar"
+          role="toolbar"
+          aria-label="Flashcard controls"
+        >
+          <Col>
+            <Row>
+              <nav
+                className="fc-exp-tabs"
+                role="tablist"
+                aria-label="Flashcard view selection"
+              >
+                <button
+                  role="tab"
+                  aria-selected={view === "my"}
+                  className={`fc-exp-tab ${view === "my" ? "active" : ""}`}
+                  onClick={() => setView("my")}
+                >
+                  My Flashcards
+                </button>
+                <button
+                  role="tab"
+                  aria-selected={view === "favourite"}
+                  className={`fc-exp-tab ${
+                    view === "favourite" ? "active" : ""
+                  }`}
+                  onClick={() => setView("favourite")}
+                >
+                  My Favourites
+                </button>
+                <button
+                  role="tab"
+                  aria-selected={view === "explore"}
+                  className={`fc-exp-tab ${view === "explore" ? "active" : ""}`}
+                  onClick={() => setView("explore")}
+                >
+                  Explore Flashcards
+                </button>
+              </nav>
+              {view === "my" && (
+                <button
+                  className="fc-exp-create-btn"
+                  aria-label="Create new flashcard"
+                >
+                  Create New Flashcard
+                </button>
+              )}
+            </Row>
+            <Row>
+              <label htmlFor="fc-exp-lang-select" className="fc-exp-lang-label">
+                Language:
+              </label>
+              {isLangLoading ? (
+                <span>Loading languages...</span>
+              ) : isLangError ? (
+                <span>Error loading languages</span>
+              ) : (
+                <select
+                  id="fc-exp-lang-select"
+                  className="fc-exp-language-select"
+                  aria-label="Select flashcard language"
+                  value={languageFilter}
+                  onChange={(e) => setLanguageFilter(e.target.value)}
+                >
+                  <option value="All">All</option>
+                  {categoriesData.map((lang) => (
+                    <option key={lang.code} value={lang.name}>
+                      {lang.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </Row>
           </Col>
-          <Col span={6} style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Search
-              placeholder="Input search text"
-              style={{ width: 200 }}
-              allowClear
-              onChange={(e) => handleSearchChange(e.target.value)}
-            />
-          </Col>
-        </Row>
+        </section>
 
-        <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : flashcards?.data?.length ? (
-            flashcards.data.map((item: any) => (
-              <Col key={item.title} span={6}>
-                <CardCourse
-                  item={item}
-                  onClick={() => navigate(`/flashcard/${item.title}`)}
-                />
-              </Col>
-            ))
-          ) : (
-            <div>No data</div>
-          )}
-        </Row>
-
-        <Row justify="center" style={{ marginTop: 24, marginBottom: 60 }}>
+        {/* Main content: grid + sidebar */}
+        <main className="fc-exp-main" tabIndex={-1}>
+          <section
+            className="fc-exp-flashcard-grid"
+            aria-live="polite"
+            aria-label="Flashcard collection"
+          >
+            {isFlashcardLoading ? (
+              <p className="fc-exp-empty-state">Loading flashcards...</p>
+            ) : isFlashcardError ? (
+              <p className="fc-exp-empty-state">Error loading flashcards</p>
+            ) : filteredFlashcards.length === 0 ? (
+              <p className="fc-exp-empty-state">
+                No flashcards match the current filters.
+              </p>
+            ) : (
+              paginatedFlashcards.map((collection: FlashcardCollection) => (
+                <article key={collection._id} className="fc-exp-card">
+                  <div className="fc-exp-card-body">
+                    <h3 className="fc-exp-card-title">{collection.title}</h3>
+                    <div className="meta">
+                      <span>{collection.languageId.name}</span>
+                      <span>
+                        {new Date(collection.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <ul className="fc-exp-flashcard-list">
+                      {collection.flashcards?.slice(0, 5).map((item) => (
+                        <li key={item._id}>• {item.title}</li>
+                      ))}
+                      {collection.flashcards?.length > 5 && (
+                        <li>...and {collection.flashcards.length - 5} more</li>
+                      )}
+                    </ul>
+                  </div>
+                </article>
+              ))
+            )}
+          </section>
+        </main>
+        <div className="fc-exp-pagination-wrapper">
           <Pagination
-            current={params.currentPage}
-            pageSize={params.size}
-            total={flashcards?.attribute?.totalPage * params.size || 0}
-            onChange={onPageChange}
-            showSizeChanger={false}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
           />
-        </Row>
-      </Container>
+        </div>
+      </div>
+    </>
+  );
+};
+
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
+  const maxButtons = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+  startPage = Math.max(1, endPage - maxButtons + 1);
+
+  return (
+    <div
+      className="pagination"
+      role="navigation"
+      aria-label="Pagination navigation"
+    >
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+        aria-label="Previous page"
+      >
+        ‹ Prev
+      </button>
+      {Array.from(
+        { length: endPage - startPage + 1 },
+        (_, i) => i + startPage
+      ).map((num) => (
+        <button
+          key={num}
+          disabled={num === currentPage}
+          onClick={() => onPageChange(num)}
+          aria-current={num === currentPage ? "page" : undefined}
+          aria-label={`Page ${num}`}
+        >
+          {num}
+        </button>
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+        aria-label="Next page"
+      >
+        Next ›
+      </button>
     </div>
   );
 };
 
-export default Flashcard;
+export default FlashcardCollectionExperimental;

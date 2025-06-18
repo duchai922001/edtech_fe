@@ -129,19 +129,7 @@ const LearningDocuments: React.FC = () => {
         <div className="logo" tabIndex={0}>
           Edtech Learning
         </div>
-        <nav aria-label="Primary site navigation">
-          {/* <input
-            type="search"
-            aria-label="Search learning documents"
-            placeholder="Search documents..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="header-search"
-          /> */}
-        </nav>
+        <nav aria-label="Primary site navigation"></nav>
       </header>
       <div
         className="app-container"

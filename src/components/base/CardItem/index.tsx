@@ -16,7 +16,7 @@ const CardItem = ({ icon, label, type }: CardItemProps) => {
         alignItems: "center",
         gap: 24,
         padding: "24px 0",
-        height: type === "column" ? "150px" : "auto",
+        height: type === "column" ? "200px" : "auto",
         textAlign: "center",
       }}
     >

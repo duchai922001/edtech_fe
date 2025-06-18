@@ -30,7 +30,7 @@ export const useGetMyFlashcards = (userId: string) => {
   return useQuery({
     enabled: !!userId,
     queryKey: ["get-my-flashcard", userId],
-    queryFn: () => FlashCardService.getMyFlashcard(userId),
+    queryFn: () => FlashCardService.getFlashcardByUser(userId),
     select: (res) => res.data,
     staleTime: 5000,
   });

@@ -1,0 +1,319 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+:root {
+  --color-green: #1f4b39;
+  --color-green-light: #d4f1d4;
+  --color-gray-light: #f5f5f5;
+  --color-white: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-gray-light);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  color: var(--color-green);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fc-experimental-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1427px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+/* Header */
+.fc-exp-header {
+  padding: 1.6rem 0;
+  border-bottom: 1px solid var(--color-green-light);
+  user-select: none;
+}
+.fc-exp-logo {
+  font-weight: 700;
+  font-size: clamp(1.75rem, 5vw, 2.8rem);
+  color: var(--color-green);
+}
+
+/* Toolbar with filters */
+.fc-exp-toolbar {
+  position: sticky;
+  top: 0;
+  background: var(--color-white);
+  justify-content: space-between;
+  z-index: 30;
+  padding: 0.8rem 1rem 1rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px var(--color-shadow);
+  user-select: none;
+}
+
+/* Tabs */
+.fc-exp-tabs {
+  display: flex;
+  border-radius: 40px;
+  box-shadow: 0 0 0 1.5px var(--color-green);
+  background: var(--color-white);
+  padding: 4px;
+  height: 40px;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.fc-exp-tab {
+  border: none;
+  background: transparent;
+  padding: 0 24px;
+  cursor: pointer;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-green);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fc-exp-tab:focus-visible {
+  outline-offset: 2px;
+  outline-color: var(--color-green);
+  outline-style: solid;
+}
+
+.fc-exp-tab.active,
+.fc-exp-tab:hover {
+  color: var(--color-white);
+  background-color: var(--color-green);
+  box-shadow: 0 4px 10px var(--color-shadow);
+}
+
+/* Language select */
+.fc-exp-language-select {
+  border-radius: 24px;
+  border: 1.8px solid var(--color-green);
+  background-color: var(--color-white);
+  color: var(--color-green);
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  margin-top: 1.1rem;
+}
+
+.fc-exp-language-select:hover,
+.fc-exp-language-select:focus {
+  border-color: #1d601d;
+  outline: none;
+}
+.fc-exp-pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+/* Label for language select */
+.fc-exp-lang-label {
+  font-weight: 600;
+  color: var(--color-green);
+  user-select: none;
+  margin-top: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+/* Create flashcard button */
+.fc-exp-create-btn {
+  background-color: var(--color-green);
+  color: var(--color-white);
+  border: none;
+  border-radius: 24px;
+  padding: 10px 24px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px var(--color-shadow);
+  transition: background-color 0.3s ease;
+  margin-left: auto;
+  white-space: nowrap;
+  margin-bottom: 1rem;
+}
+
+.fc-exp-create-btn:hover,
+.fc-exp-create-btn:focus {
+  background-color: #1f4b39;
+  outline: none;
+  box-shadow: 0 6px 22px var(--color-shadow);
+}
+
+/* Main content: left grid and right sidebar */
+.fc-exp-main {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  min-height: 400px;
+}
+
+/* Flashcard grid */
+.fc-exp-flashcard-grid {
+  flex: 2 1 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  user-select: none;
+}
+
+/* Empty state */
+.fc-exp-empty-state {
+  font-style: italic;
+  color: #4c7e4c;
+  grid-column: 1/-1;
+  text-align: center;
+}
+
+/* Flashcard card */
+.fc-exp-card {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: 1.8rem 1.6rem;
+  box-shadow: 0 8px 18px var(--color-shadow);
+  cursor: default;
+  position: relative;
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 160px;
+}
+
+.fc-exp-card:hover,
+.fc-exp-card:focus-visible {
+  box-shadow: 0 12px 28px var(--color-shadow);
+  outline: none;
+  transform: translateY(-6px);
+}
+
+/* Flashcard front text */
+.fc-exp-front {
+  color: var(--color-green);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: text;
+}
+
+/* Favorite star button */
+.fc-exp-fav-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--color-green);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.6rem;
+  line-height: 1;
+  transform: scale(1.1);
+  transition: color 0.3s ease, transform 0.15s ease;
+  user-select: none;
+  padding: 0;
+}
+
+.fc-exp-fav-btn:hover,
+.fc-exp-fav-btn:focus-visible {
+  color: #ffb300;
+  outline: none;
+  transform: scale(1.3);
+}
+
+.fc-exp-fav-btn.favorited {
+  color: #ffb300;
+}
+
+/* Sidebar */
+.fc-exp-sidebar {
+  flex: 1 0 280px;
+  background: var(--color-white);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px var(--color-shadow);
+  padding: 1.6rem 1.8rem;
+  color: var(--color-green);
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.fc-exp-sidebar-content h2 {
+  margin: 0 0 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  user-select: none;
+}
+
+.fc-exp-sidebar-content p {
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #3a6f3a;
+}
+
+/* Footer */
+.fc-exp-footer {
+  text-align: center;
+  color: var(--color-green);
+  font-weight: 600;
+  margin-top: 3rem;
+  user-select: none;
+  font-size: 0.95rem;
+}
+
+/* Accessibility hidden text (screen reader) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .fc-exp-main {
+    flex-direction: column;
+  }
+
+  .fc-exp-sidebar {
+    flex: none;
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+
+  .fc-exp-create-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: #679f53dd;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+}
