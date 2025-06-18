@@ -126,12 +126,9 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
     const name = document.getElementById("name") as HTMLInputElement;
     const username = document.getElementById("username") as HTMLInputElement;
 
-    let isValid = true;
-
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage("Please enter a valid email address.");
-      isValid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage("");
@@ -140,7 +137,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
-      isValid = false;
     } else {
       setPasswordError(false);
       setPasswordErrorMessage("");
@@ -149,7 +145,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
     if (!name.value || name.value.length < 1) {
       setNameError(true);
       setNameErrorMessage("Name is required.");
-      isValid = false;
     } else {
       setNameError(false);
       setNameErrorMessage("");
@@ -158,7 +153,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
     if (!username.value || username.value.length < 1) {
       setUserNameError(true);
       setUserNameErrorMessage("User Name is required.");
-      isValid = false;
     } else {
       setUserNameError(false);
       setUserNameErrorMessage("");

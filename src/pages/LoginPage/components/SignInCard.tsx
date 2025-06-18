@@ -59,12 +59,9 @@ export default function SignInCard() {
     const email = document.getElementById("username") as HTMLInputElement;
     const password = document.getElementById("password") as HTMLInputElement;
 
-    let isValid = true;
-
     if (!email.value) {
       setUsernameError(true);
       setUsernameErrorMessage("Please enter a valid username.");
-      isValid = false;
     } else {
       setUsernameError(false);
       setUsernameErrorMessage("");
@@ -73,7 +70,6 @@ export default function SignInCard() {
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
-      isValid = false;
     } else {
       setPasswordError(false);
       setPasswordErrorMessage("");
