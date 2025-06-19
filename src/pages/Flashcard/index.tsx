@@ -72,7 +72,10 @@ const FlashcardCollectionExperimental: React.FC = () => {
     currentPage * pageSize
   );
   // EXPLORE view
-  const languageId = categoriesData.find((c) => c.name === languageFilter)?.id;
+  const languageId =
+    languageFilter === "All"
+      ? undefined
+      : categoriesData.find((c) => c.name === languageFilter)?.id ?? "";
   const {
     data: exploreData,
     isLoading: isExploreLoading,
@@ -222,8 +225,14 @@ const FlashcardCollectionExperimental: React.FC = () => {
                 <div className="fc-exp-card-body">
                   <h3 className="fc-exp-card-title">{card.title}</h3>
                   <div className="meta">
-                    <span>{card.languageId.name}</span>
-                    <span>{new Date(card.createdAt).toLocaleDateString()}</span>
+                    <span>
+                      {card.languageId?.name ?? card.language ?? "Unknown"}
+                    </span>
+                    <span>
+                      {card.createdAt
+                        ? new Date(card.createdAt).toLocaleDateString()
+                        : "Unknown date"}
+                    </span>
                   </div>
                 </div>
               </article>

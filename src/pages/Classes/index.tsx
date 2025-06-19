@@ -38,7 +38,9 @@ const LearningDocuments: React.FC = () => {
   const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
   const [total, setTotal] = useState<number>(1);
 
-  setSearchQuery("");
+  useEffect(() => {
+    setSearchQuery("");
+  }, []);
   // Lấy danh sách ngôn ngữ từ API
   const {
     data: languages,
