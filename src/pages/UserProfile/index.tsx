@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./user-profile.css";
 import { useUserProfile } from "../../hooks/useUser";
 import Loading from "../../components/base/Loading";
+import toast from "react-hot-toast";
 
 interface UserProfile {
   fullName: string;
@@ -31,6 +32,10 @@ const UserProfile: React.FC = () => {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (isError) {
+    toast.error("Fail to load user data!");
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

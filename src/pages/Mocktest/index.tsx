@@ -77,6 +77,8 @@ const MockTest: React.FC = () => {
     return matchesLanguage && matchesSearch;
   });
 
+  setLanguageFilter("All");
+
   return (
     <div className="mocktests-container">
       <header className="mocktests-header" tabIndex={0}>
