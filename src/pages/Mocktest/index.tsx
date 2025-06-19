@@ -64,8 +64,6 @@ const mockTestsData: MockTest[] = [
   },
 ];
 
-const languages = ["All", "English", "Vietnamese"];
-
 const MockTest: React.FC = () => {
   const [languageFilter, setLanguageFilter] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -94,22 +92,14 @@ const MockTest: React.FC = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="mocktests-search"
         />
-        <label htmlFor="language-select" className="mocktests-lang-label">
-          Language:
-        </label>
-        <select
-          id="language-select"
-          className="mocktests-language-select"
-          value={languageFilter}
-          onChange={(e) => setLanguageFilter(e.target.value)}
-          aria-label="Filter mock tests by language"
+        <button
+          className="mocktests-btn "
+          onClick={() => {
+            // navigate(Menu.URL_CREATE_FLASHCARD_PAGE);
+          }}
         >
-          {languages.map((lang) => (
-            <option key={lang} value={lang}>
-              {lang}
-            </option>
-          ))}
-        </select>
+          Search
+        </button>
       </section>
 
       <main

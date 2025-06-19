@@ -24,7 +24,7 @@ export const FlashCardService = {
     return response;
   },
   createFlashCards: async (payload: any) => {
-    const response = await axiosInstance.post(`/flashcards/bulk`, payload);
+    const response = await axiosInstance.post(`/flashcards`, payload);
     return response;
   },
 

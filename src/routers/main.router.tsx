@@ -61,11 +61,11 @@ const MainRouter = () => {
           />
           <Route
             path={`${Menu.URL_MOCK_TEST_PAGE}/:title`}
-            element={<QuizTest />}
+            element={<MockTest />}
           />
           <Route
             path={`${Menu.URL_MOCK_TEST_PAGE}/:title/:id`}
-            element={<MockTest />}
+            element={<QuizTest />}
           />
           <Route
             path={`${Menu.URL_MOCKTEST_CHINESE_PRACTICE_PAGE}/:title`}

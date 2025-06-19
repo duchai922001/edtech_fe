@@ -1,0 +1,159 @@
+:root {
+  --color-green: #2a7a2a;
+  --color-green-light: #d4f1d4;
+  --color-gray-light: #f5f5f5;
+  --color-white: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-error: #d32f2f;
+}
+
+.user-profile-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.user-profile-container h1 {
+  font-size: 2rem;
+  color: var(--color-green);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.profile-card {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.info-label {
+  font-weight: 600;
+  color: var(--primary-color);
+  min-width: 150px;
+}
+
+.info-value {
+  color: #333;
+  font-size: 1.1rem;
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.8px solid var(--primary-color);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #1b4d1b;
+  box-shadow: 0 0 0 3px var(--color-green-light);
+}
+
+.input-error {
+  border-color: var(--color-error) !important;
+}
+
+.error-message {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 1rem;
+}
+
+.btn-edit {
+  background-color: var(--primary-color);
+  color: var(--color-white);
+  margin-top: 1.5rem;
+  width: 100%;
+  box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+.btn-edit:hover {
+  background-color: var(--primary-color);
+}
+
+.btn-save {
+  background-color: var(--primary-color);
+  color: var(--color-white);
+  flex: 1;
+  box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+.btn-save:hover {
+  background-color: #246924;
+}
+
+.btn-cancel {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1.8px solid var(--color-green) !important;
+  flex: 1;
+}
+
+.btn-cancel:hover {
+  background-color: var(--color-green-light);
+}
+
+@media (max-width: 600px) {
+  .user-profile-container {
+    padding: 0 1rem;
+  }
+
+  .profile-card {
+    padding: 1.5rem;
+  }
+
+  .info-item {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+}

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useCreateFlashCards } from "../../hooks/useFlashCard"; // chỉnh đường dẫn nếu khác
+
 import "./style.css";
 
 interface Flashcard {
@@ -8,17 +10,17 @@ interface Flashcard {
 }
 
 const languages = ["English", "Japanese", "Chinese"];
-const purposes = ["Learn", "Review"];
 
 const CreateFlashcardPage: React.FC = () => {
   const [title, setTitle] = useState("");
   const [language, setLanguage] = useState(languages[0]);
-  const [purpose, setPurpose] = useState(purposes[0]);
   const [flashcards, setFlashcards] = useState<Flashcard[]>([
     { question: "", answer: "" },
   ]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
+
+  const { mutate: createFlashCards } = useCreateFlashCards();
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
@@ -57,10 +59,36 @@ const CreateFlashcardPage: React.FC = () => {
     setFlashcards(flashcards.filter((_, i) => i !== index));
   };
 
+  const userId = localStorage.getItem("userId");
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    setSubmitted(true);
+
+    const languageMap: { [key: string]: string } = {
+      English: "68522b36943cefeda18742ef",
+      Japanese: "68522b46943cefeda18742f1",
+      Chinese: "68522b53943cefeda18742f3",
+    };
+
+    const payload = {
+      userId: userId,
+      title,
+      languageId: languageMap[language],
+      backgroundImage: "https://example.com/default-bg.jpg",
+      flashcards: flashcards.map((fc) => ({
+        questionFace: fc.question,
+        answerFace: fc.answer,
+        imageUrl: fc.imageUrl || "",
+        voiceUrl: "",
+      })),
+    };
+
+    createFlashCards(payload, {
+      onSuccess: () => {
+        setSubmitted(true);
+      },
+    });
   };
 
   if (submitted) {
@@ -72,7 +100,6 @@ const CreateFlashcardPage: React.FC = () => {
           <strong>{title}</strong>
         </p>
         <p>Language: {language}</p>
-        <p>Purpose: {purpose}</p>
         <h2>Flashcards</h2>
         <ul className="flashcard-summary-list">
           {flashcards.map((fc, i) => (
@@ -87,7 +114,6 @@ const CreateFlashcardPage: React.FC = () => {
             setTitle("");
             setFlashcards([{ question: "", answer: "" }]);
             setLanguage(languages[0]);
-            setPurpose(purposes[0]);
             setErrors({});
           }}
           className="btn-primary"
@@ -100,6 +126,9 @@ const CreateFlashcardPage: React.FC = () => {
 
   return (
     <div className="create-flashcard-page">
+      <button onClick={() => window.history.back()} className="btn-back">
+        ← Back
+      </button>
       <h1>Create a New Flashcard Set</h1>
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
@@ -132,20 +161,6 @@ const CreateFlashcardPage: React.FC = () => {
               {languages.map((lang) => (
                 <option value={lang} key={lang}>
                   {lang}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group half-width">
-            <label htmlFor="purpose">Purpose</label>
-            <select
-              id="purpose"
-              value={purpose}
-              onChange={(e) => setPurpose(e.target.value)}
-            >
-              {purposes.map((p) => (
-                <option value={p} key={p}>
-                  {p}
                 </option>
               ))}
             </select>

@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 :root {
-  --color-green: #1b4332;
+  --color-green: #1d4e3a;
   --color-green-light: #d4f1d4;
   --color-gray-light: #f5f5f5;
   --color-white: #ffffff;
@@ -45,7 +45,7 @@ body {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   margin: 0;
-  color: var(--color-green);
+  color: var(--primary-color);
 }
 
 /* Filters section */
@@ -76,13 +76,26 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+.mocktests-btn {
+  flex-grow: 1;
+  padding: 10px 16px;
+  max-width: 7rem;
+  font-size: 1rem;
+  border-radius: 24px;
+  border: 1.8px solid var(--primary-color);
+  color: var(--color-white);
+  font-weight: 600;
+  outline-offset: 2px;
+  background-color: var(--primary-color);
+}
+
 .mocktests-search::placeholder {
   color: #77aa77;
 }
 
 .mocktests-search:focus,
 .mocktests-search:hover {
-  border-color: #1b4d1b;
+  border-color: #1d4e3a;
   outline: none;
   background-color: #f2fcf2;
 }

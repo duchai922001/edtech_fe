@@ -11,7 +11,7 @@ const MocktestContainer = () => {
     if (id == "3") {
       navigate(`/mocktest/chinese-test`);
     } else {
-      navigate(`/mocktest/${code}/${id}`);
+      navigate(`/mocktest/${code}`);
     }
   };
   if (isLoading) {
