@@ -87,7 +87,9 @@ const MockTestChinese: React.FC = () => {
                   tabIndex={0}
                   aria-describedby={`desc-${test.id}`}
                   onClick={() => {
-                    navigate(`${Menu.URL_MOCK_TEST_PAGE}/detail/${test._id}`);
+                    navigate(
+                      `${Menu.URL_MOCKTEST_CHINESE_PAGE}/detail/${test._id}`
+                    );
                   }}
                 >
                   <h2 className="mocktest-title">{test.title}</h2>

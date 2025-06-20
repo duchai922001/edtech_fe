@@ -15,7 +15,6 @@ export const Menu = {
   URL_BOARD_GAME_PAGE: "/games",
   URL_CREATE_FLASHCARD_PAGE: "/create-flashcards",
   URL_MOCKTEST_CHINESE_PAGE: "/mocktest/chinese-test",
-  URL_MOCKTEST_CHINESE_PRACTICE_PAGE: "/practice/chinese",
   URL_PROFILE_USER: "/profile-user",
 
   URL_MY_FLASHCARD_PAGE: "/my-flashcards",

@@ -24,6 +24,7 @@ import QuizTestChinese from "../pages/QuizTestChinese";
 import MyFlashcards from "../pages/MyFlashCard";
 import UserProfile from "../pages/UserProfile";
 import QuizTestStart from "../pages/QuizTestStart";
+import QuizTestChineseStart from "../pages/QuizTestChineseStart";
 const MainRouter = () => {
   return (
     <>
@@ -73,8 +74,12 @@ const MainRouter = () => {
             element={<QuizTestStart />}
           />
           <Route
-            path={`${Menu.URL_MOCKTEST_CHINESE_PRACTICE_PAGE}/:title`}
+            path={`${Menu.URL_MOCKTEST_CHINESE_PAGE}/detail/:id`}
             element={<QuizTestChinese />}
+          />
+          <Route
+            path={`${Menu.URL_MOCKTEST_CHINESE_PAGE}/start/:id`}
+            element={<QuizTestChineseStart />}
           />
           <Route path={`${Menu.URL_WORD_GAME_PAGE}`} element={<WordGames />} />
           <Route path={`${Menu.URL_CROSS_GAME_PAGE}`} element={<CrossGame />} />

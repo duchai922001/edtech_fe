@@ -13,10 +13,10 @@ export const useGetMocktestsChinese = (params: {
   });
 };
 
-export const useGetMocktestsChineseDetail = (title: string) => {
+export const useGetMocktestsChineseDetail = (id: string) => {
   return useQuery({
-    queryKey: ["get-mocktests-chinese-detail", title],
-    queryFn: () => MocktestChineseService.getMocktestsByTitle(title),
+    queryKey: ["get-mocktests-chinese-detail", id],
+    queryFn: () => MocktestChineseService.getMocktestsById(id),
     select: (res) => res.data,
     staleTime: 5000,
   });

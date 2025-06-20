@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { Clock, CheckCircle, Circle, PlayCircle } from "lucide-react";
+import {
+  Clock,
+  CheckCircle,
+  Circle,
+  PlayCircle,
+  ArrowLeft,
+} from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetMockTestById } from "../../hooks/useMocktest";
 import Loading from "../../components/base/Loading";
@@ -136,6 +142,14 @@ export default function QuizTestStart() {
 
   return (
     <div className="quiz-container">
+      {/* Back Button */}
+      <button
+        onClick={() => window.history.back()}
+        className="flashcard-back-button"
+      >
+        <ArrowLeft className="flashcard-back-icon" />
+        Back
+      </button>
       {/* Fixed Question Status Sidebar */}
       <div className="quiz-sidebar">
         <div className="quiz-sidebar-card">

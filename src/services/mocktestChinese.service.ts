@@ -15,4 +15,8 @@ export const MocktestChineseService = {
     });
     return response;
   },
+  getMocktestsById: async (id: string) => {
+    const response = await axiosInstance.get(`/chinese/${id}`);
+    return response;
+  },
 };
