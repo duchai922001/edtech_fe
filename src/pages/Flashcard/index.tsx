@@ -183,7 +183,13 @@ const FlashcardCollectionExperimental: React.FC = () => {
             <p className="fc-exp-empty-state">No flashcards found.</p>
           ) : view === "explore" ? (
             flashcardsToRender.map((card: any) => (
-              <article key={card._id} className="fc-exp-card">
+              <article
+                key={card._id}
+                className="fc-exp-card"
+                onClick={() => {
+                  navigate(`${Menu.URL_FLASH_CARD_PAGE}/${card._id}`);
+                }}
+              >
                 <button
                   className={`fc-exp-fav-btn ${
                     card.isFavorite ? "favorited" : ""
@@ -218,7 +224,13 @@ const FlashcardCollectionExperimental: React.FC = () => {
             ))
           ) : (
             flashcardsToRender.map((card: any) => (
-              <article key={card._id} className="fc-exp-card">
+              <article
+                key={card._id}
+                className="fc-exp-card"
+                onClick={() => {
+                  navigate(`${Menu.URL_FLASH_CARD_PAGE}/${card._id}`);
+                }}
+              >
                 <button
                   className={`fc-exp-fav-btn ${
                     card.isFavorite ? "favorited" : ""

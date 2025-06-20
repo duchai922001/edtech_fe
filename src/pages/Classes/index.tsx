@@ -124,16 +124,16 @@ const LearningDocuments: React.FC = () => {
 
   return (
     <>
-      <header
+      {/* <header
         role="banner"
-        aria-label="Primary header navigation"
+        aria-label="Primary headerclass navigation"
         className="header"
       >
         <div className="logo" tabIndex={0}>
           Edtech Learning
         </div>
         <nav aria-label="Primary site navigation"></nav>
-      </header>
+      </header> */}
       <div
         className="app-container"
         tabIndex={0}
@@ -164,9 +164,7 @@ const LearningDocuments: React.FC = () => {
                     setSelectedCategory(null);
                   }
                 }}
-                className={
-                  selectedCategory === null ? "category-selected" : undefined
-                }
+                className={selectedCategory === null ? "category-selected" : ""}
               >
                 <span
                   className="material-icons"

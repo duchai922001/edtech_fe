@@ -23,6 +23,10 @@ export const FlashCardService = {
     });
     return response;
   },
+  getFlashCardById: async (id: string) => {
+    const response = await axiosInstance.get(`/flashcards/${id}`, {});
+    return response;
+  },
   createFlashCards: async (payload: any) => {
     const response = await axiosInstance.post(`/flashcards`, payload);
     return response;

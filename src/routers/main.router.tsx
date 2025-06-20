@@ -57,7 +57,7 @@ const MainRouter = () => {
           <Route path={Menu.URL_LOGIN_PAGE} element={<LoginPage />} />
           <Route path={Menu.URL_SIGNUP_PAGE} element={<SignUpPage />} />
           <Route
-            path={`${Menu.URL_FLASH_CARD_PAGE}/:title`}
+            path={`${Menu.URL_FLASH_CARD_PAGE}/:id`}
             element={<FlashCardDetail />}
           />
           <Route

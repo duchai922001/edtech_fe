@@ -24,6 +24,15 @@ export const useGetFlashCardsSubject = (title: string) => {
   });
 };
 
+export const useGetFlashCardsById = (id: string) => {
+  return useQuery({
+    queryKey: ["get-flashcard-id", id],
+    queryFn: () => FlashCardService.getFlashCardById(id),
+    select: (res) => res.data,
+    staleTime: 5000,
+  });
+};
+
 export const useGetMyFlashcards = (userId: string) => {
   return useQuery({
     enabled: !!userId,
