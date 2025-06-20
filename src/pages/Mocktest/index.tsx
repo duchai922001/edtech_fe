@@ -21,7 +21,7 @@ const MockTest: React.FC = () => {
   const { languageId } = useParams<{ languageId: string }>();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
+  const pageSize = 12;
 
   const {
     data: mocktestData,
@@ -36,6 +36,8 @@ const MockTest: React.FC = () => {
   if (!mocktestData) {
     return <Loading />;
   }
+
+  console.log(mocktestData);
 
   const mocktests = mocktestData?.data || [];
   const total = mocktestData?.total || 0;
@@ -94,9 +96,13 @@ const MockTest: React.FC = () => {
                   <h2 className="mocktest-title">{test.title}</h2>
                   <p className="mocktest-desc">{test.description}</p>
                   <div className="mocktest-meta">
-                    <span>{test.questionsCount} questions</span>
-                    <span>{test.durationMinutes} minutes</span>
-                    <span>{test.language}</span>
+                    <span>{20} questions</span>
+                  </div>
+                  <div
+                    className="mocktest-meta-language"
+                    style={{ marginTop: "10px" }}
+                  >
+                    <span>{test.languageId.name}</span>
                   </div>
                   <p id={`desc-${test._id}`} className="sr-only">
                     {test.title} with {test.questionsCount} questions. Duration{" "}
@@ -146,6 +152,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div
       className="pagination"
+      style={{ marginTop: "6rem" }}
       role="navigation"
       aria-label="Pagination navigation"
     >
