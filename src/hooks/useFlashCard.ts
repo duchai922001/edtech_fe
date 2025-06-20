@@ -42,3 +42,21 @@ export const useCreateFlashCards = () => {
     },
   });
 };
+
+export const useFavoriteFlashcard = () => {
+  return useMutation({
+    mutationFn: ({
+      flashcardId,
+      token,
+    }: {
+      flashcardId: string;
+      token: string;
+    }) => FlashCardService.favoriteFlashcard(flashcardId, token),
+    onSuccess: () => {
+      toast.success("Added to favourites!");
+    },
+    onError: () => {
+      toast.error("Failed to add to favourites.");
+    },
+  });
+};

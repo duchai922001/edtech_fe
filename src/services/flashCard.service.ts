@@ -34,4 +34,13 @@ export const FlashCardService = {
     });
     return response;
   },
+
+  favoriteFlashcard: async (flashcardId: string, token: string) => {
+    const response = await axiosInstance.post(`/favorites/${flashcardId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  },
 };

@@ -5,6 +5,7 @@ import { useGetLanguages } from "../../hooks/useLanguage";
 import { useGetMyFlashcards, useGetFlashCards } from "../../hooks/useFlashCard";
 import { useNavigate } from "react-router-dom";
 import { Menu } from "../../common/configMenu";
+import { useFavoriteFlashcard } from "../../hooks/useFlashCard";
 
 interface Flashcard {
   _id: string;
@@ -39,6 +40,7 @@ const FlashcardCollectionExperimental: React.FC = () => {
   const [languageFilter, setLanguageFilter] = useState<string>("All");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
+  const favoriteMutation = useFavoriteFlashcard();
 
   const {
     data: languages,
@@ -191,6 +193,13 @@ const FlashcardCollectionExperimental: React.FC = () => {
                       ? "Remove from favorites"
                       : "Add to favorites"
                   }
+                  onClick={() =>
+                    console.log({
+                      flashcardId: card._id,
+                      token: localStorage.getItem("token") || "",
+                    })
+                  }
+                  disabled={favoriteMutation.isPending}
                 >
                   <span className="material-icons">star</span>
                 </button>
@@ -219,6 +228,13 @@ const FlashcardCollectionExperimental: React.FC = () => {
                       ? "Remove from favorites"
                       : "Add to favorites"
                   }
+                  onClick={() =>
+                    console.log({
+                      flashcardId: card._id,
+                      token: localStorage.getItem("token") || "",
+                    })
+                  }
+                  disabled={favoriteMutation.isPending}
                 >
                   <span className="material-icons">star</span>
                 </button>
