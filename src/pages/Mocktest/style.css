@@ -24,7 +24,7 @@ body {
 }
 
 .mocktests-container {
-  max-width: 1080px;
+  max-width: 80%;
   margin: 1.5rem auto 3rem;
   padding: 0 1rem;
   display: flex;

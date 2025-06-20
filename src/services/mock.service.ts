@@ -11,16 +11,19 @@ export const MocktestService = {
     return response;
   },
 
-  getMocktestLanguage: async (languageId: string, page: number = 0) => {
-    const response = await axiosInstance.get(
-      `/mocktests/language/${languageId}`,
-      {
-        params: {
-          page,
-          limit: 50,
-        },
-      }
-    );
+  getMockTests: async (params: {
+    page?: number;
+    limit?: number;
+    languageId?: string;
+  }) => {
+    const response = await axiosInstance.get("/mocktests/get-all", {
+      params,
+    });
+    return response;
+  },
+
+  getMockTestById: async (id: string) => {
+    const response = await axiosInstance.get(`/mocktests/${id}`);
     return response;
   },
 };

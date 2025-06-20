@@ -19,11 +19,25 @@ export const useGetMocktestByTitle = (title: string) => {
   });
 };
 
-export const useGetMocktestLanguage = (languageId: string, page: number) => {
+export const useGetMocktestLanguage = (params: {
+  page?: number;
+  limit?: number;
+  languageId?: string;
+}) => {
   return useQuery({
-    queryKey: ["get-mocktest-by-language", languageId, page],
-    queryFn: () => MocktestService.getMocktestLanguage(languageId, page),
+    queryKey: ["get-mocktest-by-language", params],
+    queryFn: () => MocktestService.getMockTests(params),
     select: (res) => res.data,
     staleTime: 5000,
+  });
+};
+
+export const useGetMockTestById = (id: string) => {
+  return useQuery({
+    queryKey: ["get-mocktest-by-id", id],
+    queryFn: () => MocktestService.getMockTestById(id),
+    select: (res) => res.data,
+    enabled: !!id, // chỉ gọi khi id tồn tại
+    staleTime: 10000,
   });
 };

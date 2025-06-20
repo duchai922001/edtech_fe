@@ -194,7 +194,7 @@ const FlashcardCollectionExperimental: React.FC = () => {
                       : "Add to favorites"
                   }
                   onClick={() =>
-                    console.log({
+                    favoriteMutation.mutate({
                       flashcardId: card._id,
                       token: localStorage.getItem("token") || "",
                     })
@@ -229,7 +229,7 @@ const FlashcardCollectionExperimental: React.FC = () => {
                       : "Add to favorites"
                   }
                   onClick={() =>
-                    console.log({
+                    favoriteMutation.mutate({
                       flashcardId: card._id,
                       token: localStorage.getItem("token") || "",
                     })

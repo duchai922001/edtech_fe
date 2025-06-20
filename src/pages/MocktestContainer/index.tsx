@@ -8,10 +8,10 @@ const MocktestContainer = () => {
   const { data, isLoading } = useGetLanguages();
 
   const handleNavigate = (code: string, id: string) => {
-    if (id == "3") {
+    if (id == "68522b53943cefeda18742f3") {
       navigate(`/mocktest/chinese-test`);
     } else {
-      navigate(`/mocktest/${code}`);
+      navigate(`/mocktest/${id}`);
     }
   };
   if (isLoading) {
@@ -26,7 +26,9 @@ const MocktestContainer = () => {
             <div
               key={lang.code}
               className="language-card"
-              onClick={() => handleNavigate(lang?.name?.toLowerCase(), lang.id)}
+              onClick={() =>
+                handleNavigate(lang?.name?.toLowerCase(), lang._id)
+              }
             >
               <div className="lang-name">{lang.name}</div>
             </div>
