@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./style.css";
 
 interface Player {
@@ -125,57 +125,8 @@ function MedalIcon({ position }: { position: number }) {
   );
 }
 
-function PerformanceIndicator({
-  previousPosition,
-  currentPosition,
-}: {
-  previousPosition: number;
-  currentPosition: number;
-}) {
-  if (previousPosition === currentPosition) return null;
-
-  const isImproved = currentPosition < previousPosition;
-
-  return (
-    <div
-      className={`performance-indicator ${
-        isImproved ? "improved" : "declined"
-      }`}
-    >
-      <span className="arrow">{isImproved ? "↗" : "↘"}</span>
-      <span className="change">
-        {Math.abs(previousPosition - currentPosition)}
-      </span>
-    </div>
-  );
-}
-
-function StatBadge({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <div className="stat-badge">
-      <span className="stat-label">{label}</span>
-      <span className="stat-value">{value}</span>
-    </div>
-  );
-}
-
 export default function RaceLeaderboard() {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
-  const [isLive, setIsLive] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsLive((prev) => !prev);
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="leaderboard-container">
@@ -230,7 +181,6 @@ export default function RaceLeaderboard() {
                         className="avatar-image"
                       />
                     </div>
-                    {player.isLive && <div className="live-status"></div>}
                   </div>
                   <div className="player-details">
                     <div className="player-name">{player.username}</div>

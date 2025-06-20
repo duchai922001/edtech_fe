@@ -7,40 +7,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useGetMockTestById } from "../../hooks/useMocktest";
 import { Menu } from "../../common/configMenu";
 
-interface Answer {
-  _id: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface Question {
-  _id: string;
-  question: string;
-  answers: Answer[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface Language {
-  _id: string;
-  name: string;
-  code: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface MockTest {
-  _id: string;
-  userId: string;
-  title: string;
-  languageId: Language;
-  backgroundImage: string;
-  questions: Question[];
-  type: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// interface MockTest {
+//   _id: string;
+//   userId: string;
+//   title: string;
+//   languageId: Language;
+//   backgroundImage: string;
+//   questions: Question[];
+//   type: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
 const QuizTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "./style.css";
 import { useGetMocktestLanguage } from "../../hooks/useMocktest";
@@ -33,7 +33,9 @@ const MockTest: React.FC = () => {
     languageId,
   });
 
-  console.log(mocktestData);
+  if (!mocktestData) {
+    return <Loading />;
+  }
 
   const mocktests = mocktestData?.data || [];
   const total = mocktestData?.total || 0;

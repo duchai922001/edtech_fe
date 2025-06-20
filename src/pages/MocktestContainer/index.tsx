@@ -12,6 +12,7 @@ const MocktestContainer = () => {
       navigate(`/mocktest/chinese-test`);
     } else {
       navigate(`/mocktest/${id}`);
+      console.log(code);
     }
   };
   if (isLoading) {
