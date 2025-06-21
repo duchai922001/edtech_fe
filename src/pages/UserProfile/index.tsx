@@ -1,170 +1,597 @@
-import React, { useState, useEffect } from "react";
-import "./user-profile.css";
+import { useState, useEffect } from "react";
+import {
+  ArrowLeft,
+  User,
+  Lock,
+  CheckCircle,
+  AlertCircle,
+  X,
+  Check,
+} from "lucide-react";
+import "./style.css";
 import { useUserProfile } from "../../hooks/useUser";
 import Loading from "../../components/base/Loading";
-import toast from "react-hot-toast";
 
 interface UserProfile {
   fullName: string;
-  email: string;
   username: string;
-  avatar?: string;
+  email: string;
 }
 
-const UserProfile: React.FC = () => {
-  const [profile, setProfile] = useState<UserProfile>({
-    fullName: "Nguyễn Văn A",
-    email: "example@study4.com",
-    username: "nguyenvana",
-  });
-  const [editMode, setEditMode] = useState(false);
-  const [tempProfile, setTempProfile] = useState<UserProfile>({ ...profile });
-  const [errors, setErrors] = useState<Partial<UserProfile>>({});
+interface PasswordData {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 
-  const { data, isLoading, isError } = useUserProfile();
+export default function UserProfile() {
+  const { data, isLoading } = useUserProfile();
+  // Mock user data
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    fullName: "",
+    username: "",
+    email: "",
+  });
 
   useEffect(() => {
     if (data) {
-      setProfile(data);
-      setTempProfile(data); // đồng bộ profile tạm để chỉnh sửa
+      setUserProfile({
+        fullName: data.fullName || "",
+        username: data.username || "",
+        email: data.email || "", // nếu không có thì gán rỗng
+      });
     }
   }, [data]);
+
+  console.log(data);
+
+  const [editProfile, setEditProfile] = useState<UserProfile>({
+    fullName: "",
+    username: "",
+    email: "",
+  });
+
+  const [passwordData, setPasswordData] = useState<PasswordData>({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [isLoadingPassword, setIsLoadingPassword] = useState(false);
+  const [profileAlert, setProfileAlert] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [passwordAlert, setPasswordAlert] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (isError) {
-    toast.error("Fail to load user data!");
+  if (!data) {
+    return (
+      <div className="profile-container">
+        <div className="profile-main-content">
+          <p>Could not load user profile.</p>
+        </div>
+      </div>
+    );
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setTempProfile((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+  // Password validation
+  const validatePassword = (password: string) => {
+    return {
+      length: password.length >= 6,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
   };
 
-  const validate = (): boolean => {
-    const newErrors: Partial<UserProfile> = {};
-    if (!tempProfile.fullName.trim()) newErrors.fullName = "Fill full name";
-    if (!tempProfile.email.trim()) newErrors.email = "Fill email";
-    else if (!/^\S+@\S+\.\S+$/.test(tempProfile.email))
-      newErrors.email = "Invalid email";
-    if (!tempProfile.username.trim()) newErrors.username = "Fill username";
+  const passwordValidation = validatePassword(passwordData.newPassword);
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleEditProfile = () => {
+    setEditProfile(userProfile);
+    setIsEditingProfile(true);
+    setProfileAlert(null);
   };
 
-  const handleSave = () => {
-    if (!validate()) return;
-
-    setProfile(tempProfile);
-    setEditMode(false);
-    // Here you would typically make an API call to save the changes
-    // await fetch('/api/user/profile', {
-    //   method: 'PUT',
-    //   body: JSON.stringify(tempProfile),
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // });
+  const handleCancelEditProfile = () => {
+    setEditProfile({ fullName: "", username: "", email: "" });
+    setIsEditingProfile(false);
+    setProfileAlert(null);
   };
 
-  const handleCancel = () => {
-    setTempProfile(profile);
-    setEditMode(false);
-    setErrors({});
+  const handleSaveProfile = async () => {
+    setIsLoadingProfile(true);
+    setProfileAlert(null);
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Validate fields
+      if (
+        !editProfile.fullName.trim() ||
+        !editProfile.username.trim() ||
+        !editProfile.email.trim()
+      ) {
+        throw new Error("All fields are required");
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editProfile.email)) {
+        throw new Error("Please enter a valid email address");
+      }
+
+      setUserProfile(editProfile);
+      setIsEditingProfile(false);
+      setProfileAlert({
+        type: "success",
+        message: "Profile updated successfully!",
+      });
+    } catch (error) {
+      setProfileAlert({
+        type: "error",
+        message:
+          error instanceof Error ? error.message : "Failed to update profile",
+      });
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    setIsLoadingPassword(true);
+    setPasswordAlert(null);
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Validate fields
+      if (
+        !passwordData.currentPassword ||
+        !passwordData.newPassword ||
+        !passwordData.confirmPassword
+      ) {
+        throw new Error("All password fields are required");
+      }
+
+      if (!isPasswordValid) {
+        throw new Error("New password does not meet requirements");
+      }
+
+      if (passwordData.newPassword !== passwordData.confirmPassword) {
+        throw new Error("New passwords do not match");
+      }
+
+      if (passwordData.currentPassword === passwordData.newPassword) {
+        throw new Error("New password must be different from current password");
+      }
+
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setIsChangingPassword(false);
+      setPasswordAlert({
+        type: "success",
+        message: "Password changed successfully!",
+      });
+    } catch (error) {
+      setPasswordAlert({
+        type: "error",
+        message:
+          error instanceof Error ? error.message : "Failed to change password",
+      });
+    } finally {
+      setIsLoadingPassword(false);
+    }
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
-    <div className="user-profile-container">
-      <h1>Your profile</h1>
+    <div className="profile-container">
+      {/* Back Button */}
+      <button
+        onClick={() => window.history.back()}
+        className="profile-back-button"
+      >
+        <ArrowLeft className="profile-back-icon" />
+        Back
+      </button>
 
-      <div className="profile-card">
-        {editMode ? (
-          <>
-            <div className="form-group">
-              <label htmlFor="fullName">Full name</label>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={tempProfile.fullName}
-                onChange={handleInputChange}
-                className={errors.fullName ? "input-error" : ""}
-              />
-              {errors.fullName && (
-                <span className="error-message">{errors.fullName}</span>
+      {/* Main Content */}
+      <div className="profile-main-content">
+        {/* Header */}
+        <div className="profile-header">
+          <h1 className="profile-title">Your Profile</h1>
+          <p className="profile-subtitle">Manage your account information</p>
+        </div>
+
+        <div className="profile-content">
+          {/* Profile Information Card */}
+          <div className="profile-card">
+            <div className="profile-card-header">
+              <h2 className="profile-card-title">
+                <User className="profile-icon" />
+                Personal Information
+              </h2>
+            </div>
+            <div className="profile-card-content">
+              {/* Avatar Section */}
+              <div className="profile-avatar-section">
+                <div className="profile-avatar">
+                  {getInitials(userProfile.fullName)}
+                </div>
+                <div className="profile-avatar-name">
+                  {userProfile.fullName}
+                </div>
+                <div className="profile-avatar-email">{userProfile.email}</div>
+              </div>
+
+              {/* Alert */}
+              {profileAlert && (
+                <div
+                  className={`profile-alert ${
+                    profileAlert.type === "success"
+                      ? "profile-alert-success"
+                      : "profile-alert-error"
+                  }`}
+                >
+                  {profileAlert.type === "success" ? (
+                    <CheckCircle className="profile-alert-icon" />
+                  ) : (
+                    <AlertCircle className="profile-alert-icon" />
+                  )}
+                  {profileAlert.message}
+                </div>
+              )}
+
+              {/* Profile Form */}
+              <form
+                className="profile-form"
+                onSubmit={(e) => e.preventDefault()}
+              >
+                <div className="profile-form-group">
+                  <label className="profile-form-label" htmlFor="fullName">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    className="profile-form-input"
+                    value={
+                      isEditingProfile
+                        ? editProfile.fullName
+                        : userProfile.fullName
+                    }
+                    onChange={(e) =>
+                      setEditProfile({
+                        ...editProfile,
+                        fullName: e.target.value,
+                      })
+                    }
+                    disabled={!isEditingProfile}
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                <div className="profile-form-group">
+                  <label className="profile-form-label" htmlFor="username">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    className="profile-form-input"
+                    value={
+                      isEditingProfile
+                        ? editProfile.username
+                        : userProfile.username
+                    }
+                    onChange={(e) =>
+                      setEditProfile({
+                        ...editProfile,
+                        username: e.target.value,
+                      })
+                    }
+                    disabled={!isEditingProfile}
+                    placeholder="Enter your username"
+                  />
+                </div>
+
+                <div className="profile-form-group">
+                  <label className="profile-form-label" htmlFor="email">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    className="profile-form-input"
+                    value={
+                      isEditingProfile ? editProfile.email : userProfile.email
+                    }
+                    onChange={(e) =>
+                      setEditProfile({ ...editProfile, email: e.target.value })
+                    }
+                    disabled={!isEditingProfile}
+                    placeholder="Enter your email address"
+                  />
+                </div>
+
+                <div className="profile-button-group">
+                  {isEditingProfile ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleCancelEditProfile}
+                        className="profile-button profile-button-secondary"
+                        disabled={isLoadingProfile}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveProfile}
+                        className="profile-button profile-button-primary"
+                        disabled={isLoadingProfile}
+                      >
+                        {isLoadingProfile ? (
+                          <div className="profile-loading">
+                            <div className="profile-spinner"></div>
+                            Saving...
+                          </div>
+                        ) : (
+                          "Save Changes"
+                        )}
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleEditProfile}
+                      className="profile-button profile-button-primary"
+                    >
+                      Edit Profile
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Password Change Card */}
+          <div className="profile-card">
+            <div className="profile-card-header">
+              <h2 className="profile-card-title">
+                <Lock className="profile-icon" />
+                Change Password
+              </h2>
+            </div>
+            <div className="profile-card-content">
+              {/* Alert */}
+              {passwordAlert && (
+                <div
+                  className={`profile-alert ${
+                    passwordAlert.type === "success"
+                      ? "profile-alert-success"
+                      : "profile-alert-error"
+                  }`}
+                >
+                  {passwordAlert.type === "success" ? (
+                    <CheckCircle className="profile-alert-icon" />
+                  ) : (
+                    <AlertCircle className="profile-alert-icon" />
+                  )}
+                  {passwordAlert.message}
+                </div>
+              )}
+
+              {!isChangingPassword ? (
+                <div className="profile-button-group-full">
+                  <button
+                    type="button"
+                    onClick={() => setIsChangingPassword(true)}
+                    className="profile-button profile-button-primary"
+                    disabled={true}
+                  >
+                    Change Password
+                  </button>
+                </div>
+              ) : (
+                <form
+                  className="profile-form"
+                  onSubmit={(e) => e.preventDefault()}
+                >
+                  <div className="profile-form-group">
+                    <label
+                      className="profile-form-label"
+                      htmlFor="currentPassword"
+                    >
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      id="currentPassword"
+                      className="profile-form-input"
+                      value={passwordData.currentPassword}
+                      onChange={(e) =>
+                        setPasswordData({
+                          ...passwordData,
+                          currentPassword: e.target.value,
+                        })
+                      }
+                      placeholder="Enter your current password"
+                    />
+                  </div>
+
+                  <div className="profile-form-group">
+                    <label className="profile-form-label" htmlFor="newPassword">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      id="newPassword"
+                      className="profile-form-input"
+                      value={passwordData.newPassword}
+                      onChange={(e) =>
+                        setPasswordData({
+                          ...passwordData,
+                          newPassword: e.target.value,
+                        })
+                      }
+                      placeholder="Enter your new password"
+                    />
+                    {passwordData.newPassword && (
+                      <div className="profile-password-requirements">
+                        <div className="profile-password-requirements-title">
+                          Password Requirements:
+                        </div>
+                        <ul className="profile-password-requirements-list">
+                          <li
+                            className={`profile-password-requirement ${
+                              passwordValidation.length ? "valid" : ""
+                            }`}
+                          >
+                            {passwordValidation.length ? (
+                              <Check className="profile-password-requirement-icon" />
+                            ) : (
+                              <X className="profile-password-requirement-icon" />
+                            )}
+                            At least 8 characters
+                          </li>
+                          <li
+                            className={`profile-password-requirement ${
+                              passwordValidation.uppercase ? "valid" : ""
+                            }`}
+                          >
+                            {passwordValidation.uppercase ? (
+                              <Check className="profile-password-requirement-icon" />
+                            ) : (
+                              <X className="profile-password-requirement-icon" />
+                            )}
+                            One uppercase letter
+                          </li>
+                          <li
+                            className={`profile-password-requirement ${
+                              passwordValidation.lowercase ? "valid" : ""
+                            }`}
+                          >
+                            {passwordValidation.lowercase ? (
+                              <Check className="profile-password-requirement-icon" />
+                            ) : (
+                              <X className="profile-password-requirement-icon" />
+                            )}
+                            One lowercase letter
+                          </li>
+                          <li
+                            className={`profile-password-requirement ${
+                              passwordValidation.number ? "valid" : ""
+                            }`}
+                          >
+                            {passwordValidation.number ? (
+                              <Check className="profile-password-requirement-icon" />
+                            ) : (
+                              <X className="profile-password-requirement-icon" />
+                            )}
+                            One number
+                          </li>
+                          <li
+                            className={`profile-password-requirement ${
+                              passwordValidation.special ? "valid" : ""
+                            }`}
+                          >
+                            {passwordValidation.special ? (
+                              <Check className="profile-password-requirement-icon" />
+                            ) : (
+                              <X className="profile-password-requirement-icon" />
+                            )}
+                            One special character
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="profile-form-group">
+                    <label
+                      className="profile-form-label"
+                      htmlFor="confirmPassword"
+                    >
+                      Confirm New Password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      className="profile-form-input"
+                      value={passwordData.confirmPassword}
+                      onChange={(e) =>
+                        setPasswordData({
+                          ...passwordData,
+                          confirmPassword: e.target.value,
+                        })
+                      }
+                      placeholder="Confirm your new password"
+                    />
+                  </div>
+
+                  <div className="profile-button-group">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsChangingPassword(false);
+                        setPasswordData({
+                          currentPassword: "",
+                          newPassword: "",
+                          confirmPassword: "",
+                        });
+                        setPasswordAlert(null);
+                      }}
+                      className="profile-button profile-button-secondary"
+                      disabled={isLoadingPassword}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleChangePassword}
+                      className="profile-button profile-button-primary"
+                      disabled={isLoadingPassword}
+                    >
+                      {isLoadingPassword ? (
+                        <div className="profile-loading">
+                          <div className="profile-spinner"></div>
+                          Changing...
+                        </div>
+                      ) : (
+                        "Change Password"
+                      )}
+                    </button>
+                  </div>
+                </form>
               )}
             </div>
-
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={tempProfile.email}
-                onChange={handleInputChange}
-                className={errors.email ? "input-error" : ""}
-              />
-              {errors.email && (
-                <span className="error-message">{errors.email}</span>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={tempProfile.username}
-                onChange={handleInputChange}
-                className={errors.username ? "input-error" : ""}
-              />
-              {errors.username && (
-                <span className="error-message">{errors.username}</span>
-              )}
-            </div>
-
-            <div className="button-group">
-              <button className="btn-save" onClick={handleSave}>
-                Lưu thay đổi
-              </button>
-              <button className="btn-cancel" onClick={handleCancel}>
-                Hủy
-              </button>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="profile-info">
-              <div className="info-item">
-                <span className="info-label">Full name:</span>
-                <span className="info-value">{profile.fullName}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Email:</span>
-                <span className="info-value">{profile.email}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Username:</span>
-                <span className="info-value">{profile.username}</span>
-              </div>
-            </div>
-            <button className="btn-edit" onClick={() => setEditMode(true)}>
-              Chỉnh sửa thông tin
-            </button>
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );
-};
-
-export default UserProfile;
+}

@@ -5,32 +5,32 @@ import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import ConstructionRoundedIcon from "@mui/icons-material/ConstructionRounded";
 import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
 import ThumbUpAltRoundedIcon from "@mui/icons-material/ThumbUpAltRounded";
-import { SitemarkIcon } from "./CustomIcons";
+// import { SitemarkIcon } from "./CustomIcons";
 
 const items = [
   {
     icon: <SettingsSuggestRoundedIcon sx={{ color: "text.secondary" }} />,
-    title: "Adaptable performance",
+    title: "Effective Practice",
     description:
-      "Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.",
+      "Our Mocktest system is designed based on official formats, helping you assess your English, Chinese, and Japanese proficiency accurately and flexibly.",
   },
   {
     icon: <ConstructionRoundedIcon sx={{ color: "text.secondary" }} />,
-    title: "Built to last",
+    title: "Long-Term Memory Retention",
     description:
-      "Experience unmatched durability that goes above and beyond with lasting investment.",
+      "Learn faster and remember longer with Flashcards optimized for vocabulary and sentence pattern retention in your chosen language.",
   },
   {
     icon: <ThumbUpAltRoundedIcon sx={{ color: "text.secondary" }} />,
-    title: "Great user experience",
+    title: "Interactive Learning",
     description:
-      "Integrate our product into your routine with an intuitive and easy-to-use interface.",
+      "Enhance your language acquisition through a user-friendly, multimedia-based, and highly intuitive learning experience.",
   },
   {
     icon: <AutoFixHighRoundedIcon sx={{ color: "text.secondary" }} />,
-    title: "Innovative functionality",
+    title: "Extensive Learning Materials",
     description:
-      "Stay ahead with features that set new standards, addressing your evolving needs better than the rest.",
+      "Access a curated collection of learning resources organized by language to help you study systematically and save time.",
   },
 ];
 
@@ -45,7 +45,10 @@ export default function Content() {
       }}
     >
       <Box sx={{ display: { xs: "none", md: "flex" } }}>
-        <SitemarkIcon />
+        {/* <img
+          src={LOGO}
+          style={{ width: "50px", height: "auto", marginLeft: "-24px" }}
+        /> */}
       </Box>
       {items.map((item, index) => (
         <Stack key={index} direction="row" sx={{ gap: 2 }}>

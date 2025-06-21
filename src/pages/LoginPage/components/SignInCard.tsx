@@ -1,18 +1,17 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 import MuiCard from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
+// import Checkbox from "@mui/material/Checkbox";
 // import Divider from '@mui/material/Divider';
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
+// import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
-import { SitemarkIcon } from "./CustomIcons";
 import { Menu } from "../../../common/configMenu";
 import { Link as RouterLink } from "react-router-dom";
 import { useLogin } from "../../../hooks/useUser";
@@ -136,9 +135,7 @@ export default function SignInCard() {
 
   return (
     <Card variant="outlined">
-      <Box sx={{ display: { xs: "flex", md: "none" } }}>
-        <SitemarkIcon />
-      </Box>
+      <Box sx={{ display: { xs: "flex", md: "none" } }}></Box>
       <Typography
         component="h1"
         variant="h4"
@@ -197,20 +194,41 @@ export default function SignInCard() {
             color={passwordError ? "error" : "primary"}
           />
         </FormControl>
-        <FormControlLabel
+        {/* <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
-        />
+        /> */}
         <ForgotPassword open={open} handleClose={handleClose} />
-        <Button
+        {/* <Button
           type="submit"
           fullWidth
           variant="contained"
           // onClick={validateInputs}
           disabled={loginMutation.isPending}
+          sx={{
+            bgcolor: "#16a34a",
+            color: "white",
+            padding: "0.75rem 1.5rem",
+            borderRadius: "0.5rem",
+            fontWeight: 600,
+            fontSize: "1rem",
+            "&:hover": {
+              bgcolor: "#15803d",
+              transform: "translateY(-1px)",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            },
+          }}
         >
           {loginMutation.isPending ? "Signing in..." : "Sign in"}
-        </Button>
+        </Button> */}
+        <button
+          type="submit"
+          // onClick={validateInputs}
+          disabled={loginMutation.isPending}
+          className="profile-button profile-button-primary"
+        >
+          {loginMutation.isPending ? "Signing in..." : "Sign in"}
+        </button>
         <Typography sx={{ textAlign: "center" }}>
           Don&apos;t have an account?{" "}
           <span>

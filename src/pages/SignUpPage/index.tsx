@@ -1,288 +1,564 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
-import { styled } from "@mui/material/styles";
-import AppTheme from "../../components/shared-theme/AppTheme";
-import ColorModeSelect from "../../components/shared-theme/ColorModeSelect";
-import { SitemarkIcon } from "./components/CustomIcons";
-import { useRegister } from "../../hooks/useUser";
-import { useNavigate } from "react-router-dom";
-import { Menu } from "../../common/configMenu";
+import { useState, useEffect } from "react";
+import {
+  Mail,
+  CheckCircle,
+  AlertCircle,
+  Info,
+  X,
+  Check,
+  UserPlus,
+} from "lucide-react";
+import "./style.css";
 
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignSelf: "center",
-  width: "100%",
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  margin: "auto",
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
-  [theme.breakpoints.up("sm")]: {
-    width: "450px",
-  },
-  ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
-  }),
-}));
+interface SignupData {
+  fullName: string;
+  username: string;
+  email: string;
+  password: string;
+}
 
-const SignUpContainer = styled(Stack)(({ theme }) => ({
-  height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
-  minHeight: "100%",
-  padding: theme.spacing(2),
-  [theme.breakpoints.up("sm")]: {
-    padding: theme.spacing(4),
-  },
-  "&::before": {
-    content: '""',
-    display: "block",
-    position: "absolute",
-    zIndex: -1,
-    inset: 0,
-    backgroundImage:
-      "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
-    backgroundRepeat: "no-repeat",
-    ...theme.applyStyles("dark", {
-      backgroundImage:
-        "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
-    }),
-  },
-}));
+interface EmailVerification {
+  isEmailSent: boolean;
+  verificationCode: string;
+  isVerified: boolean;
+  timer: number;
+}
 
-export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
-  const navigate = useNavigate();
-  const registerMutation = useRegister();
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState("");
-  const [userNameError, setUserNameError] = React.useState(false);
-  const [userNameErrorMessage, setUserNameErrorMessage] = React.useState("");
+export default function SignupPage() {
+  const [signupData, setSignupData] = useState<SignupData>({
+    fullName: "",
+    username: "",
+    email: "",
+    password: "",
+  });
 
-  // const validateInputs = () => {
-  //   const email = document.getElementById("email") as HTMLInputElement;
-  //   const password = document.getElementById("password") as HTMLInputElement;
-  //   const name = document.getElementById("name") as HTMLInputElement;
-  //   const username = document.getElementById("username") as HTMLInputElement;
-
-  //   let isValid = true;
-
-  //   if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-  //     setEmailError(true);
-  //     setEmailErrorMessage("Please enter a valid email address.");
-  //     isValid = false;
-  //   } else {
-  //     setEmailError(false);
-  //     setEmailErrorMessage("");
-  //   }
-
-  //   if (!password.value || password.value.length < 6) {
-  //     setPasswordError(true);
-  //     setPasswordErrorMessage("Password must be at least 6 characters long.");
-  //     isValid = false;
-  //   } else {
-  //     setPasswordError(false);
-  //     setPasswordErrorMessage("");
-  //   }
-
-  //   if (!name.value || name.value.length < 1) {
-  //     setNameError(true);
-  //     setNameErrorMessage("Name is required.");
-  //     isValid = false;
-  //   } else {
-  //     setNameError(false);
-  //     setNameErrorMessage("");
-  //   }
-
-  //   if (!username.value || username.value.length < 1) {
-  //     setUserNameError(true);
-  //     setUserNameErrorMessage("User Name is required.");
-  //     isValid = false;
-  //   } else {
-  //     setUserNameError(false);
-  //     setUserNameErrorMessage("");
-  //   }
-
-  //   return isValid;
-  // };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const email = document.getElementById("email") as HTMLInputElement;
-    const password = document.getElementById("password") as HTMLInputElement;
-    const name = document.getElementById("name") as HTMLInputElement;
-    const username = document.getElementById("username") as HTMLInputElement;
-
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
+  const [emailVerification, setEmailVerification] = useState<EmailVerification>(
+    {
+      isEmailSent: false,
+      verificationCode: "",
+      isVerified: false,
+      timer: 0,
     }
+  );
 
-    if (!password.value || password.value.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage("Password must be at least 6 characters long.");
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage("");
+  const [isLoadingSignup, setIsLoadingSignup] = useState(false);
+  const [isLoadingEmail, setIsLoadingEmail] = useState(false);
+  const [isLoadingVerify, setIsLoadingVerify] = useState(false);
+  const [alert, setAlert] = useState<{
+    type: "success" | "error" | "info";
+    message: string;
+  } | null>(null);
+  const [isSignupComplete, setIsSignupComplete] = useState(false);
+
+  // Timer effect for resend email
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (emailVerification.timer > 0) {
+      interval = setInterval(() => {
+        setEmailVerification((prev) => ({ ...prev, timer: prev.timer - 1 }));
+      }, 1000);
     }
+    return () => clearInterval(interval);
+  }, [emailVerification.timer]);
 
-    if (!name.value || name.value.length < 1) {
-      setNameError(true);
-      setNameErrorMessage("Name is required.");
-    } else {
-      setNameError(false);
-      setNameErrorMessage("");
-    }
+  // Password validation
+  const validatePassword = (password: string) => {
+    return {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
+  };
 
-    if (!username.value || username.value.length < 1) {
-      setUserNameError(true);
-      setUserNameErrorMessage("User Name is required.");
-    } else {
-      setUserNameError(false);
-      setUserNameErrorMessage("");
-    }
+  const passwordValidation = validatePassword(signupData.password);
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-    if (nameError || emailError || passwordError) {
+  // Form validation
+  const isFormValid = () => {
+    return (
+      signupData.fullName.trim() &&
+      signupData.username.trim() &&
+      signupData.email.trim() &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupData.email) &&
+      isPasswordValid &&
+      emailVerification.isVerified
+    );
+  };
+
+  const handleSendVerificationEmail = async () => {
+    if (!signupData.email.trim()) {
+      setAlert({
+        type: "error",
+        message: "Please enter your email address first",
+      });
       return;
     }
 
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get("name"),
-      lastName: data.get("username"),
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    const payload = {
-      fullName: data.get("name") as string,
-      username: data.get("username") as string,
-      email: data.get("email") as string,
-      password: data.get("password") as string,
-    };
-    registerMutation.mutate(payload);
-    navigate(Menu.URL_STUDENT_PAGE);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupData.email)) {
+      setAlert({
+        type: "error",
+        message: "Please enter a valid email address",
+      });
+      return;
+    }
+
+    setIsLoadingEmail(true);
+    setAlert(null);
+
+    try {
+      // Simulate API call to send verification email
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      setEmailVerification((prev) => ({
+        ...prev,
+        isEmailSent: true,
+        timer: 60, // 60 seconds cooldown
+      }));
+
+      setAlert({
+        type: "success",
+        message: `Verification code sent to ${signupData.email}. Please check your inbox.`,
+      });
+    } catch (error) {
+      setAlert({
+        type: "error",
+        message: "Failed to send verification email. Please try again.",
+      });
+    } finally {
+      setIsLoadingEmail(false);
+    }
   };
 
+  const handleVerifyCode = async () => {
+    if (!emailVerification.verificationCode.trim()) {
+      setAlert({
+        type: "error",
+        message: "Please enter the verification code",
+      });
+      return;
+    }
+
+    if (emailVerification.verificationCode.length !== 6) {
+      setAlert({
+        type: "error",
+        message: "Verification code must be 6 digits",
+      });
+      return;
+    }
+
+    setIsLoadingVerify(true);
+    setAlert(null);
+
+    try {
+      // Simulate API call to verify code
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Simulate verification (in real app, this would be validated by backend)
+      if (emailVerification.verificationCode === "123456") {
+        setEmailVerification((prev) => ({ ...prev, isVerified: true }));
+        setAlert({ type: "success", message: "Email verified successfully!" });
+      } else {
+        throw new Error("Invalid verification code");
+      }
+    } catch (error) {
+      setAlert({
+        type: "error",
+        message: error instanceof Error ? error.message : "Verification failed",
+      });
+    } finally {
+      setIsLoadingVerify(false);
+    }
+  };
+
+  const handleSignup = async () => {
+    if (!isFormValid()) {
+      setAlert({
+        type: "error",
+        message: "Please complete all required fields",
+      });
+      return;
+    }
+
+    setIsLoadingSignup(true);
+    setAlert(null);
+
+    try {
+      // Simulate API call to create account
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      setIsSignupComplete(true);
+    } catch (error) {
+      setAlert({
+        type: "error",
+        message: "Failed to create account. Please try again.",
+      });
+    } finally {
+      setIsLoadingSignup(false);
+    }
+  };
+
+  const formatTimer = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  if (isSignupComplete) {
+    return (
+      <div className="signup-container">
+        <div className="signup-card">
+          <div className="signup-success">
+            <CheckCircle className="signup-success-icon" />
+            <h1 className="signup-success-title">
+              Account Created Successfully!
+            </h1>
+            <p className="signup-success-message">
+              Welcome to our platform! Your account has been created and your
+              email has been verified.
+            </p>
+            <button
+              onClick={() => (window.location.href = "/login")}
+              className="signup-button signup-button-primary"
+            >
+              Continue to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: "fixed", top: "1rem", right: "1rem" }} />
-      <SignUpContainer direction="column" justifyContent="space-between">
-        <Card variant="outlined">
-          <SitemarkIcon />
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
-          >
-            Sign up
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-          >
-            <FormControl>
-              <FormLabel htmlFor="name">Full name</FormLabel>
-              <TextField
-                autoComplete="name"
-                name="name"
+    <div className="signup-container">
+      {/* Signup Card */}
+      <div className="signup-card">
+        <div className="signup-header">
+          <h1 className="signup-title">Create Account</h1>
+          <p className="signup-subtitle">
+            Join us today and start your journey
+          </p>
+        </div>
+
+        <div className="signup-content">
+          {/* Alert */}
+          {alert && (
+            <div
+              className={`signup-alert ${
+                alert.type === "success"
+                  ? "signup-alert-success"
+                  : alert.type === "error"
+                  ? "signup-alert-error"
+                  : "signup-alert-info"
+              }`}
+            >
+              {alert.type === "success" ? (
+                <CheckCircle className="signup-alert-icon" />
+              ) : alert.type === "error" ? (
+                <AlertCircle className="signup-alert-icon" />
+              ) : (
+                <Info className="signup-alert-icon" />
+              )}
+              {alert.message}
+            </div>
+          )}
+
+          {/* Signup Form */}
+          <form className="signup-form" onSubmit={(e) => e.preventDefault()}>
+            {/* Full Name */}
+            <div className="signup-form-group">
+              <label className="signup-form-label" htmlFor="fullName">
+                Full Name *
+              </label>
+              <input
+                type="text"
+                id="fullName"
+                className="signup-form-input"
+                value={signupData.fullName}
+                onChange={(e) =>
+                  setSignupData({ ...signupData, fullName: e.target.value })
+                }
+                placeholder="Enter your full name"
                 required
-                fullWidth
-                id="name"
-                placeholder="your full name"
-                error={nameError}
-                helperText={nameErrorMessage}
-                color={nameError ? "error" : "primary"}
               />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="username">User name</FormLabel>
-              <TextField
-                autoComplete="username"
-                name="username"
-                required
-                fullWidth
+            </div>
+
+            {/* Username */}
+            <div className="signup-form-group">
+              <label className="signup-form-label" htmlFor="username">
+                Username *
+              </label>
+              <input
+                type="text"
                 id="username"
-                placeholder="your user name"
-                error={userNameError}
-                helperText={userNameErrorMessage}
-                color={userNameError ? "error" : "primary"}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <TextField
+                className="signup-form-input"
+                value={signupData.username}
+                onChange={(e) =>
+                  setSignupData({ ...signupData, username: e.target.value })
+                }
+                placeholder="Choose a username"
                 required
-                fullWidth
+              />
+            </div>
+
+            {/* Email */}
+            <div className="signup-form-group">
+              <label className="signup-form-label" htmlFor="email">
+                Email Address *
+              </label>
+              <input
+                type="email"
                 id="email"
-                placeholder="your@email.com"
-                name="email"
-                autoComplete="email"
-                variant="outlined"
-                error={emailError}
-                helperText={emailErrorMessage}
-                color={passwordError ? "error" : "primary"}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
-              <TextField
+                className={`signup-form-input ${
+                  emailVerification.isVerified ? "success" : ""
+                }`}
+                value={signupData.email}
+                onChange={(e) => {
+                  setSignupData({ ...signupData, email: e.target.value });
+                  // Reset verification if email changes
+                  if (
+                    emailVerification.isEmailSent ||
+                    emailVerification.isVerified
+                  ) {
+                    setEmailVerification({
+                      isEmailSent: false,
+                      verificationCode: "",
+                      isVerified: false,
+                      timer: 0,
+                    });
+                  }
+                }}
+                placeholder="Enter your email address"
                 required
-                fullWidth
-                name="password"
-                placeholder="••••••"
+              />
+
+              {/* Email Verification Section */}
+              {signupData.email &&
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupData.email) && (
+                  <div
+                    className={`signup-email-verification ${
+                      emailVerification.isVerified ? "verified" : ""
+                    }`}
+                  >
+                    {!emailVerification.isEmailSent ? (
+                      <button
+                        type="button"
+                        onClick={handleSendVerificationEmail}
+                        className="signup-button signup-button-secondary signup-button-small"
+                        disabled={isLoadingEmail}
+                      >
+                        {isLoadingEmail ? (
+                          <div className="signup-loading">
+                            <div className="signup-spinner"></div>
+                            Sending...
+                          </div>
+                        ) : (
+                          <>
+                            <Mail className="signup-icon" />
+                            Send Verification Code
+                          </>
+                        )}
+                      </button>
+                    ) : !emailVerification.isVerified ? (
+                      <>
+                        <div className="signup-verification-row">
+                          <div className="signup-verification-input">
+                            <label
+                              className="signup-form-label"
+                              htmlFor="verificationCode"
+                            >
+                              Verification Code
+                            </label>
+                            <input
+                              type="text"
+                              id="verificationCode"
+                              className="signup-form-input signup-verification-code-input"
+                              value={emailVerification.verificationCode}
+                              onChange={(e) =>
+                                setEmailVerification({
+                                  ...emailVerification,
+                                  verificationCode: e.target.value
+                                    .replace(/\D/g, "")
+                                    .slice(0, 6),
+                                })
+                              }
+                              placeholder="000000"
+                              maxLength={6}
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleVerifyCode}
+                            className="signup-button signup-button-primary signup-button-small"
+                            disabled={
+                              isLoadingVerify ||
+                              emailVerification.verificationCode.length !== 6
+                            }
+                          >
+                            {isLoadingVerify ? (
+                              <div className="signup-loading">
+                                <div className="signup-spinner"></div>
+                              </div>
+                            ) : (
+                              "Verify"
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Timer and Resend */}
+                        <div className="signup-timer">
+                          {emailVerification.timer > 0 ? (
+                            <span className="active">
+                              Resend code in{" "}
+                              {formatTimer(emailVerification.timer)}
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={handleSendVerificationEmail}
+                              className="signup-login-button"
+                              disabled={isLoadingEmail}
+                            >
+                              Resend verification code
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="signup-alert signup-alert-success">
+                        <CheckCircle className="signup-alert-icon" />
+                        Email verified successfully!
+                      </div>
+                    )}
+                  </div>
+                )}
+            </div>
+
+            {/* Password */}
+            <div className="signup-form-group">
+              <label className="signup-form-label" htmlFor="password">
+                Password *
+              </label>
+              <input
                 type="password"
                 id="password"
-                autoComplete="new-password"
-                variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? "error" : "primary"}
+                className={`signup-form-input ${
+                  isPasswordValid ? "success" : ""
+                }`}
+                value={signupData.password}
+                onChange={(e) =>
+                  setSignupData({ ...signupData, password: e.target.value })
+                }
+                placeholder="Create a strong password"
+                required
               />
-            </FormControl>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              disabled={registerMutation.isPending}
+
+              {/* Password Requirements */}
+              {signupData.password && (
+                <div className="signup-password-requirements">
+                  <div className="signup-password-requirements-title">
+                    Password Requirements:
+                  </div>
+                  <ul className="signup-password-requirements-list">
+                    <li
+                      className={`signup-password-requirement ${
+                        passwordValidation.length ? "valid" : ""
+                      }`}
+                    >
+                      {passwordValidation.length ? (
+                        <Check className="signup-password-requirement-icon" />
+                      ) : (
+                        <X className="signup-password-requirement-icon" />
+                      )}
+                      At least 8 characters
+                    </li>
+                    <li
+                      className={`signup-password-requirement ${
+                        passwordValidation.uppercase ? "valid" : ""
+                      }`}
+                    >
+                      {passwordValidation.uppercase ? (
+                        <Check className="signup-password-requirement-icon" />
+                      ) : (
+                        <X className="signup-password-requirement-icon" />
+                      )}
+                      One uppercase letter
+                    </li>
+                    <li
+                      className={`signup-password-requirement ${
+                        passwordValidation.lowercase ? "valid" : ""
+                      }`}
+                    >
+                      {passwordValidation.lowercase ? (
+                        <Check className="signup-password-requirement-icon" />
+                      ) : (
+                        <X className="signup-password-requirement-icon" />
+                      )}
+                      One lowercase letter
+                    </li>
+                    <li
+                      className={`signup-password-requirement ${
+                        passwordValidation.number ? "valid" : ""
+                      }`}
+                    >
+                      {passwordValidation.number ? (
+                        <Check className="signup-password-requirement-icon" />
+                      ) : (
+                        <X className="signup-password-requirement-icon" />
+                      )}
+                      One number
+                    </li>
+                    <li
+                      className={`signup-password-requirement ${
+                        passwordValidation.special ? "valid" : ""
+                      }`}
+                    >
+                      {passwordValidation.special ? (
+                        <Check className="signup-password-requirement-icon" />
+                      ) : (
+                        <X className="signup-password-requirement-icon" />
+                      )}
+                      One special character
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Signup Button */}
+            <button
+              type="button"
+              onClick={handleSignup}
+              className="signup-button signup-button-primary"
+              disabled={!isFormValid() || isLoadingSignup}
             >
-              {registerMutation.isPending ? "Signing up..." : "Sign up"}
-            </Button>
-          </Box>
-          <Divider>
-            <Typography sx={{ color: "text.secondary" }}>or</Typography>
-          </Divider>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography sx={{ textAlign: "center" }}>
-              Already have an account?{" "}
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
-                variant="body2"
-                sx={{ alignSelf: "center" }}
-              >
-                Sign in
-              </Link>
-            </Typography>
-          </Box>
-        </Card>
-      </SignUpContainer>
-    </AppTheme>
+              {isLoadingSignup ? (
+                <div className="signup-loading">
+                  <div className="signup-spinner"></div>
+                  Creating Account...
+                </div>
+              ) : (
+                <>
+                  <UserPlus className="signup-icon" />
+                  Create Account
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Login Link */}
+          <div className="signup-login-link">
+            <span className="signup-login-text">Already have an account? </span>
+            <button
+              onClick={() => (window.location.href = "/login")}
+              className="signup-login-button"
+            >
+              Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
