@@ -155,6 +155,7 @@ legend {
 .flashcard-item .form-group.flex-grow {
   flex: 1 1 30%;
   min-width: 180px;
+  max-width: 190px;
   display: flex;
   flex-direction: column;
 }
@@ -173,8 +174,8 @@ legend {
   user-select: none;
   transition: background 0.3s, color 0.3s, box-shadow 0.3s;
   padding: 0;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   box-shadow: 0 2px 8px var(--color-shadow);
   display: flex;

@@ -317,3 +317,457 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
+/* Meta layout */
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.meta-language {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.meta-date {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Modern Delete Button */
+.fc-exp-delete-wrapper {
+  position: relative;
+}
+
+.fc-exp-delete-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fc-exp-delete-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.fc-exp-delete-btn:hover::before {
+  left: 100%;
+}
+
+.fc-exp-delete-btn:hover {
+  background: linear-gradient(135deg, #fca5a5, #f87171);
+  border-color: #ef4444;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+.fc-exp-delete-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+.fc-exp-delete-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.fc-exp-delete-btn:hover svg {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.delete-text {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Alternative: Minimalist Delete Button */
+.fc-exp-delete-btn.minimalist {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  padding: 8px;
+  border-radius: 6px;
+  min-width: auto;
+}
+
+.fc-exp-delete-btn.minimalist:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+.fc-exp-delete-btn.minimalist .delete-text {
+  display: none;
+}
+
+/* Alternative: Pill-shaped Delete Button */
+.fc-exp-delete-btn.pill {
+  border-radius: 20px;
+  padding: 4px 10px;
+  background: #f3f4f6;
+  border: none;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.fc-exp-delete-btn.pill:hover {
+  background: #dc2626;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .fc-exp-delete-wrapper {
+    align-self: flex-end;
+  }
+
+  .fc-exp-delete-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .delete-text {
+    display: none;
+  }
+}
+
+/* Modal Overlay */
+.fc-exp-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: modalOverlayFadeIn 0.3s ease-out;
+}
+
+@keyframes modalOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.fc-exp-modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal Header */
+.fc-exp-modal-header {
+  position: relative;
+  padding: 24px 24px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.fc-exp-modal-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dc2626;
+  margin-bottom: 16px;
+  animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.fc-exp-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.fc-exp-modal-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+  transform: scale(1.1);
+}
+
+/* Modal Content */
+.fc-exp-modal-content {
+  padding: 0 24px 24px;
+  text-align: center;
+}
+
+.fc-exp-modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 12px 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.fc-exp-modal-message {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Modal Actions */
+.fc-exp-modal-actions {
+  padding: 0 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.fc-exp-modal-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fc-exp-modal-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.fc-exp-modal-btn:hover::before {
+  left: 100%;
+}
+
+/* Cancel Button */
+.fc-exp-modal-btn.cancel {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+}
+
+.fc-exp-modal-btn.cancel:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(100, 116, 139, 0.15);
+}
+
+/* Confirm Button */
+.fc-exp-modal-btn.confirm {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border: 2px solid #dc2626;
+  color: white;
+}
+
+.fc-exp-modal-btn.confirm:hover:not(:disabled) {
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  border-color: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+}
+
+.fc-exp-modal-btn.confirm:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading Spinner */
+.fc-exp-loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .fc-exp-modal {
+    margin: 20px;
+    max-width: none;
+  }
+
+  .fc-exp-modal-header {
+    padding: 20px 20px 0;
+  }
+
+  .fc-exp-modal-content {
+    padding: 0 20px 20px;
+  }
+
+  .fc-exp-modal-actions {
+    padding: 0 20px 20px;
+    flex-direction: column;
+  }
+
+  .fc-exp-modal-btn {
+    flex: none;
+  }
+
+  .fc-exp-modal-title {
+    font-size: 20px;
+  }
+
+  .fc-exp-modal-message {
+    font-size: 14px;
+  }
+
+  .fc-exp-modal-icon {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .fc-exp-modal {
+    background: #1f2937;
+    color: white;
+  }
+
+  .fc-exp-modal-title {
+    color: #f9fafb;
+  }
+
+  .fc-exp-modal-message {
+    color: #d1d5db;
+  }
+
+  .fc-exp-modal-btn.cancel {
+    background: #374151;
+    border-color: #4b5563;
+    color: #d1d5db;
+  }
+
+  .fc-exp-modal-btn.cancel:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+    color: #f3f4f6;
+  }
+}
+
+/* Accessibility */
+.fc-exp-modal-overlay:focus-within .fc-exp-modal {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.fc-exp-modal-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

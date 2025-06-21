@@ -69,3 +69,16 @@ export const useFavoriteFlashcard = () => {
     },
   });
 };
+
+export const useDeleteFlashcard = () => {
+  return useMutation({
+    mutationFn: ({ flashcardId }: { flashcardId: string }) =>
+      FlashCardService.deleteFlashcard(flashcardId),
+    onSuccess: () => {
+      toast.success("Remove success!");
+    },
+    onError: () => {
+      toast.error("Failed to remove flashcard.");
+    },
+  });
+};

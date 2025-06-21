@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./style.css";
 import { Col, Row } from "antd";
 import { useGetLanguages } from "../../hooks/useLanguage";
-import { useGetMyFlashcards, useGetFlashCards } from "../../hooks/useFlashCard";
+import {
+  useGetMyFlashcards,
+  useGetFlashCards,
+  useDeleteFlashcard,
+} from "../../hooks/useFlashCard";
 import { useNavigate } from "react-router-dom";
 import { Menu } from "../../common/configMenu";
 import { useFavoriteFlashcard } from "../../hooks/useFlashCard";
@@ -41,6 +45,8 @@ const FlashcardCollectionExperimental: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
   const favoriteMutation = useFavoriteFlashcard();
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const deleteMutation = useDeleteFlashcard();
 
   const {
     data: languages,
@@ -253,14 +259,45 @@ const FlashcardCollectionExperimental: React.FC = () => {
                 <div className="fc-exp-card-body">
                   <h3 className="fc-exp-card-title">{card.title}</h3>
                   <div className="meta">
-                    <span>
-                      {card.languageId?.name ?? card.language ?? "Unknown"}
-                    </span>
-                    <span>
-                      {card.createdAt
-                        ? new Date(card.createdAt).toLocaleDateString()
-                        : "Unknown date"}
-                    </span>
+                    <div className="meta-info">
+                      <span className="meta-language">
+                        {card.languageId?.name ?? card.language ?? "Unknown"}
+                      </span>
+                      <span className="meta-date">
+                        {card.createdAt
+                          ? new Date(card.createdAt).toLocaleDateString()
+                          : "Unknown date"}
+                      </span>
+                    </div>
+                    <div className="fc-exp-delete-wrapper">
+                      <button
+                        className="fc-exp-delete-btn minimalist"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteId(card._id);
+                        }}
+                        aria-label="Delete flashcard"
+                        title="Delete flashcard"
+                      >
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                          <path d="M8 6V4c0-1 1-2 2-2h4c0 1 1 2 2 2v2"></path>
+                          <line x1="10" y1="11" x2="10" y2="17"></line>
+                          <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        <span className="delete-text">Delete</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </article>
@@ -276,6 +313,116 @@ const FlashcardCollectionExperimental: React.FC = () => {
           onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
+
+      {deleteId && (
+        <div className="fc-exp-modal-overlay">
+          <div className="fc-exp-modal">
+            <div className="fc-exp-modal-header">
+              <div className="fc-exp-modal-icon">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c0 1 1 2 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </div>
+              <button
+                className="fc-exp-modal-close"
+                onClick={() => setDeleteId(null)}
+                aria-label="Close modal"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <div className="fc-exp-modal-content">
+              <h3 className="fc-exp-modal-title">Delete Flashcard</h3>
+              <p className="fc-exp-modal-message">
+                Are you sure you want to delete this flashcard? This action
+                cannot be undone.
+              </p>
+            </div>
+
+            <div className="fc-exp-modal-actions">
+              <button
+                className="fc-exp-modal-btn cancel"
+                onClick={() => setDeleteId(null)}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Cancel
+              </button>
+              <button
+                className="fc-exp-modal-btn confirm"
+                onClick={() => {
+                  deleteMutation.mutate(
+                    {
+                      flashcardId: deleteId,
+                    },
+                    {
+                      onSuccess: () => {
+                        setDeleteId(null);
+                        window.location.reload();
+                      },
+                    }
+                  );
+                }}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? (
+                  <>
+                    <div className="fc-exp-loading-spinner"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M3 6h18"></path>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c0 1 1 2 2 2v2"></path>
+                    </svg>
+                    Delete
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

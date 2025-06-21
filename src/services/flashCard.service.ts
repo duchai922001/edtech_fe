@@ -51,4 +51,12 @@ export const FlashCardService = {
     );
     return response;
   },
+
+  deleteFlashcard: async (flashcardId: string) => {
+    const response = await axiosInstance.delete(
+      `/flashcards/${flashcardId}`,
+      {}
+    );
+    return response;
+  },
 };
