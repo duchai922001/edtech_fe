@@ -58,7 +58,7 @@ const QuizTestChinese: React.FC = () => {
           Start
         </button>
       </div>
-      <Leaderboard />
+      <Leaderboard refId={id} />
     </div>
   );
 };

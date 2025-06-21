@@ -23,6 +23,8 @@
   color: var(--color-white);
   box-shadow: 0 6px 20px var(--color-shadow);
   width: 24%;
+  min-height: 3rem;
+  border-radius: 10px;
 }
 
 .mock-test-info {

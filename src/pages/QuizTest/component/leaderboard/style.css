@@ -26,7 +26,7 @@
 }
 
 .header-title {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%);
   color: white;
   font-weight: bold;
   padding: 16px 32px;
@@ -662,4 +662,30 @@
   .modal-player-name {
     font-size: 1.25rem;
   }
+}
+
+.player-avatar {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  /* background: linear-gradient(135deg, #16a34a, #22c55e); */
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.date-display {
+  font-family: "Courier New", monospace;
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: #1f2937;
+  background: #f9fafb;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
 }

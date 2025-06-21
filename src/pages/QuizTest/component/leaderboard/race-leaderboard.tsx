@@ -15,18 +15,24 @@ interface Player {
   third: number;
   totalRaces: number;
   winRate: number;
-  sector1: number;
-  sector2: number;
-  sector3: number;
-  isLive?: boolean;
+  date: Date;
 }
+
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
 
 const players: Player[] = [
   {
     position: 1,
     previousPosition: 1,
-    username: "Tay đua 1",
-    avatar: "/placeholder.svg?height=32&width=32",
+    username: "Trần Duy Tài",
+    avatar: getInitials("Trần Duy Tài"),
     time: "0:55.510",
     bestLap: "0:54.321",
     first: 15,
@@ -34,16 +40,13 @@ const players: Player[] = [
     third: 5,
     totalRaces: 156,
     winRate: 42,
-    sector1: 100,
-    sector2: 98,
-    sector3: 99,
-    isLive: true,
+    date: new Date("2024-05-20T10:00:00Z"),
   },
   {
     position: 2,
     previousPosition: 3,
-    username: "Tay đua 2",
-    avatar: "/placeholder.svg?height=32&width=32",
+    username: "Phùng Hữu Tài",
+    avatar: getInitials("Phùng Hữu Tài"),
     time: "1:15.430",
     bestLap: "1:14.321",
     first: 8,
@@ -51,16 +54,13 @@ const players: Player[] = [
     third: 6,
     totalRaces: 120,
     winRate: 35,
-    sector1: 95,
-    sector2: 92,
-    sector3: 90,
-    isLive: false,
+    date: new Date("2024-05-19T11:30:00Z"),
   },
   {
     position: 3,
     previousPosition: 2,
-    username: "Tay đua 3",
-    avatar: "/placeholder.svg?height=32&width=32",
+    username: "Lê Quang Thọ",
+    avatar: getInitials("Lê Quang Thọ"),
     time: "1:21.430",
     bestLap: "1:20.123",
     first: 5,
@@ -68,16 +68,13 @@ const players: Player[] = [
     third: 9,
     totalRaces: 80,
     winRate: 28,
-    sector1: 90,
-    sector2: 88,
-    sector3: 92,
-    isLive: false,
+    date: new Date("2024-05-20T09:45:00Z"),
   },
   {
     position: 4,
     previousPosition: 4,
-    username: "Tay đua 4",
-    avatar: "/placeholder.svg?height=32&width=32",
+    username: "Trần Gia Huy",
+    avatar: getInitials("Trần Gia Huy"),
     time: "1:32.213",
     bestLap: "1:31.001",
     first: 2,
@@ -85,16 +82,13 @@ const players: Player[] = [
     third: 8,
     totalRaces: 50,
     winRate: 22,
-    sector1: 85,
-    sector2: 80,
-    sector3: 88,
-    isLive: false,
+    date: new Date("2024-05-18T15:20:00Z"),
   },
   {
     position: 5,
     previousPosition: 6,
-    username: "Tay đua 5",
-    avatar: "/placeholder.svg?height=32&width=32",
+    username: "Trần Minh Vũ",
+    avatar: getInitials("Trần Minh Vũ"),
     time: "1:44.594",
     bestLap: "1:43.987",
     first: 1,
@@ -102,10 +96,7 @@ const players: Player[] = [
     third: 3,
     totalRaces: 30,
     winRate: 18,
-    sector1: 80,
-    sector2: 78,
-    sector3: 85,
-    isLive: false,
+    date: new Date("2024-05-17T18:05:00Z"),
   },
 ];
 
@@ -175,11 +166,9 @@ export default function RaceLeaderboard() {
                 <div className="player-info">
                   <div className="avatar-container">
                     <div className="avatar-border">
-                      <img
-                        src={player.avatar || "/placeholder.svg"}
-                        alt={player.username}
-                        className="avatar-image"
-                      />
+                      <div className="player-avatar">
+                        {getInitials(player.avatar)}
+                      </div>
                     </div>
                   </div>
                   <div className="player-details">
@@ -196,21 +185,9 @@ export default function RaceLeaderboard() {
 
               {/* Sectors */}
               <div className="cell sectors-cell">
-                <div className="sectors-container">
-                  {[player.sector1, player.sector2, player.sector3].map(
-                    (sector, i) => (
-                      <div key={i} className="sector-item">
-                        <div className="sector-bar-container">
-                          <div
-                            className="sector-bar"
-                            style={{ width: `${sector}%` }}
-                          ></div>
-                        </div>
-                        <span className="sector-value">{sector}</span>
-                      </div>
-                    )
-                  )}
-                </div>
+                <span className="date-display">
+                  {player.date.toLocaleDateString()}
+                </span>
               </div>
             </div>
           ))}

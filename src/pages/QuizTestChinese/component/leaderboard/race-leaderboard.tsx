@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./style.css";
+import { useRanking } from "../../../../hooks/useRanking";
+import type { GetRankingPayload } from "../../../../services/ranking.service";
+import Loading from "../../../../components/base/Loading";
 
 interface Player {
   position: number;
@@ -19,94 +22,6 @@ interface Player {
   isLive?: boolean;
 }
 
-const players: Player[] = [
-  {
-    position: 1,
-    previousPosition: 1,
-    username: "Tay đua 1",
-    avatar: "/placeholder.svg?height=32&width=32",
-    time: "0:55.510",
-    bestLap: "0:54.321",
-    first: 15,
-    second: 8,
-    third: 5,
-    totalRaces: 156,
-    winRate: 42,
-    sector1: 100,
-    sector2: 98,
-    sector3: 99,
-    isLive: true,
-  },
-  {
-    position: 2,
-    previousPosition: 3,
-    username: "Tay đua 2",
-    avatar: "/placeholder.svg?height=32&width=32",
-    time: "1:15.430",
-    bestLap: "1:14.321",
-    first: 8,
-    second: 12,
-    third: 6,
-    totalRaces: 120,
-    winRate: 35,
-    sector1: 95,
-    sector2: 92,
-    sector3: 90,
-    isLive: false,
-  },
-  {
-    position: 3,
-    previousPosition: 2,
-    username: "Tay đua 3",
-    avatar: "/placeholder.svg?height=32&width=32",
-    time: "1:21.430",
-    bestLap: "1:20.123",
-    first: 5,
-    second: 7,
-    third: 9,
-    totalRaces: 80,
-    winRate: 28,
-    sector1: 90,
-    sector2: 88,
-    sector3: 92,
-    isLive: false,
-  },
-  {
-    position: 4,
-    previousPosition: 4,
-    username: "Tay đua 4",
-    avatar: "/placeholder.svg?height=32&width=32",
-    time: "1:32.213",
-    bestLap: "1:31.001",
-    first: 2,
-    second: 4,
-    third: 8,
-    totalRaces: 50,
-    winRate: 22,
-    sector1: 85,
-    sector2: 80,
-    sector3: 88,
-    isLive: false,
-  },
-  {
-    position: 5,
-    previousPosition: 6,
-    username: "Tay đua 5",
-    avatar: "/placeholder.svg?height=32&width=32",
-    time: "1:44.594",
-    bestLap: "1:43.987",
-    first: 1,
-    second: 2,
-    third: 3,
-    totalRaces: 30,
-    winRate: 18,
-    sector1: 80,
-    sector2: 78,
-    sector3: 85,
-    isLive: false,
-  },
-];
-
 function MedalIcon({ position }: { position: number }) {
   if (position > 3) return null;
 
@@ -123,8 +38,93 @@ function MedalIcon({ position }: { position: number }) {
   );
 }
 
-export default function RaceLeaderboard() {
+export default function RaceLeaderboard({ refId }: { refId?: string }) {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+
+  const {
+    mutate: fetchRanking,
+    data: rankingData,
+    isPending,
+    isError,
+  } = useRanking();
+
+  console.log(refId, "68522b53943cefeda18742f3");
+
+  useEffect(() => {
+    if (refId) {
+      const payload: GetRankingPayload = {
+        type: "chinese",
+        refId: refId,
+        languageId: "68522b53943cefeda18742f3",
+      };
+      fetchRanking(payload);
+    }
+  }, [refId, fetchRanking]);
+
+  const leaderboardPlayers: Player[] = rankingData?.data || [];
+
+  if (isPending) {
+    return (
+      <div className="leaderboard-container">
+        <div className="header">
+          <div className="header-title">
+            <span>LEADERBOARD</span>
+          </div>
+        </div>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="leaderboard-container">
+        {/* Header */}
+        <div className="header">
+          <div className="header-title">
+            <span>LEADERBOARD</span>
+          </div>
+        </div>
+
+        {/* Main Leaderboard */}
+        <div className="leaderboard-table">
+          <div className="table-header">
+            <div className="header-cell position">No.</div>
+            <div className="header-cell player">User</div>
+            <div className="header-cell time">Time</div>
+            <div className="header-cell sectors">Date</div>
+          </div>
+        </div>
+        <p style={{ textAlign: "center", padding: "2rem" }}>
+          Fail to load data
+        </p>
+      </div>
+    );
+  }
+
+  if (leaderboardPlayers.length === 0) {
+    return (
+      <div className="leaderboard-container">
+        {/* Header */}
+        <div className="header">
+          <div className="header-title">
+            <span>LEADERBOARD</span>
+          </div>
+        </div>
+
+        {/* Main Leaderboard */}
+        <div className="leaderboard-table">
+          <div className="table-header">
+            <div className="header-cell position">No.</div>
+            <div className="header-cell player">User</div>
+            <div className="header-cell time">Time</div>
+            <div className="header-cell sectors">Date</div>
+          </div>
+        </div>
+        <p style={{ textAlign: "center", padding: "2rem" }}>No data yet</p>
+      </div>
+    );
+  }
 
   return (
     <div className="leaderboard-container">
@@ -145,7 +145,7 @@ export default function RaceLeaderboard() {
         </div>
 
         <div className="table-body">
-          {players.map((player, index) => (
+          {leaderboardPlayers.map((player, index) => (
             <div
               key={player.position}
               className={`player-row ${
