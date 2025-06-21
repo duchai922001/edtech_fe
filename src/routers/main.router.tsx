@@ -25,6 +25,8 @@ import MyFlashcards from "../pages/MyFlashCard";
 import UserProfile from "../pages/UserProfile";
 import QuizTestStart from "../pages/QuizTestStart";
 import QuizTestChineseStart from "../pages/QuizTestChineseStart";
+import ScholarshipPage from "../pages/Scholarship";
+import MembershipPage from "../pages/Membership";
 const MainRouter = () => {
   return (
     <>
@@ -93,6 +95,13 @@ const MainRouter = () => {
             path={`${Menu.URL_CREATE_FLASHCARD_PAGE}`}
             element={<CreateFlashCardPage />}
           />
+
+          <Route
+            path={`${Menu.URL_SCHOLARSHIP}`}
+            element={<ScholarshipPage />}
+          />
+
+          <Route path={`${Menu.URL_MEMBERSHIP}`} element={<MembershipPage />} />
         </Route>
       </Routes>
     </>
