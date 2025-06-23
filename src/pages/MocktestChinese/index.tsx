@@ -4,6 +4,7 @@ import { useGetMocktestsChinese } from "../../hooks/useMocktestChinese";
 import Loading from "../../components/base/Loading";
 import { useNavigate } from "react-router-dom";
 import { Menu } from "../../common/configMenu";
+import { BookOpen, Globe } from "lucide-react";
 
 // interface MockTest {
 //   id: number;
@@ -13,6 +14,43 @@ import { Menu } from "../../common/configMenu";
 //   durationMinutes: number;
 //   language: string;
 // }
+
+const Badge = ({
+  children,
+  className = "",
+  variant = "default",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  variant?: "default" | "success" | "warning" | "secondary";
+}) => {
+  return (
+    <span className={`badge badge-${variant} ${className}`}>{children}</span>
+  );
+};
+
+const Button = ({
+  children,
+  className = "",
+  variant = "default",
+  size = "default",
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+  variant?: "default" | "outline" | "secondary";
+  size?: "default" | "sm";
+  onClick?: () => void;
+}) => {
+  return (
+    <button
+      className={`btn btn-${variant} btn-${size} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
 
 const MockTestChinese: React.FC = () => {
   const navigate = useNavigate();
@@ -86,27 +124,49 @@ const MockTestChinese: React.FC = () => {
                   className="mocktest-card"
                   tabIndex={0}
                   aria-describedby={`desc-${test.id}`}
-                  onClick={() => {
-                    navigate(
-                      `${Menu.URL_MOCKTEST_CHINESE_PAGE}/detail/${test._id}`
-                    );
-                  }}
+                  // onClick={() => {
+                  //   navigate(
+                  //     `${Menu.URL_MOCKTEST_CHINESE_PAGE}/detail/${test._id}`
+                  //   );
+                  // }}
                 >
-                  <h2 className="mocktest-title">{test.title}</h2>
+                  <div className="mocktest-card-header">
+                    <h2 className="mocktest-title">{test.title}</h2>
+                    <span className="test-status">
+                      <Badge variant={"success"}>Available</Badge>
+                    </span>
+                  </div>
                   <p className="mocktest-desc">{test.description}</p>
                   <div className="mocktest-meta">
-                    <span>{20} questions</span>
+                    <BookOpen className="detail-icon" />
+                    <span className="detail-label">Question: </span>
+                    <span className="detail-value">{20}</span>
                   </div>
                   <div
                     className="mocktest-meta-language"
                     style={{ marginTop: "10px" }}
                   >
-                    <span>Chinese</span>
+                    <Globe className="detail-icon" />
+                    <span className="detail-label">Language:</span>
+                    <span className="detail-value">Chinese</span>
                   </div>
-                  <p id={`desc-${test._id}`} className="sr-only">
+                  {/* <p id={`desc-${test._id}`} className="sr-only">
                     {test.title} with {test.questionsCount} questions. Duration{" "}
                     {test.durationMinutes} minutes. Language: {test.language}.
-                  </p>
+                  </p> */}
+                  <div className="test-card-footer">
+                    <Button
+                      variant={"default"}
+                      className="test-button"
+                      onClick={() => {
+                        navigate(
+                          `${Menu.URL_MOCKTEST_CHINESE_PAGE}/detail/${test._id}`
+                        );
+                      }}
+                    >
+                      Start Test
+                    </Button>
+                  </div>
                 </article>
               ))}
             </div>

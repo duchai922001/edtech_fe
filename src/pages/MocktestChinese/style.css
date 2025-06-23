@@ -152,7 +152,7 @@ body {
 /* Each mock test card */
 .mocktest-card {
   background: var(--color-white);
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 24px 20px;
   box-shadow: 0 8px 20px var(--color-shadow);
   display: flex;
@@ -194,6 +194,7 @@ body {
   color: #2f662f;
   font-weight: 600;
   user-select: none;
+  padding-left: 1rem;
 }
 
 .mocktest-meta-language {
@@ -203,6 +204,7 @@ body {
   color: #2f662f;
   font-weight: 600;
   user-select: none;
+  padding-left: 1rem;
 }
 
 .mocktest-meta span {
@@ -245,4 +247,9 @@ body {
   .mocktests-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.mocktest-card-header {
+  display: flex;
+  justify-content: space-between;
 }
