@@ -27,6 +27,7 @@ import QuizTestStart from "../pages/QuizTestStart";
 import QuizTestChineseStart from "../pages/QuizTestChineseStart";
 import ScholarshipPage from "../pages/Scholarship";
 import MembershipPage from "../pages/Membership";
+import EventsPage from "../pages/Event/EventsPage";
 const MainRouter = () => {
   return (
     <>
@@ -102,6 +103,7 @@ const MainRouter = () => {
           />
 
           <Route path={`${Menu.URL_MEMBERSHIP}`} element={<MembershipPage />} />
+          <Route path={`${Menu.URL_EVENT}`} element={<EventsPage />} />
         </Route>
       </Routes>
     </>

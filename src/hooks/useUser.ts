@@ -40,3 +40,21 @@ export const useUserProfile = () => {
     select: (res) => res.data,
   });
 };
+
+export const useSendEmailVerify = () => {
+  return useMutation({
+    mutationFn: (email: string) => UserService.sendEmailVerify(email),
+    onSuccess: () => {
+      console.log("Send otp Success");
+    },
+  });
+};
+
+export const useVerifyEmail = () => {
+  return useMutation({
+    mutationFn: (payload: any) => UserService.verifyOtp(payload),
+    onSuccess: () => {
+      console.log("Verify Success");
+    },
+  });
+};

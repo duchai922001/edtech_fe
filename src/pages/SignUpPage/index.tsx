@@ -9,6 +9,12 @@ import {
   UserPlus,
 } from "lucide-react";
 import "./style.css";
+import {
+  useSendEmailVerify,
+  useVerifyEmail,
+  useRegister,
+} from "../../hooks/useUser";
+import { CheckOutlined } from "@ant-design/icons";
 
 interface SignupData {
   fullName: string;
@@ -68,7 +74,6 @@ export default function SignupPage() {
       uppercase: /[A-Z]/.test(password),
       lowercase: /[a-z]/.test(password),
       number: /\d/.test(password),
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
     };
   };
 
@@ -86,6 +91,10 @@ export default function SignupPage() {
       emailVerification.isVerified
     );
   };
+
+  const { mutate: sendEmailVerify } = useSendEmailVerify();
+  const { mutate: verifyEmail } = useVerifyEmail();
+  const { mutate: signup } = useRegister();
 
   const handleSendVerificationEmail = async () => {
     if (!signupData.email.trim()) {
@@ -109,7 +118,13 @@ export default function SignupPage() {
 
     try {
       // Simulate API call to send verification email
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      //await new Promise((resolve) => setTimeout(resolve, 2000));
+      sendEmailVerify(signupData.email, {
+        onSuccess: () => {
+          //setSubmitted(true);
+          console.log("Send email verify!");
+        },
+      });
 
       setEmailVerification((prev) => ({
         ...prev,
@@ -153,15 +168,35 @@ export default function SignupPage() {
 
     try {
       // Simulate API call to verify code
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      //await new Promise((resolve) => setTimeout(resolve, 1500));
+      verifyEmail(
+        { email: signupData.email, code: emailVerification.verificationCode },
+        {
+          onSuccess: () => {
+            console.log("Verify Success!");
+            // Thêm dòng này để set isVerified = true
+            setEmailVerification((prev) => ({ ...prev, isVerified: true }));
+            setAlert({
+              type: "success",
+              message: "Email verified successfully!",
+            });
+          },
+          onError: (error) => {
+            setAlert({
+              type: "error",
+              message: "Verification failed. Please try again.",
+            });
+          },
+        }
+      );
 
       // Simulate verification (in real app, this would be validated by backend)
-      if (emailVerification.verificationCode === "123456") {
-        setEmailVerification((prev) => ({ ...prev, isVerified: true }));
-        setAlert({ type: "success", message: "Email verified successfully!" });
-      } else {
-        throw new Error("Invalid verification code");
-      }
+      // if (emailVerification.verificationCode === "123456") {
+      //   setEmailVerification((prev) => ({ ...prev, isVerified: true }));
+      //   setAlert({ type: "success", message: "Email verified successfully!" });
+      // } else {
+      //   throw new Error("Invalid verification code");
+      // }
     } catch (error) {
       setAlert({
         type: "error",
@@ -186,9 +221,13 @@ export default function SignupPage() {
 
     try {
       // Simulate API call to create account
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      setIsSignupComplete(true);
+      //await new Promise((resolve) => setTimeout(resolve, 2000));
+      signup(signupData, {
+        onSuccess: () => {
+          setIsSignupComplete(true);
+          console.log(signupData);
+        },
+      });
     } catch (error) {
       setAlert({
         type: "error",
@@ -387,7 +426,7 @@ export default function SignupPage() {
                               maxLength={6}
                             />
                           </div>
-                          <button
+                          {/* <button
                             type="button"
                             onClick={handleVerifyCode}
                             className="signup-button signup-button-primary signup-button-small"
@@ -403,7 +442,37 @@ export default function SignupPage() {
                             ) : (
                               "Verify"
                             )}
-                          </button>
+                          </button> */}
+                          {emailVerification.isVerified ? (
+                            <div className="signup-verification-success">
+                              <CheckOutlined
+                                className="signup-verification-success-icon"
+                                style={{
+                                  color: "#10b981",
+                                  width: "20px",
+                                  height: "20px",
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={handleVerifyCode}
+                              className="signup-button signup-button-primary signup-button-small"
+                              disabled={
+                                isLoadingVerify ||
+                                emailVerification.verificationCode.length !== 6
+                              }
+                            >
+                              {isLoadingVerify ? (
+                                <div className="signup-loading">
+                                  <div className="signup-spinner"></div>
+                                </div>
+                              ) : (
+                                "Verify"
+                              )}
+                            </button>
+                          )}
                         </div>
 
                         {/* Timer and Resend */}
@@ -508,18 +577,6 @@ export default function SignupPage() {
                         <X className="signup-password-requirement-icon" />
                       )}
                       One number
-                    </li>
-                    <li
-                      className={`signup-password-requirement ${
-                        passwordValidation.special ? "valid" : ""
-                      }`}
-                    >
-                      {passwordValidation.special ? (
-                        <Check className="signup-password-requirement-icon" />
-                      ) : (
-                        <X className="signup-password-requirement-icon" />
-                      )}
-                      One special character
                     </li>
                   </ul>
                 </div>

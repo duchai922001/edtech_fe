@@ -17,8 +17,12 @@ export const MenuTabItem: IMenuTab[] = [
     label: "Scholarship",
     to: Menu.URL_SCHOLARSHIP,
   },
+  // {
+  //   label: "Membership",
+  //   to: Menu.URL_MEMBERSHIP,
+  // },
   {
-    label: "Membership",
-    to: Menu.URL_MEMBERSHIP,
+    label: "Events",
+    to: Menu.URL_EVENT,
   },
 ];

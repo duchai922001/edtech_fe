@@ -13,6 +13,11 @@ export interface LoginPayload {
   password: string;
 }
 
+export interface VerifyOtpPayload {
+  email: string;
+  code: string;
+}
+
 export const UserService = {
   register: async (payload: RegisterPayload): Promise<AxiosResponse<any>> => {
     const response = await axiosInstance.post(`/users/register`, payload);
@@ -29,6 +34,16 @@ export const UserService = {
         Authorization: `Bearer ${token}`,
       },
     });
+    return response;
+  },
+  sendEmailVerify: async (email: string): Promise<AxiosResponse<any>> => {
+    const response = await axiosInstance.post(`/users/send-otp-verify-email`, {
+      email: email,
+    });
+    return response;
+  },
+  verifyOtp: async (payload: VerifyOtpPayload): Promise<AxiosResponse<any>> => {
+    const response = await axiosInstance.post(`/users/verify-otp`, payload);
     return response;
   },
 };
