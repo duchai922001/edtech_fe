@@ -66,8 +66,8 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
   if (isPending) {
     return (
       <div className="leaderboard-container">
-        <div className="header">
-          <div className="header-title">
+        <div className="header-leaderboard">
+          <div className="header-leaderboard-title">
             <span>LEADERBOARD</span>
           </div>
         </div>
@@ -80,8 +80,8 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
     return (
       <div className="leaderboard-container">
         {/* Header */}
-        <div className="header">
-          <div className="header-title">
+        <div className="header-leaderboard">
+          <div className="header-leaderboard-title">
             <span>LEADERBOARD</span>
           </div>
         </div>

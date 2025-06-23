@@ -1,70 +1,7 @@
-import type React from "react";
-import { useState } from "react";
-import { Leaf, Clock, Bell } from "lucide-react";
+import { Clock } from "lucide-react";
 import "./comingsoon.css";
 
-// Inline Button Component
-const Button = ({
-  children,
-  className = "",
-  variant = "default",
-  ...props
-}: {
-  children: React.ReactNode;
-  className?: string;
-  variant?: "default" | "outline";
-  onClick?: () => void;
-  type?: "button" | "submit";
-}) => {
-  const baseClasses =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50";
-
-  const variants = {
-    default: "bg-green-600 text-white hover:bg-green-700",
-    outline: "border border-green-600 text-green-600 hover:bg-green-50",
-  };
-
-  return (
-    <button
-      className={`${baseClasses} ${variants[variant]} h-10 px-6 py-2 text-sm ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
-
-// Inline Input Component
-const Input = ({
-  className = "",
-  ...props
-}: {
-  className?: string;
-  type?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
-  return (
-    <input
-      className={`flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${className}`}
-      {...props}
-    />
-  );
-};
-
 export default function ComingSoonPage() {
-  const [email, setEmail] = useState("");
-  const [isSubscribed, setIsSubscribed] = useState(false);
-
-  const handleEmailSubmit = () => {
-    if (email) {
-      setIsSubscribed(true);
-      setTimeout(() => setIsSubscribed(false), 3000);
-      setEmail("");
-    }
-  };
-
   return (
     <div className="coming-soon-page">
       {/* Header */}
@@ -99,7 +36,7 @@ export default function ComingSoonPage() {
           </p>
 
           {/* Countdown Timer */}
-          <div className="countdown-timer">
+          {/* <div className="countdown-timer">
             {[
               { label: "Days", value: "15" },
               { label: "Hours", value: "08" },
@@ -110,7 +47,7 @@ export default function ComingSoonPage() {
                 <div className="countdown-label">{item.label}</div>
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* Email Notification */}
           {/* <div className="email-section">

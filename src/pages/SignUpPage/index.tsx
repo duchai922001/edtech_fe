@@ -181,7 +181,7 @@ export default function SignupPage() {
               message: "Email verified successfully!",
             });
           },
-          onError: (error) => {
+          onError: () => {
             setAlert({
               type: "error",
               message: "Verification failed. Please try again.",

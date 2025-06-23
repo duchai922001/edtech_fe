@@ -24,7 +24,7 @@ export const useSubmit = () => {
 
 export const useRanking = () => {
   return useMutation<AxiosResponse<any>, AxiosError, GetRankingPayload>({
-    mutationFn: (paylaod) => RankingService.getRanking(paylaod),
+    mutationFn: (payload) => RankingService.getRanking(payload),
     onSuccess: () => {
       //   toast.success("Get ranking Success");
       // const token = response.data.token;
