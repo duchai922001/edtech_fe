@@ -21,3 +21,15 @@ export const useGetMocktestsChineseDetail = (id: string) => {
     staleTime: 5000,
   });
 };
+
+export const useGetMocktestsChineseEvent = (params: {
+  page?: number;
+  limit?: number;
+}) => {
+  return useQuery({
+    queryKey: ["get-mocktests-chinese-event", params],
+    queryFn: () => MocktestChineseService.getMocktestsEvent(params),
+    select: (res) => res.data,
+    staleTime: 5000,
+  });
+};

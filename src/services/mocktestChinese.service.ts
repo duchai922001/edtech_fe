@@ -19,4 +19,10 @@ export const MocktestChineseService = {
     const response = await axiosInstance.get(`/chinese/${id}`);
     return response;
   },
+  getMocktestsEvent: async (params: { page?: number; limit?: number }) => {
+    const response = await axiosInstance.get("/chinese/mocktest-event", {
+      params,
+    });
+    return response;
+  },
 };

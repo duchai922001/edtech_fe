@@ -19,6 +19,8 @@ export const Menu = {
   URL_SCHOLARSHIP: "/scholarship",
   URL_MEMBERSHIP: "/membership",
   URL_EVENT: "/events",
+  URL_EVENT_DETAIL: "/events/detail",
+  URL_EVENT_START: "/events/start",
 
   URL_MY_FLASHCARD_PAGE: "/my-flashcards",
 };

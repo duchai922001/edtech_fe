@@ -122,8 +122,8 @@ export default function RaceLeaderboard() {
   return (
     <div className="leaderboard-container">
       {/* Header */}
-      <div className="header">
-        <div className="header-title">
+      <div className="header-leaderboard">
+        <div className="header-leaderboard-title">
           <span>LEADERBOARD</span>
         </div>
       </div>
@@ -193,71 +193,29 @@ export default function RaceLeaderboard() {
           ))}
         </div>
       </div>
-
-      {/* Player Detail Modal
-      {selectedPlayer && (
-        <div className="player-detail-modal">
-          <div className="modal-header">
-            <div className="modal-player-info">
-              <div className="modal-avatar-container">
-                <div className="modal-avatar-border">
-                  <img
-                    src={selectedPlayer.avatar || "/placeholder.svg"}
-                    alt={selectedPlayer.username}
-                    className="modal-avatar-image"
-                  />
-                </div>
-              </div>
-              <div className="modal-player-details">
-                <h3 className="modal-player-name">{selectedPlayer.username}</h3>
-                <p className="modal-subtitle">Thống kê chi tiết</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setSelectedPlayer(null)}
-              className="close-button"
-            >
-              ×
-            </button>
-          </div>
-
-          <div className="modal-stats-grid">
-            <div className="modal-stat-card win-rate">
-              <div className="modal-stat-value">{selectedPlayer.winRate}%</div>
-              <div className="modal-stat-label">Tỷ lệ thắng</div>
-            </div>
-            <div className="modal-stat-card total-races">
-              <div className="modal-stat-value">
-                {selectedPlayer.totalRaces}
-              </div>
-              <div className="modal-stat-label">Tổng cuộc đua</div>
-            </div>
-            <div className="modal-stat-card best-lap">
-              <div className="modal-stat-value">{selectedPlayer.bestLap}</div>
-              <div className="modal-stat-label">Vòng tốt nhất</div>
-            </div>
-            <div className="modal-stat-card current-time">
-              <div className="modal-stat-value">{selectedPlayer.time}</div>
-              <div className="modal-stat-label">Thời gian hiện tại</div>
-            </div>
-          </div>
-
-          <div className="modal-podium-stats">
-            <div className="podium-stat first">
-              <div className="podium-value">{selectedPlayer.first}</div>
-              <div className="podium-label">Hạng 1</div>
-            </div>
-            <div className="podium-stat second">
-              <div className="podium-value">{selectedPlayer.second}</div>
-              <div className="podium-label">Hạng 2</div>
-            </div>
-            <div className="podium-stat third">
-              <div className="podium-value">{selectedPlayer.third}</div>
-              <div className="podium-label">Hạng 3</div>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }
+
+// function formatDuration(seconds: number): string {
+//   const h = Math.floor(seconds / 3600)
+//     .toString()
+//     .padStart(2, "0");
+//   const m = Math.floor((seconds % 3600) / 60)
+//     .toString()
+//     .padStart(2, "0");
+//   const s = Math.floor(seconds % 60)
+//     .toString()
+//     .padStart(2, "0");
+
+//   return `${h}:${m}:${s}`;
+// }
+
+// function formatDate(dateString: string): string {
+//   const date = new Date(dateString);
+//   const day = date.getDate().toString().padStart(2, "0");
+//   const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Lưu ý: tháng bắt đầu từ 0
+//   const year = date.getFullYear();
+
+//   return `${day}/${month}/${year}`;
+// }

@@ -23,7 +23,7 @@ export const RankingService = {
   getRanking: async (
     payload: GetRankingPayload
   ): Promise<AxiosResponse<any>> => {
-    const response = await axiosInstance.post(
+    const response = await axiosInstance.get(
       `/mocktest-ranking/ranking/${payload.type}/${payload.refId}/${payload.languageId}`
     );
     return response;

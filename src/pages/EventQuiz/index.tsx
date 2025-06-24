@@ -6,6 +6,7 @@ import "./component/leaderboard/style.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetMocktestsChineseDetail } from "../../hooks/useMocktestChinese";
 import { Menu } from "../../common/configMenu";
+import { Clock, BookOpen, Globe, RotateCcw } from "lucide-react";
 
 // interface MockTest {
 //   _id: string;
@@ -19,7 +20,7 @@ import { Menu } from "../../common/configMenu";
 //   updatedAt: string;
 // }
 
-const QuizTestChinese: React.FC = () => {
+const EventQuiz: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ const QuizTestChinese: React.FC = () => {
   // console.log(mockTest);
 
   const handleStartTest = () => {
-    navigate(`${Menu.URL_MOCKTEST_CHINESE_PAGE}/start/${id}`);
+    navigate(`${Menu.URL_EVENT}/start/${id}`);
   };
 
   if (isLoading) return <Loading />;
@@ -52,8 +53,36 @@ const QuizTestChinese: React.FC = () => {
           <strong>Language:</strong> {"Chinese"}
         </p>
         <p>
-          <strong>Type:</strong> {mockTest.type}
+          <strong>Type:</strong> {mockTest.type} + READING
         </p>
+        <br />
+        <div className="test-details">
+          <div className="detail-row">
+            <div className="detail-item">
+              <Globe className="detail-icon" />
+              <span className="detail-label">Language:</span>
+              <span className="detail-value">Chinese</span>
+            </div>
+            <div className="detail-item">
+              <BookOpen className="detail-icon" />
+              <span className="detail-label">Grade:</span>
+              <span className="detail-value">All level</span>
+            </div>
+          </div>
+
+          <div className="detail-row">
+            <div className="detail-item">
+              <Clock className="detail-icon" />
+              <span className="detail-label">Duration:</span>
+              <span className="detail-value">60 mins</span>
+            </div>
+            <div className="detail-item">
+              <RotateCcw className="detail-icon" />
+              <span className="detail-label">Attempts:</span>
+              <span className="detail-value">1 time</span>
+            </div>
+          </div>
+        </div>
         <button className="btn-start" onClick={handleStartTest}>
           Start
         </button>
@@ -63,4 +92,4 @@ const QuizTestChinese: React.FC = () => {
   );
 };
 
-export default QuizTestChinese;
+export default EventQuiz;
