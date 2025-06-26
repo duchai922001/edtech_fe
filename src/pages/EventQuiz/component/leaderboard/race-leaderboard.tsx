@@ -68,7 +68,6 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
   }, [refId, fetchRanking]);
 
   const leaderboardPlayers = rankingData?.data || [];
-  console.log("data", leaderboardPlayers);
 
   if (isPending) {
     return (

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import "./style.css";
 import { useRanking } from "../../../../hooks/useRanking";
 import type { GetRankingPayload } from "../../../../services/ranking.service";
-import Loading from "../../../../components/base/Loading";
 
 // interface Player {
 //   position: number;
@@ -28,7 +27,7 @@ const getInitials = (name: string) => {
     .map((n) => n[0])
     .join("")
     .toUpperCase()
-    .slice(0, 2);
+    .slice(name.split(" ").length - 2, name.split(" ").length);
 };
 
 function MedalIcon({ position }: { position: number }) {
@@ -57,8 +56,6 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
     isError,
   } = useRanking();
 
-  console.log(refId, "68522b53943cefeda18742f3");
-
   useEffect(() => {
     if (refId) {
       const payload: GetRankingPayload = {
@@ -71,6 +68,7 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
   }, [refId, fetchRanking]);
 
   const leaderboardPlayers = rankingData?.data || [];
+  console.log("data", leaderboardPlayers);
 
   if (isPending) {
     return (
@@ -80,7 +78,7 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
             <span>LEADERBOARD</span>
           </div>
         </div>
-        <Loading />
+        <p>Loading data...</p>
       </div>
     );
   }
@@ -112,6 +110,7 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
   }
 
   if (leaderboardPlayers.length === 0) {
+    console.log("NO DATA");
     return (
       <div className="leaderboard-container">
         {/* Header */}
@@ -156,23 +155,23 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
         <div className="table-body">
           {leaderboardPlayers.data.map((player: any, index: any) => (
             <div
-              key={player.position}
+              key={player._id}
               className={`player-row ${
-                selectedPlayer?.position === player.position ? "selected" : ""
-              } ${player.position <= 3 ? "podium" : ""}`}
+                selectedPlayer?.position === index ? "selected" : ""
+              } ${index + 1 <= 3 ? "podium" : ""}`}
               onClick={() => setSelectedPlayer(player)}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Position */}
               <div className="cell position-cell">
                 <div className="position-content">
-                  <MedalIcon position={player.position} />
+                  <MedalIcon position={index + 1} />
                   <span
                     className={`position-number ${
-                      player.position === 1 ? "first-place" : ""
+                      index + 1 === 1 ? "first-place" : ""
                     }`}
                   >
-                    {player.position}
+                    {index + 1}
                   </span>
                 </div>
               </div>
@@ -188,9 +187,7 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
                     </div>
                   </div>
                   <div className="player-details">
-                    <div className="player-name">
-                      {player.username || "test"}
-                    </div>
+                    <div className="player-name">{player.userId.fullName}</div>
                   </div>
                 </div>
               </div>
@@ -202,12 +199,14 @@ export default function RaceLeaderboard({ refId }: { refId?: string }) {
                 </span>
               </div>
 
-              {/* Sectors */}
+              {/* Date */}
               <div className="cell sectors-cell">
-                <div className="cell time-cell">
-                  <span className="time-display">
-                    {formatDate(player.submittedAt)}
-                  </span>
+                <div className="sectors-container">
+                  <div className="cell time-cell">
+                    <span className="time-display">
+                      {formatDate(player.submittedAt)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

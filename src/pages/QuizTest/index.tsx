@@ -52,7 +52,7 @@ const QuizTest: React.FC = () => {
           Start
         </button>
       </div>
-      <Leaderboard />
+      <Leaderboard refId={mockTest._id} languageId={mockTest.languageId._id} />
     </div>
   );
 };

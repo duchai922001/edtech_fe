@@ -15,6 +15,7 @@ import "./style.css";
 interface Answer {
   _id: string;
   content: string;
+  isAnswer: boolean;
 }
 
 interface Question {
@@ -38,6 +39,8 @@ export default function QuizTestStart() {
   const [startTime] = useState(Date.now());
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [completionTime, setCompletionTime] = useState<number | null>(null);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [score, setScore] = useState(0);
 
   // Timer effect
   useEffect(() => {
@@ -67,14 +70,20 @@ export default function QuizTestStart() {
     const timeTaken = Math.floor((endTime - startTime) / 1000);
 
     // Calculate correct answers
-    // let correct = 0;
-    // questions.forEach((question) => {
-    //   if (answers[question._id] === question.correctAnswerId) {
-    //     correct++;
-    //   }
-    // });
-
-    // setCorrectAnswers(correct);
+    let correct = 0;
+    questions.forEach((question) => {
+      const selectedAnswerId = answers[question._id];
+      const correctAnswer = question.answers.find((ans) => ans.isAnswer);
+      if (
+        selectedAnswerId &&
+        correctAnswer &&
+        selectedAnswerId === correctAnswer._id
+      ) {
+        correct++;
+      }
+    });
+    setCorrectAnswers(correct);
+    setScore(Math.round((correct / questions.length) * 100));
     setCompletionTime(timeTaken);
     setIsSubmitted(true);
   };
@@ -121,6 +130,20 @@ export default function QuizTestStart() {
                   <span className="quiz-completion-stat-value">
                     {Object.keys(answers).length}/{questions.length}
                   </span>
+                </div>
+                <div className="quiz-completion-stat">
+                  <span className="quiz-completion-stat-label">
+                    Correct answers:{" "}
+                  </span>
+                  <span className="quiz-completion-stat-value">
+                    {correctAnswers}/{questions.length}
+                  </span>
+                </div>
+                <div className="quiz-completion-stat">
+                  <span className="quiz-completion-stat-label">
+                    Score (%):{" "}
+                  </span>
+                  <span className="quiz-completion-stat-value">{score}%</span>
                 </div>
                 <button
                   onClick={() =>
