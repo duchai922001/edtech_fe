@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import "./style.css";
 import "./modal-style.css";
+import "./sentence-styles.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetMocktestsChineseDetail } from "../../hooks/useMocktestChinese";
 import { Menu } from "../../common/configMenu";
@@ -41,11 +42,11 @@ export default function EventQuizStart() {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
 
   const breakPoint = useMemo(() => {
-    if (mockQuizData?.tittle === "Đề HSK 2 số 4") {
+    if (mockQuizData?.title === "Đề HSK 2 số 4") {
       return 35;
-    } else if (mockQuizData?.tittle === "Example test") {
+    } else if (mockQuizData?.title === "Example test") {
       return 39;
-    } else if (mockQuizData?.tittle === "Đề HSK 1") {
+    } else if (mockQuizData?.title === "Đề HSK 1") {
       return 20;
     }
     return 0;
@@ -468,13 +469,13 @@ export default function EventQuizStart() {
             return (
               <div key={question._id}>
                 {showListeningHeader && (
-                  <div className="quiz-section-header">
-                    <h2 className="quiz-section-title">LISTENING</h2>
+                  <div className="quiz-section-header-alt">
+                    <h2 className="quiz-section-title-alt">LISTENING</h2>
                   </div>
                 )}
                 {showReadingHeader && (
-                  <div className="quiz-section-header">
-                    <h2 className="quiz-section-title">READING</h2>
+                  <div className="quiz-section-header-alt">
+                    <h2 className="quiz-section-title-alt">READING</h2>
                   </div>
                 )}
                 <div
@@ -635,7 +636,7 @@ export default function EventQuizStart() {
                             <div className="quiz-multiple-inputs-title">
                               Enter your answers:
                             </div>
-                            {question.answers.map((_: any, i: any) => {
+                            {/* {question.answers.map((_: any, i: any) => {
                               const num = questionNumberMap[question._id] + i;
                               return (
                                 <div
@@ -645,6 +646,9 @@ export default function EventQuizStart() {
                                   <label className="quiz-multiple-input-label">
                                     {num}
                                   </label>
+                                  <p className="quiz-multiple-input-label">
+                                    {_.desL}
+                                  </p>
                                   <input
                                     type="text"
                                     maxLength={1}
@@ -664,6 +668,86 @@ export default function EventQuizStart() {
                                     className="quiz-multiple-input"
                                     placeholder="A-F"
                                   />
+                                  {_.desR ?? (
+                                    <p className="quiz-multiple-input-label">
+                                      {_.desL}
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            })} */}
+                            {question.answers.map((_: any, i: any) => {
+                              const num = questionNumberMap[question._id] + i;
+
+                              // Create the complete sentence by combining desL and desR
+                              const createSentence = () => {
+                                const leftPart = _.desL || "";
+                                const rightPart = _.desR || "";
+
+                                // Combine both parts and replace | with line breaks
+                                const fullText =
+                                  `${leftPart} __INPUT__ ${rightPart}`.trim();
+
+                                // Split by __INPUT__ to place the input field
+                                const parts = fullText.split("__INPUT__");
+
+                                return (
+                                  <div className="quiz-simple-content">
+                                    {parts[0] && (
+                                      <span>
+                                        {parts[0]
+                                          .split("|")
+                                          .map((line, idx, arr) => (
+                                            <span key={idx}>
+                                              {line.trim()}
+                                              {idx < arr.length - 1 && <br />}
+                                            </span>
+                                          ))}
+                                      </span>
+                                    )}
+
+                                    <input
+                                      type="text"
+                                      maxLength={1}
+                                      value={
+                                        ((answers[question._id] as Record<
+                                          string,
+                                          string
+                                        >) || {})[num.toString()] || ""
+                                      }
+                                      onChange={(e) =>
+                                        handleMultipleAnswer(
+                                          question._id,
+                                          num.toString(),
+                                          e.target.value
+                                        )
+                                      }
+                                      className="quiz-simple-input"
+                                      placeholder="A-F"
+                                    />
+
+                                    {parts[1] && (
+                                      <span>
+                                        {parts[1]
+                                          .split("|")
+                                          .map((line, idx, arr) => (
+                                            <span key={idx}>
+                                              {line.trim()}
+                                              {idx < arr.length - 1 && <br />}
+                                            </span>
+                                          ))}
+                                      </span>
+                                    )}
+                                  </div>
+                                );
+                              };
+
+                              return (
+                                <div key={num} className="quiz-simple-row">
+                                  <span className="quiz-simple-number">
+                                    {num}.
+                                  </span>
+                                  {createSentence()}
                                 </div>
                               );
                             })}
