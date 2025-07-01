@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Clock,
@@ -9,10 +11,12 @@ import {
   Volume2,
 } from "lucide-react";
 import "./style.css";
+import "./modal-style.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetMocktestsChineseDetail } from "../../hooks/useMocktestChinese";
 import { Menu } from "../../common/configMenu";
 import Loading from "../../components/base/Loading";
+import { ConfirmationModal } from "./components/ConfirmationModal";
 
 interface Answer {
   _id: string;
@@ -21,31 +25,35 @@ interface Answer {
   isAnswer?: boolean;
 }
 
-// interface Question {
-//   _id: string;
-//   question: string;
-//   imageUrl?: string;
-//   formQuestion: "TF" | "ONLY" | "MULTIPLE";
-//   answers: Answer[];
-// }
+type ModalType = "navigation" | "submit" | null;
 
 export default function EventQuizStart() {
-  const [questionNumberMap, setQuestionNumberMap] = useState<
-    Record<string, number>
-  >({});
-
+  // KHAI BÁO TẤT CẢ HOOKS TRƯỚC - KHÔNG CÓ EARLY RETURN
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-
   const {
     data: mockQuizData,
     isLoading,
     isError,
   } = useGetMocktestsChineseDetail(id || "");
 
-  if (isLoading) return <Loading />;
-  if (isError || !mockQuizData) return <p>Lỗi khi tải bài kiểm tra.</p>;
+  const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
 
+  const breakPoint = useMemo(() => {
+    if (mockQuizData?.tittle === "Đề HSK 2 số 4") {
+      return 35;
+    } else if (mockQuizData?.tittle === "Example test") {
+      return 39;
+    } else if (mockQuizData?.tittle === "Đề HSK 1") {
+      return 20;
+    }
+    return 0;
+  }, [mockQuizData?.tittle]);
+
+  const [questionNumberMap, setQuestionNumberMap] = useState<
+    Record<string, number>
+  >({});
   const [answers, setAnswers] = useState<
     Record<string, string | Record<string, string>>
   >({});
@@ -59,6 +67,7 @@ export default function EventQuizStart() {
 
   // Calculate total questions including MULTIPLE sub-questions
   const totalQuestions = useMemo(() => {
+    if (!mockQuizData?.questions) return 0;
     return mockQuizData.questions.reduce((total: any, question: any) => {
       if (question.formQuestion === "MULTIPLE") {
         return total + question.answers.length;
@@ -69,6 +78,7 @@ export default function EventQuizStart() {
 
   // Shuffle images for MULTIPLE questions
   const shuffledQuestions = useMemo(() => {
+    if (!mockQuizData?.questions) return [];
     return mockQuizData.questions.map((question: any) => {
       if (question.formQuestion === "MULTIPLE") {
         const shuffledAnswers = [...question.answers].sort(
@@ -80,6 +90,46 @@ export default function EventQuizStart() {
     });
   }, [mockQuizData]);
 
+  const sidebarQuestions = useMemo(() => {
+    if (!shuffledQuestions || shuffledQuestions.length === 0) return [];
+    const list: {
+      index: number;
+      label: string;
+      questionId: string;
+      scrollIndex: number;
+    }[] = [];
+    let logicIndex = 1;
+    const tempMap: Record<string, number> = {};
+
+    shuffledQuestions.forEach((question: any, idx: number) => {
+      if (question.formQuestion === "MULTIPLE") {
+        tempMap[question._id] = logicIndex;
+        for (let i = 0; i < question.answers.length; i++) {
+          const subQ = logicIndex + i;
+          list.push({
+            index: subQ,
+            label: `Q${subQ}`,
+            questionId: `${question._id}-${subQ}`,
+            scrollIndex: idx,
+          });
+        }
+        logicIndex += question.answers.length;
+      } else {
+        tempMap[question._id] = logicIndex;
+        list.push({
+          index: logicIndex,
+          label: `Q${logicIndex}`,
+          questionId: question._id,
+          scrollIndex: idx,
+        });
+        logicIndex++;
+      }
+    });
+
+    setQuestionNumberMap(tempMap);
+    return list;
+  }, [shuffledQuestions]);
+
   // Timer effect
   useEffect(() => {
     if (!isSubmitted) {
@@ -87,6 +137,39 @@ export default function EventQuizStart() {
       return () => clearTimeout(timer);
     }
   }, [elapsedTime, isSubmitted]);
+
+  // Navigation warning effect
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasPlayedAudio && !isSubmitted) {
+        e.preventDefault();
+        e.returnValue =
+          "Nếu bạn thực hiện thao tác này, bài của bạn sẽ tự động submit. Bạn có đồng ý không?";
+        return e.returnValue;
+      }
+    };
+
+    const handlePopState = () => {
+      if (hasPlayedAudio && !isSubmitted) {
+        setActiveModal("navigation");
+      }
+    };
+
+    if (hasPlayedAudio && !isSubmitted) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      window.addEventListener("popstate", handlePopState);
+      window.history.pushState(null, "", window.location.href);
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [hasPlayedAudio, isSubmitted]);
+
+  // CONDITIONAL RENDERING SAU KHI ĐÃ KHAI BÁO TẤT CẢ HOOKS
+  if (isLoading) return <Loading />;
+  if (isError || !mockQuizData) return <p>Lỗi khi tải bài kiểm tra.</p>;
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -131,7 +214,7 @@ export default function EventQuizStart() {
         const userAnswerObj = (userAnswer as Record<string, string>) || {};
 
         for (let i = 0; i < correctMapping.length; i++) {
-          const qNum = (questionNumberMap[question._id] + i).toString(); // tính theo số thứ tự thực tế
+          const qNum = (questionNumberMap[question._id] + i).toString();
           if (userAnswerObj[qNum] === correctMapping[i]) {
             correct++;
           }
@@ -147,12 +230,30 @@ export default function EventQuizStart() {
     setCorrectAnswers(correct);
     setCompletionTime(timeTaken);
     setIsSubmitted(true);
+    setActiveModal(null);
   };
 
-  // const getQuestionStatus = (questionId: string) => {
-  //   if (answers[questionId]) return "answered";
-  //   return "unanswered";
-  // };
+  const handleNavigationConfirm = () => {
+    setActiveModal(null);
+    handleSubmit();
+  };
+
+  const handleSubmitConfirm = () => {
+    setActiveModal(null);
+    handleSubmit();
+  };
+
+  const handleBackClick = () => {
+    if (hasPlayedAudio && !isSubmitted) {
+      setActiveModal("navigation");
+    } else {
+      window.history.back();
+    }
+  };
+
+  const handleSubmitClick = () => {
+    setActiveModal("submit");
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -164,11 +265,12 @@ export default function EventQuizStart() {
   };
 
   const toggleAudio = () => {
-    if (audioRef.current) {
+    if (audioRef.current && !hasPlayedAudio) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
         audioRef.current.play();
+        setHasPlayedAudio(true);
       }
       setIsPlaying(!isPlaying);
     }
@@ -181,7 +283,6 @@ export default function EventQuizStart() {
     }
   };
 
-  // Calculate answered questions count
   const getAnsweredQuestionsCount = () => {
     let count = 0;
     shuffledQuestions.forEach((question: any, index: any) => {
@@ -191,19 +292,12 @@ export default function EventQuizStart() {
         const userAnswerObj = (userAnswer as Record<string, string>) || {};
 
         if (index === 10) {
-          // Count answered sub-questions for 5-9
           for (const questionNum of ["11", "12", "13", "14", "15"]) {
             if (userAnswerObj[questionNum]) {
               count++;
             }
           }
         }
-        // else if (index === 5) {
-        //   // Count answered sub-question for 10
-        //   if (userAnswerObj["10"]) {
-        //     count++;
-        //   }
-        // }
       } else {
         if (userAnswer) {
           count++;
@@ -212,80 +306,6 @@ export default function EventQuizStart() {
     });
     return count;
   };
-
-  // const sidebarQuestions = useMemo(() => {
-  //   const list: {
-  //     index: number;
-  //     label: string;
-  //     questionId: string;
-  //     scrollIndex: number;
-  //   }[] = [];
-  //   let logicIndex = 1;
-
-  //   shuffledQuestions.forEach((question: any, idx: number) => {
-  //     if (question.formQuestion === "MULTIPLE" && idx === 10) {
-  //       // 5 sub-questions (Q11–15)
-  //       for (let sub = 11; sub <= 15; sub++) {
-  //         list.push({
-  //           index: logicIndex,
-  //           label: `Q${sub}`,
-  //           questionId: `${question._id}-${sub}`,
-  //           scrollIndex: idx, // scroll đến câu MULTIPLE
-  //         });
-  //         logicIndex++;
-  //       }
-  //     } else {
-  //       list.push({
-  //         index: logicIndex,
-  //         label: `Q${logicIndex}`,
-  //         questionId: question._id,
-  //         scrollIndex: idx, // scroll trực tiếp
-  //       });
-  //       logicIndex++;
-  //     }
-  //   });
-
-  //   return list;
-  // }, [shuffledQuestions]);
-
-  const sidebarQuestions = useMemo(() => {
-    const list: {
-      index: number;
-      label: string;
-      questionId: string;
-      scrollIndex: number;
-    }[] = [];
-    let logicIndex = 1;
-    const tempMap: Record<string, number> = {};
-
-    shuffledQuestions.forEach((question: any, idx: number) => {
-      if (question.formQuestion === "MULTIPLE") {
-        tempMap[question._id] = logicIndex;
-        for (let i = 0; i < question.answers.length; i++) {
-          const subQ = logicIndex + i;
-          list.push({
-            index: subQ,
-            label: `Q${subQ}`,
-            questionId: `${question._id}-${subQ}`,
-            scrollIndex: idx,
-          });
-        }
-        logicIndex += question.answers.length;
-      } else {
-        tempMap[question._id] = logicIndex;
-        list.push({
-          index: logicIndex,
-          label: `Q${logicIndex}`,
-          questionId: question._id,
-          scrollIndex: idx,
-        });
-        logicIndex++;
-      }
-    });
-
-    setQuestionNumberMap(tempMap); // cập nhật state toàn cục
-    return list;
-  }, [shuffledQuestions]);
 
   const getQuestionStatus = (questionKey: string) => {
     const [mainId, subNum] = questionKey.split("-");
@@ -356,16 +376,11 @@ export default function EventQuizStart() {
 
   return (
     <div className="chinese-quiz-container">
-      {/* Back Button */}
-      <button
-        onClick={() => window.history.back()}
-        className="quiz-back-button"
-      >
+      <button onClick={handleBackClick} className="quiz-back-button">
         <ArrowLeft className="quiz-back-icon" />
         Back
       </button>
 
-      {/* Fixed Question Status Sidebar */}
       <div className="quiz-sidebar">
         <div className="quiz-sidebar-card">
           <div className="quiz-sidebar-header">
@@ -382,10 +397,15 @@ export default function EventQuizStart() {
               <div className="quiz-timer-label">Elapsed Time</div>
             </div>
 
-            {/* Audio Player */}
             {mockQuizData.listenUrl && (
               <div className="quiz-audio-player">
-                <button onClick={toggleAudio} className="quiz-audio-button">
+                <button
+                  onClick={toggleAudio}
+                  className={`quiz-audio-button ${
+                    hasPlayedAudio ? "disabled" : ""
+                  }`}
+                  disabled={hasPlayedAudio}
+                >
                   {isPlaying ? (
                     <Pause className="quiz-icon" />
                   ) : (
@@ -401,20 +421,6 @@ export default function EventQuizStart() {
               </div>
             )}
 
-            {/* <div className="quiz-question-grid">
-              {shuffledQuestions.map((question: any, index: any) => {
-                const status = getQuestionStatus(question._id);
-                return (
-                  <button
-                    key={question._id}
-                    onClick={() => scrollToQuestion(index)}
-                    className={`quiz-question-button ${status}`}
-                  >
-                    {getStatusIcon(status)}Q{index + 1}
-                  </button>
-                );
-              })}
-            </div> */}
             <div className="quiz-question-grid">
               {sidebarQuestions.map((item) => {
                 const status = getQuestionStatus(item.questionId);
@@ -444,9 +450,7 @@ export default function EventQuizStart() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="chinese-quiz-main-content">
-        {/* Header */}
         <div className="quiz-header">
           <h1 className="quiz-title">{mockQuizData.title}</h1>
           <div className="quiz-progress-text">
@@ -454,202 +458,255 @@ export default function EventQuizStart() {
           </div>
         </div>
 
-        {/* Questions */}
         <div className="quiz-questions-container">
-          {shuffledQuestions.map((question: any, index: any) => (
-            <div
-              key={question._id}
-              id={`question-${index}`}
-              className="quiz-question-card-chinese"
-            >
-              <div className="quiz-question-header">
-                <h3 className="quiz-question-number">
-                  {question.formQuestion === "MULTIPLE" ? (
-                    <label className="quiz-multiple-input-label">
-                      Q{questionNumberMap[question._id]}_
-                      {questionNumberMap[question._id] +
-                        question.answers.length -
-                        1}
-                    </label>
-                  ) : (
-                    <label className="quiz-multiple-input-label">
-                      Q{questionNumberMap[question._id]}
-                    </label>
-                  )}
-                </h3>
-                <p className="quiz-question-title">{question.question}</p>
-              </div>
+          {shuffledQuestions.map((question: any, index: any) => {
+            const currentQuestionNumber = questionNumberMap[question._id];
+            const showListeningHeader = index === 0;
+            const showReadingHeader =
+              breakPoint > 0 && currentQuestionNumber === breakPoint + 1;
 
-              <div className="quiz-question-content">
-                {question.formQuestion !== "TF" && question.imageUrl && (
-                  <div className="quiz-question-image">
-                    <img
-                      src={question.imageUrl || "/placeholder.svg"}
-                      alt={`Question ${index + 1}`}
-                    />
+            return (
+              <div key={question._id}>
+                {showListeningHeader && (
+                  <div className="quiz-section-header">
+                    <h2 className="quiz-section-title">LISTENING</h2>
                   </div>
                 )}
-
-                <div className="quiz-answers">
-                  {question.formQuestion === "TF" ? (
-                    // True/False layout - image above, answers in one row
-                    <div className="quiz-tf-layout">
-                      {question.imageUrl && (
-                        <div className="quiz-tf-image">
-                          <img
-                            src={question.imageUrl || "/placeholder.svg"}
-                            alt={`Question ${index + 1}`}
-                          />
-                        </div>
+                {showReadingHeader && (
+                  <div className="quiz-section-header">
+                    <h2 className="quiz-section-title">READING</h2>
+                  </div>
+                )}
+                <div
+                  id={`question-${index}`}
+                  className="quiz-question-card-chinese"
+                >
+                  <div className="quiz-question-header">
+                    <h3 className="quiz-question-number">
+                      {question.formQuestion === "MULTIPLE" ? (
+                        <label className="quiz-multiple-input-label">
+                          Q{questionNumberMap[question._id]}_
+                          {questionNumberMap[question._id] +
+                            question.answers.length -
+                            1}
+                        </label>
+                      ) : (
+                        <label className="quiz-multiple-input-label">
+                          Q{questionNumberMap[question._id]}
+                        </label>
                       )}
-                      <div className="quiz-tf-answers">
-                        {question.answers.map((answer: any) => (
-                          <div
-                            key={answer._id}
-                            className="quiz-tf-answer-option"
-                          >
-                            <input
-                              type="radio"
-                              id={answer._id}
-                              name={`question-${question._id}`}
-                              checked={answers[question._id] === answer._id}
-                              onChange={() =>
-                                handleSingleAnswer(question._id, answer._id)
-                              }
-                              className="quiz-radio-input"
-                            />
-                            <label
-                              htmlFor={answer._id}
-                              className="quiz-tf-answer-label"
-                            >
-                              {answer.content}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : question.formQuestion === "ONLY" ? (
-                    // Single choice layout - 3 answers in one row
-                    <div className="quiz-only-answers">
-                      {question.answers.map((answer: any) => (
-                        <div
-                          key={answer._id}
-                          className="quiz-only-answer-option"
-                        >
-                          <input
-                            type="radio"
-                            id={answer._id}
-                            name={`question-${question._id}`}
-                            checked={answers[question._id] === answer._id}
-                            onChange={() =>
-                              handleSingleAnswer(question._id, answer._id)
-                            }
-                            className="quiz-radio-input"
-                          />
-                          <label
-                            htmlFor={answer._id}
-                            className="quiz-only-answer-label"
-                          >
-                            {answer.imageUrl ? (
-                              <div className="quiz-only-answer-image">
-                                <span className="quiz-answer-text">
-                                  {answer.content}
-                                </span>
-                                <img
-                                  src={answer.imageUrl || "/placeholder.svg"}
-                                  alt={answer.content}
-                                />
-                              </div>
-                            ) : (
-                              <span className="quiz-answer-text">
-                                {answer.content}
-                              </span>
-                            )}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    // Multiple choice - matching layout
-                    <div className="quiz-multiple-layout">
-                      {/* Images in random order */}
-                      <div className="quiz-multiple-images">
-                        {(question as any).shuffledAnswers?.map(
-                          (answer: Answer) => (
-                            <div
-                              key={answer._id}
-                              className="quiz-multiple-image-item"
-                            >
-                              {answer.imageUrl?.startsWith("https") ? (
-                                <img
-                                  src={answer.imageUrl}
-                                  alt={answer.content}
-                                />
-                              ) : (
-                                <span className="quiz-multiple-image-text">
-                                  {answer.imageUrl || answer.content}
-                                </span>
-                              )}
-                              <span className="quiz-multiple-image-label">
-                                {answer.content}
-                              </span>
-                            </div>
-                          )
-                        )}
-                      </div>
+                    </h3>
+                    <p className="quiz-question-title">{question.question}</p>
+                  </div>
 
-                      {/* Input fields based on question index and answers length */}
-                      <div className="quiz-multiple-inputs">
-                        <div className="quiz-multiple-inputs-title">
-                          Enter your answers:
-                        </div>
-                        {/* <div className="quiz-multiple-input-row"> */}
-                        {question.answers.map((_: any, i: any) => {
-                          const num = questionNumberMap[question._id] + i;
-                          return (
-                            <div key={num} className="quiz-multiple-input-row">
-                              <label className="quiz-multiple-input-label">
-                                {num}
-                              </label>
-                              <input
-                                type="text"
-                                maxLength={1}
-                                value={
-                                  ((answers[question._id] as Record<
-                                    string,
-                                    string
-                                  >) || {})[num.toString()] || ""
-                                }
-                                onChange={(e) =>
-                                  handleMultipleAnswer(
-                                    question._id,
-                                    num.toString(),
-                                    e.target.value
-                                  )
-                                }
-                                className="quiz-multiple-input"
-                                placeholder="A-F"
+                  <div className="quiz-question-content">
+                    {question.formQuestion !== "TF" && question.imageUrl && (
+                      <div className="quiz-question-image">
+                        <img
+                          src={question.imageUrl || "/placeholder.svg"}
+                          alt={`Question ${index + 1}`}
+                        />
+                      </div>
+                    )}
+
+                    <div className="quiz-answers">
+                      {question.formQuestion === "TF" ? (
+                        <div className="quiz-tf-layout">
+                          {question.imageUrl && (
+                            <div className="quiz-tf-image">
+                              <img
+                                src={question.imageUrl || "/placeholder.svg"}
+                                alt={`Question ${index + 1}`}
                               />
                             </div>
-                          );
-                        })}
-                      </div>
+                          )}
+                          <div className="quiz-tf-answers">
+                            {question.answers.map((answer: any) => (
+                              <div
+                                key={answer._id}
+                                className="quiz-tf-answer-option"
+                              >
+                                <input
+                                  type="radio"
+                                  id={answer._id}
+                                  name={`question-${question._id}`}
+                                  checked={answers[question._id] === answer._id}
+                                  onChange={() =>
+                                    handleSingleAnswer(question._id, answer._id)
+                                  }
+                                  className="quiz-radio-input"
+                                />
+                                <label
+                                  htmlFor={answer._id}
+                                  className="quiz-tf-answer-label"
+                                >
+                                  {answer.content}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : question.formQuestion === "ONLY" ? (
+                        <div className="quiz-only-answers">
+                          {question.answers.map((answer: any) => (
+                            <div
+                              key={answer._id}
+                              className="quiz-only-answer-option"
+                            >
+                              <input
+                                type="radio"
+                                id={answer._id}
+                                name={`question-${question._id}`}
+                                checked={answers[question._id] === answer._id}
+                                onChange={() =>
+                                  handleSingleAnswer(question._id, answer._id)
+                                }
+                                className="quiz-radio-input"
+                              />
+                              <label
+                                htmlFor={answer._id}
+                                className="quiz-only-answer-label"
+                              >
+                                {answer.imageUrl ? (
+                                  <div className="quiz-only-answer-image">
+                                    <span className="quiz-answer-text">
+                                      {answer.content}
+                                    </span>
+                                    <img
+                                      src={
+                                        answer.imageUrl || "/placeholder.svg"
+                                      }
+                                      alt={answer.content}
+                                    />
+                                  </div>
+                                ) : (
+                                  <span className="quiz-answer-text">
+                                    {answer.content}
+                                  </span>
+                                )}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="quiz-multiple-layout">
+                          {question.answers[0].imageUrl?.startsWith("https") ? (
+                            <div className="quiz-multiple-images">
+                              {(question as any).shuffledAnswers?.map(
+                                (answer: Answer) => (
+                                  <div
+                                    key={answer._id}
+                                    className="quiz-multiple-image-item"
+                                  >
+                                    <img
+                                      src={
+                                        answer.imageUrl || "/placeholder.svg"
+                                      }
+                                      alt={answer.content}
+                                    />
+                                    <span className="quiz-multiple-image-label">
+                                      {answer.content}
+                                    </span>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          ) : (
+                            <div className="quiz-multiple-images-not-img">
+                              {(question as any).shuffledAnswers?.map(
+                                (answer: Answer) => (
+                                  <div
+                                    key={answer._id}
+                                    className="quiz-multiple-image-item-not-img"
+                                  >
+                                    <p className="quiz-multiple-image-text">
+                                      {answer.imageUrl}
+                                    </p>
+                                    <span className="quiz-multiple-image-label-not-img">
+                                      {answer.content}
+                                    </span>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )}
+
+                          <div className="quiz-multiple-inputs">
+                            <div className="quiz-multiple-inputs-title">
+                              Enter your answers:
+                            </div>
+                            {question.answers.map((_: any, i: any) => {
+                              const num = questionNumberMap[question._id] + i;
+                              return (
+                                <div
+                                  key={num}
+                                  className="quiz-multiple-input-row"
+                                >
+                                  <label className="quiz-multiple-input-label">
+                                    {num}
+                                  </label>
+                                  <input
+                                    type="text"
+                                    maxLength={1}
+                                    value={
+                                      ((answers[question._id] as Record<
+                                        string,
+                                        string
+                                      >) || {})[num.toString()] || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleMultipleAnswer(
+                                        question._id,
+                                        num.toString(),
+                                        e.target.value
+                                      )
+                                    }
+                                    className="quiz-multiple-input"
+                                    placeholder="A-F"
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    // </div>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Submit Button */}
         <div className="quiz-submit-section">
-          <button onClick={handleSubmit} className="quiz-submit-button">
+          <button onClick={handleSubmitClick} className="quiz-submit-button">
             Submit Quiz
           </button>
         </div>
       </div>
+
+      {/* Custom Modals */}
+      <ConfirmationModal
+        isOpen={activeModal === "navigation"}
+        onClose={() => setActiveModal(null)}
+        onConfirm={handleNavigationConfirm}
+        title="Xác nhận rời khỏi bài thi"
+        message="Nếu bạn thực hiện thao tác này, bài của bạn sẽ tự động submit. Bạn có đồng ý không?"
+        confirmText="Đồng ý"
+        cancelText="Hủy"
+        type="warning"
+      />
+
+      <ConfirmationModal
+        isOpen={activeModal === "submit"}
+        onClose={() => setActiveModal(null)}
+        onConfirm={handleSubmitConfirm}
+        title="Xác nhận nộp bài"
+        message="Bạn có chắc chắn muốn nộp bài không? Sau khi nộp bài, bạn sẽ không thể thay đổi câu trả lời."
+        confirmText="Nộp bài"
+        cancelText="Hủy"
+        type="info"
+      />
     </div>
   );
 }

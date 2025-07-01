@@ -103,36 +103,6 @@ export default function SignInCard() {
       },
     });
   };
-
-  // const validateInputs = () => {
-  //   const email = document.getElementById("email") as HTMLInputElement;
-  //   const password = document.getElementById("password") as HTMLInputElement;
-
-  //   let isValid = true;
-
-  //   if (!email.value) {
-  //     setEmailError(true);
-  //     setEmailErrorMessage("Please enter a valid username.");
-  //     isValid = false;
-  //   } else {
-  //     setEmailError(false);
-  //     setEmailErrorMessage("");
-  //   }
-
-  //   if (!password.value || password.value.length < 6) {
-  //     setPasswordError(true);
-  //     setPasswordErrorMessage("Password must be at least 6 characters long.");
-  //     isValid = false;
-  //   } else {
-  //     setPasswordError(false);
-  //     setPasswordErrorMessage("");
-  //   }
-
-  //   if (isValid) {
-  //   }
-  //   return isValid;
-  // };
-
   return (
     <Card variant="outlined">
       <Box sx={{ display: { xs: "flex", md: "none" } }}></Box>

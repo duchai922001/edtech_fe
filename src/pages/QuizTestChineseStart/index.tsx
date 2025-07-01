@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
   Clock,
@@ -21,26 +23,15 @@ interface Answer {
   isAnswer?: boolean;
 }
 
-// interface Question {
-//   _id: string;
-//   question: string;
-//   imageUrl?: string;
-//   formQuestion: "TF" | "ONLY" | "MULTIPLE";
-//   answers: Answer[];
-// }
-
 export default function ChineseQuiz() {
+  // KHAI BÁO TẤT CẢ HOOKS TRƯỚC - KHÔNG CÓ EARLY RETURN
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-
   const {
     data: mockQuizData,
     isLoading,
     isError,
   } = useGetMocktestsChineseDetail(id || "");
-
-  if (isLoading) return <Loading />;
-  if (isError || !mockQuizData) return <p>Lỗi khi tải bài kiểm tra.</p>;
 
   const [answers, setAnswers] = useState<
     Record<string, string | Record<string, string>>
@@ -55,6 +46,7 @@ export default function ChineseQuiz() {
 
   // Calculate total questions including MULTIPLE sub-questions
   const totalQuestions = useMemo(() => {
+    if (!mockQuizData?.questions) return 0;
     return mockQuizData.questions.reduce((total: any, question: any) => {
       if (question.formQuestion === "MULTIPLE") {
         return total + question.answers.length;
@@ -65,6 +57,7 @@ export default function ChineseQuiz() {
 
   // Shuffle images for MULTIPLE questions
   const shuffledQuestions = useMemo(() => {
+    if (!mockQuizData?.questions) return [];
     return mockQuizData.questions.map((question: any) => {
       if (question.formQuestion === "MULTIPLE") {
         const shuffledAnswers = [...question.answers].sort(
@@ -76,6 +69,41 @@ export default function ChineseQuiz() {
     });
   }, [mockQuizData]);
 
+  const sidebarQuestions = useMemo(() => {
+    if (!shuffledQuestions || shuffledQuestions.length === 0) return [];
+    const list: {
+      index: number;
+      label: string;
+      questionId: string;
+      scrollIndex: number;
+    }[] = [];
+    let logicIndex = 1;
+
+    shuffledQuestions.forEach((question: any, idx: number) => {
+      if (question.formQuestion === "MULTIPLE" && idx === 10) {
+        for (let sub = 11; sub <= 15; sub++) {
+          list.push({
+            index: logicIndex,
+            label: `Q${sub}`,
+            questionId: `${question._id}-${sub}`,
+            scrollIndex: idx,
+          });
+          logicIndex++;
+        }
+      } else {
+        list.push({
+          index: logicIndex,
+          label: `Q${logicIndex}`,
+          questionId: question._id,
+          scrollIndex: idx,
+        });
+        logicIndex++;
+      }
+    });
+
+    return list;
+  }, [shuffledQuestions]);
+
   // Timer effect
   useEffect(() => {
     if (!isSubmitted) {
@@ -83,6 +111,10 @@ export default function ChineseQuiz() {
       return () => clearTimeout(timer);
     }
   }, [elapsedTime, isSubmitted]);
+
+  // CONDITIONAL RENDERING SAU KHI ĐÃ KHAI BÁO TẤT CẢ HOOKS
+  if (isLoading) return <Loading />;
+  if (isError || !mockQuizData) return <p>Lỗi khi tải bài kiểm tra.</p>;
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -117,25 +149,22 @@ export default function ChineseQuiz() {
     const endTime = Date.now();
     const timeTaken = Math.floor((endTime - startTime) / 1000);
 
-    // Calculate correct answers
     let correct = 0;
     shuffledQuestions.forEach((question: any, index: any) => {
       const userAnswer = answers[question._id];
 
       if (question.formQuestion === "MULTIPLE") {
         if (index === 10) {
-          // Question 5-9 (5 sub-questions)
           const correctMapping = {
-            "11": question.answers[0]?.content, // A
-            "12": question.answers[1]?.content, // B
-            "13": question.answers[2]?.content, // D
-            "14": question.answers[3]?.content, // E
-            "15": question.answers[4]?.content, // F
+            "11": question.answers[0]?.content,
+            "12": question.answers[1]?.content,
+            "13": question.answers[2]?.content,
+            "14": question.answers[3]?.content,
+            "15": question.answers[4]?.content,
           };
 
           const userAnswerObj = (userAnswer as Record<string, string>) || {};
 
-          // Check each sub-question individually
           for (const questionNum of ["11", "12", "13", "14", "15"] as const) {
             const userInput = userAnswerObj[questionNum];
             const correctAnswer = correctMapping[questionNum];
@@ -144,17 +173,7 @@ export default function ChineseQuiz() {
             }
           }
         }
-        // else if (index === 6) {
-        //   Question 10 (1 sub-question)
-        //   const userAnswerObj = (userAnswer as Record<string, string>) || {};
-        //   const userInput = userAnswerObj["10"];
-        //   const correctAnswer = question.answers[0]?.content;
-        //   if (userInput === correctAnswer) {
-        //     correct++;
-        //   }
-        // }
       } else {
-        // For single choice, check if the selected answer is correct
         const correctAnswer = question.answers.find((a: any) => a.isAnswer);
         if (correctAnswer && userAnswer === correctAnswer._id) {
           correct++;
@@ -166,11 +185,6 @@ export default function ChineseQuiz() {
     setCompletionTime(timeTaken);
     setIsSubmitted(true);
   };
-
-  // const getQuestionStatus = (questionId: string) => {
-  //   if (answers[questionId]) return "answered";
-  //   return "unanswered";
-  // };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -199,7 +213,6 @@ export default function ChineseQuiz() {
     }
   };
 
-  // Calculate answered questions count
   const getAnsweredQuestionsCount = () => {
     let count = 0;
     shuffledQuestions.forEach((question: any, index: any) => {
@@ -209,19 +222,12 @@ export default function ChineseQuiz() {
         const userAnswerObj = (userAnswer as Record<string, string>) || {};
 
         if (index === 10) {
-          // Count answered sub-questions for 5-9
           for (const questionNum of ["11", "12", "13", "14", "15"]) {
             if (userAnswerObj[questionNum]) {
               count++;
             }
           }
         }
-        // else if (index === 5) {
-        //   // Count answered sub-question for 10
-        //   if (userAnswerObj["10"]) {
-        //     count++;
-        //   }
-        // }
       } else {
         if (userAnswer) {
           count++;
@@ -230,41 +236,6 @@ export default function ChineseQuiz() {
     });
     return count;
   };
-
-  const sidebarQuestions = useMemo(() => {
-    const list: {
-      index: number;
-      label: string;
-      questionId: string;
-      scrollIndex: number;
-    }[] = [];
-    let logicIndex = 1;
-
-    shuffledQuestions.forEach((question: any, idx: number) => {
-      if (question.formQuestion === "MULTIPLE" && idx === 10) {
-        // 5 sub-questions (Q11–15)
-        for (let sub = 11; sub <= 15; sub++) {
-          list.push({
-            index: logicIndex,
-            label: `Q${sub}`,
-            questionId: `${question._id}-${sub}`,
-            scrollIndex: idx, // scroll đến câu MULTIPLE
-          });
-          logicIndex++;
-        }
-      } else {
-        list.push({
-          index: logicIndex,
-          label: `Q${logicIndex}`,
-          questionId: question._id,
-          scrollIndex: idx, // scroll trực tiếp
-        });
-        logicIndex++;
-      }
-    });
-
-    return list;
-  }, [shuffledQuestions]);
 
   const getQuestionStatus = (questionKey: string) => {
     const [mainId, subNum] = questionKey.split("-");
@@ -335,7 +306,6 @@ export default function ChineseQuiz() {
 
   return (
     <div className="chinese-quiz-container">
-      {/* Back Button */}
       <button
         onClick={() => window.history.back()}
         className="quiz-back-button"
@@ -344,7 +314,6 @@ export default function ChineseQuiz() {
         Back
       </button>
 
-      {/* Fixed Question Status Sidebar */}
       <div className="quiz-sidebar">
         <div className="quiz-sidebar-card">
           <div className="quiz-sidebar-header">
@@ -361,7 +330,6 @@ export default function ChineseQuiz() {
               <div className="quiz-timer-label">Elapsed Time</div>
             </div>
 
-            {/* Audio Player */}
             {mockQuizData.listenUrl && (
               <div className="quiz-audio-player">
                 <button onClick={toggleAudio} className="quiz-audio-button">
@@ -380,20 +348,6 @@ export default function ChineseQuiz() {
               </div>
             )}
 
-            {/* <div className="quiz-question-grid">
-              {shuffledQuestions.map((question: any, index: any) => {
-                const status = getQuestionStatus(question._id);
-                return (
-                  <button
-                    key={question._id}
-                    onClick={() => scrollToQuestion(index)}
-                    className={`quiz-question-button ${status}`}
-                  >
-                    {getStatusIcon(status)}Q{index + 1}
-                  </button>
-                );
-              })}
-            </div> */}
             <div className="quiz-question-grid">
               {sidebarQuestions.map((item) => {
                 const status = getQuestionStatus(item.questionId);
@@ -423,9 +377,7 @@ export default function ChineseQuiz() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="chinese-quiz-main-content">
-        {/* Header */}
         <div className="quiz-header">
           <h1 className="quiz-title">{mockQuizData.title}</h1>
           <div className="quiz-progress-text">
@@ -433,7 +385,6 @@ export default function ChineseQuiz() {
           </div>
         </div>
 
-        {/* Questions */}
         <div className="quiz-questions-container">
           {shuffledQuestions.map((question: any, index: any) => (
             <div
@@ -466,7 +417,6 @@ export default function ChineseQuiz() {
 
                 <div className="quiz-answers">
                   {question.formQuestion === "TF" ? (
-                    // True/False layout - image above, answers in one row
                     <div className="quiz-tf-layout">
                       {question.imageUrl && (
                         <div className="quiz-tf-image">
@@ -503,7 +453,6 @@ export default function ChineseQuiz() {
                       </div>
                     </div>
                   ) : question.formQuestion === "ONLY" ? (
-                    // Single choice layout - 3 answers in one row
                     <div className="quiz-only-answers">
                       {question.answers.map((answer: any) => (
                         <div
@@ -544,9 +493,7 @@ export default function ChineseQuiz() {
                       ))}
                     </div>
                   ) : (
-                    // Multiple choice - matching layout
                     <div className="quiz-multiple-layout">
-                      {/* Images in random order */}
                       <div className="quiz-multiple-images">
                         {(question as any).shuffledAnswers?.map(
                           (answer: Answer) => (
@@ -566,7 +513,6 @@ export default function ChineseQuiz() {
                         )}
                       </div>
 
-                      {/* Input fields based on question index and answers length */}
                       <div className="quiz-multiple-inputs">
                         <div className="quiz-multiple-inputs-title">
                           Enter your answers:
@@ -641,7 +587,6 @@ export default function ChineseQuiz() {
           ))}
         </div>
 
-        {/* Submit Button */}
         <div className="quiz-submit-section">
           <button onClick={handleSubmit} className="quiz-submit-button">
             Submit Quiz
