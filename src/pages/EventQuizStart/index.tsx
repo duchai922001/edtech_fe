@@ -18,6 +18,7 @@ import { useGetMocktestsChineseDetail } from "../../hooks/useMocktestChinese";
 import { Menu } from "../../common/configMenu";
 import Loading from "../../components/base/Loading";
 import { ConfirmationModal } from "./components/ConfirmationModal";
+import { useRanking } from "../../hooks/useRanking";
 
 interface Answer {
   _id: string;
@@ -40,6 +41,7 @@ export default function EventQuizStart() {
 
   const [hasPlayedAudio, setHasPlayedAudio] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const { mutate: useSubmit } = useRanking();
 
   const breakPoint = useMemo(() => {
     if (mockQuizData?.title === "Đề HSK 2 số 4") {
@@ -230,8 +232,21 @@ export default function EventQuizStart() {
 
     setCorrectAnswers(correct);
     setCompletionTime(timeTaken);
-    setIsSubmitted(true);
     setActiveModal(null);
+
+    const payload = {
+      refId: id ? id : "N/A",
+      type: "chinese",
+      languageId: "68522b53943cefeda18742f3",
+      score: Math.round((correctAnswers / totalQuestions) * 100),
+      duration: 600,
+    };
+
+    useSubmit(payload, {
+      onSuccess: () => {
+        setIsSubmitted(true);
+      },
+    });
   };
 
   const handleNavigationConfirm = () => {

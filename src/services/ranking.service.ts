@@ -17,7 +17,12 @@ export interface GetRankingPayload {
 
 export const RankingService = {
   submit: async (payload: SubmitPayload): Promise<AxiosResponse<any>> => {
-    const response = await axiosInstance.post(`/mocktest-ranking`, payload);
+    const token = localStorage.getItem("token");
+    const response = await axiosInstance.post(`/mocktest-ranking`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response;
   },
   getRanking: async (

@@ -2,8 +2,10 @@ import { Col, Row, Typography } from "antd";
 import Container from "../../../components/base/Container";
 import learn1 from "../../../assets/learn1.png";
 import learn2 from "../../../assets/learn2.png";
+import { useNavigate } from "react-router-dom";
 
 const Learnmore = () => {
+  const navigate = useNavigate();
   return (
     <Container>
       <Row style={{ padding: "48px 0" }} gutter={[48, 0]}>
@@ -61,6 +63,9 @@ const Learnmore = () => {
               padding: 24,
               width: 188,
               cursor: "pointer",
+            }}
+            onClick={() => {
+              navigate("/classes");
             }}
           >
             LEARN MORE

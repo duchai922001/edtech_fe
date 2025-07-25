@@ -74,7 +74,7 @@ const HeadStudent = () => {
                 fontWeight: "bold",
               }}
             >
-              STARTED NOW
+              START NOW
             </button>
           </Col>
           <Col span={24} style={{ width: "100%", marginTop: 48 }}>
